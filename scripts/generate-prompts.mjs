@@ -250,6 +250,7 @@ const items = categories.flatMap((category, categoryIndex) =>
         },
       ],
       bestPractices: bestPractices.slice(index % 3, (index % 3) + 3),
+      tier: index < 6 ? "free" : index < 14 ? "free" : "vip",
       popularity: 1000 - categoryIndex * 80 - index * 9,
       publishedAt: new Date(publishedBase + (categoryIndex * 20 + index) * 86400000).toISOString(),
     };
