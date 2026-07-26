@@ -45,7 +45,7 @@ export default async function AdminPage() {
   const readinessItems: Array<[string, boolean]> = [
     ["Supabase URL", readiness.supabaseUrl],
     ["Service Role", readiness.supabaseServiceRole],
-    ["OpenAI Key", readiness.openaiApiKey],
+    [`AI Key${readiness.aiProvider ? ` (${readiness.aiProvider})` : ""}`, readiness.deepseekApiKey || readiness.openaiApiKey],
     ["Cron Secret", readiness.cronSecret],
     ["Admin Password", readiness.adminPassword],
   ];

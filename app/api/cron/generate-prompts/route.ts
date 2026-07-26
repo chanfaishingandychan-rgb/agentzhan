@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { createServiceClient } from "@/lib/supabase/server";
-import { generatePromptsWithOpenAI, isOpenAIConfigured } from "@/lib/openai";
+import { generatePromptsWithOpenAI, getConfiguredAIProvider, isOpenAIConfigured } from "@/lib/openai";
 import { isSupabaseConfigured } from "@/lib/admin";
 
 function isAuthorized(request: Request) {
@@ -18,14 +18,15 @@ export async function GET(request: Request) {
   }
 
   const supabaseOk = isSupabaseConfigured();
-  const openaiOk = isOpenAIConfigured();
+  const aiOk = isOpenAIConfigured();
+  const aiProvider = getConfiguredAIProvider();
   const client = createServiceClient();
 
-  if (!openaiOk) {
+  if (!aiOk) {
     return NextResponse.json(
       {
-        error: "OpenAI API key is not configured",
-        summary: "缺少 OPENAI_API_KEY 環境變數，無法生成新 Prompt。",
+        error: `${aiProvider.missingKey} is not configured`,
+        summary: "缺少 AI API Key 環境變數，無法生成新 Prompt。建議設定 DEEPSEEK_API_KEY。",
       },
       { status: 500 },
     );
@@ -42,8 +43,8 @@ export async function GET(request: Request) {
     }
   }
 
-  // Call OpenAI
-  const { prompts, rawResponse, error } = await generatePromptsWithOpenAI(existingSlugs);
+  // Call the configured AI provider
+  const { prompts, rawResponse, error, provider } = await generatePromptsWithOpenAI(existingSlugs);
 
   if (error) {
     // Log the failure if Supabase is available
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
         draft_count: 0,
         failed_count: 5,
         error_message: error,
-        summary: `OpenAI 生成失敗：${error}`,
+        summary: `${provider ?? "AI"} 生成失敗：${error}`,
       });
     }
 
@@ -63,7 +64,7 @@ export async function GET(request: Request) {
       {
         error,
         raw_response: rawResponse,
-        summary: "OpenAI 呼叫失敗。網站本身不受影響。",
+        summary: `${provider ?? "AI"} 呼叫失敗。網站本身不受影響。`,
       },
       { status: 500 },
     );
@@ -142,6 +143,8 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     mode: supabaseOk ? "live-database-write" : "preview-no-database-write",
+    ai_provider: provider ?? aiProvider.name,
+    ai_model: aiProvider.model,
     run_time: new Date().toISOString(),
     generated_count: prompts.length,
     published_count: publishedCount,
@@ -149,7 +152,7 @@ export async function GET(request: Request) {
     failed_count: failedCount,
     summary: supabaseOk
       ? `成功生成 ${prompts.length} 條 Prompt，已寫入 Supabase。`
-      : "OpenAI 生成成功，但 Supabase 未設定，資料未寫入資料庫。",
+      : "AI 生成成功，但 Supabase 未設定，資料未寫入資料庫。",
     data: prompts.map((p) => ({
       title: p.title,
       slug: p.slug,

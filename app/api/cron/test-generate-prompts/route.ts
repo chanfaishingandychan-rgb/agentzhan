@@ -1,33 +1,34 @@
 import { NextResponse } from "next/server";
 
-import { generatePromptsWithOpenAI, isOpenAIConfigured } from "@/lib/openai";
+import { generatePromptsWithOpenAI, getConfiguredAIProvider, isOpenAIConfigured } from "@/lib/openai";
 import { isSupabaseConfigured, getSystemReadiness } from "@/lib/admin";
 
 export async function GET() {
   const readiness = getSystemReadiness();
-  const openaiOk = isOpenAIConfigured();
+  const aiOk = isOpenAIConfigured();
+  const aiProvider = getConfiguredAIProvider();
   const supabaseOk = isSupabaseConfigured();
 
-  if (!openaiOk) {
+  if (!aiOk) {
     return NextResponse.json(
       {
-        error: "OPENAI_API_KEY is not configured",
-        summary: "缺少 OpenAI API Key，無法測試生成。請在 Vercel 環境變數中設定 OPENAI_API_KEY。",
+        error: `${aiProvider.missingKey} is not configured`,
+        summary: "缺少 AI API Key，無法測試生成。建議在 Vercel 環境變數中設定 DEEPSEEK_API_KEY。",
         readiness,
       },
       { status: 500 },
     );
   }
 
-  // Call OpenAI with empty slug set (test mode — won't write to DB)
-  const { prompts, rawResponse, error } = await generatePromptsWithOpenAI(new Set());
+  // Call AI provider with empty slug set (test mode — won't write to DB)
+  const { prompts, rawResponse, error, provider } = await generatePromptsWithOpenAI(new Set());
 
   if (error) {
     return NextResponse.json(
       {
         error,
         raw_response: rawResponse?.slice(0, 1000),
-        summary: `OpenAI 呼叫失敗：${error}。網站本身不受影響。`,
+        summary: `${provider ?? "AI"} 呼叫失敗：${error}。網站本身不受影響。`,
         readiness,
       },
       { status: 500 },
@@ -40,7 +41,9 @@ export async function GET() {
   return NextResponse.json({
     mode: "manual-test",
     supabase_configured: supabaseOk,
-    openai_configured: openaiOk,
+    ai_configured: aiOk,
+    ai_provider: provider ?? aiProvider.name,
+    ai_model: aiProvider.model,
     run_time: new Date().toISOString(),
     generated_count: prompts.length,
     published_count: published.length,

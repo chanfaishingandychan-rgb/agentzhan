@@ -111,6 +111,8 @@ export function getSystemReadiness() {
     supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
     supabaseServiceRole: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
     openaiApiKey: Boolean(process.env.OPENAI_API_KEY),
+    deepseekApiKey: Boolean(process.env.DEEPSEEK_API_KEY),
+    aiProvider: process.env.DEEPSEEK_API_KEY ? "DeepSeek" : process.env.OPENAI_API_KEY ? "OpenAI" : null,
     cronSecret: Boolean(process.env.CRON_SECRET),
     adminPassword: Boolean(process.env.ADMIN_PASSWORD),
     models: modelOptions,

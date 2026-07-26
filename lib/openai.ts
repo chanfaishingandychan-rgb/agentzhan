@@ -22,14 +22,56 @@ export interface GeneratedPrompt {
   qualityScore: number;
 }
 
-/** Get a lazily initialized OpenAI client (server-side only) */
-let _openai: OpenAI | null = null;
-function getClient(): OpenAI | null {
-  if (_openai) return _openai;
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) return null;
-  _openai = new OpenAI({ apiKey: key });
-  return _openai;
+type AIProvider = {
+  client: OpenAI;
+  configured: boolean;
+  displayName: "DeepSeek" | "OpenAI";
+  missingKey: "DEEPSEEK_API_KEY" | "OPENAI_API_KEY";
+  model: string;
+};
+
+let _client: OpenAI | null = null;
+let _clientSignature = "";
+
+/** Get a lazily initialized AI client (server-side only). DeepSeek is preferred when configured. */
+function getAIProvider(): AIProvider {
+  const deepseekKey = process.env.DEEPSEEK_API_KEY;
+  const openaiKey = process.env.OPENAI_API_KEY;
+  const preferredProvider = process.env.AI_PROVIDER?.toLowerCase();
+
+  const useOpenAI = preferredProvider === "openai" && Boolean(openaiKey);
+  const useDeepSeek = !useOpenAI && Boolean(deepseekKey);
+
+  if (useDeepSeek) {
+    const model = process.env.DEEPSEEK_MODEL || "deepseek-v4-flash";
+    const signature = `deepseek:${model}:${deepseekKey}`;
+    if (!_client || _clientSignature !== signature) {
+      _client = new OpenAI({
+        apiKey: deepseekKey,
+        baseURL: process.env.DEEPSEEK_BASE_URL || "https://api.deepseek.com",
+      });
+      _clientSignature = signature;
+    }
+    return { client: _client, configured: true, displayName: "DeepSeek", missingKey: "DEEPSEEK_API_KEY", model };
+  }
+
+  if (openaiKey) {
+    const model = process.env.OPENAI_MODEL || "gpt-4.1-mini";
+    const signature = `openai:${model}:${openaiKey}`;
+    if (!_client || _clientSignature !== signature) {
+      _client = new OpenAI({ apiKey: openaiKey });
+      _clientSignature = signature;
+    }
+    return { client: _client, configured: true, displayName: "OpenAI", missingKey: "OPENAI_API_KEY", model };
+  }
+
+  return {
+    client: null as unknown as OpenAI,
+    configured: false,
+    displayName: deepseekKey ? "DeepSeek" : "OpenAI",
+    missingKey: "DEEPSEEK_API_KEY",
+    model: process.env.DEEPSEEK_MODEL || "deepseek-v4-flash",
+  };
 }
 
 const DIFFICULTIES = ["入門", "進階", "專業"] as const;
@@ -49,17 +91,18 @@ const SCENARIO_POOL = [
 ];
 
 /**
- * Call OpenAI to generate 5 prompts. Returns parsed results.
+ * Call the configured AI provider to generate 5 prompts. Returns parsed results.
  * On any failure, returns the raw response text for debugging.
  */
 export async function generatePromptsWithOpenAI(existingSlugs: Set<string>): Promise<{
   prompts: GeneratedPrompt[];
   rawResponse: string;
   error?: string;
+  provider?: string;
 }> {
-  const client = getClient();
-  if (!client) {
-    return { prompts: [], rawResponse: "", error: "OPENAI_API_KEY is not configured" };
+  const provider = getAIProvider();
+  if (!provider.configured) {
+    return { prompts: [], rawResponse: "", error: `${provider.missingKey} is not configured`, provider: provider.displayName };
   }
 
   const selected = SCENARIO_POOL.sort(() => Math.random() - 0.5).slice(0, 5);
@@ -104,8 +147,8 @@ JSON schema:
 注意：5 個提示詞分別對應以下主題：${selected.map((s, i) => `${i + 1}. ${s.topic}（categorySlug: ${s.slug}, model: ${s.model}）`).join("，")}`;
 
   try {
-    const completion = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
+    const completion = await provider.client.chat.completions.create({
+      model: provider.model,
       messages: [
         { role: "system", content: systemPrompt },
         {
@@ -119,12 +162,13 @@ JSON schema:
 
     const raw = completion.choices[0]?.message?.content ?? "";
     const prompts = parseGeneratedJSON(raw, selected, existingSlugs);
-    return { prompts, rawResponse: raw };
+    return { prompts, rawResponse: raw, provider: provider.displayName };
   } catch (err: unknown) {
     return {
       prompts: [],
       rawResponse: "",
       error: err instanceof Error ? err.message : String(err),
+      provider: provider.displayName,
     };
   }
 }
@@ -219,7 +263,17 @@ function slugify(text: string): string {
     .slice(0, 60);
 }
 
-/** Check if OpenAI is configured */
+/** Check if at least one AI provider is configured */
 export function isOpenAIConfigured(): boolean {
-  return Boolean(process.env.OPENAI_API_KEY);
+  return Boolean(process.env.DEEPSEEK_API_KEY || process.env.OPENAI_API_KEY);
+}
+
+export function getConfiguredAIProvider() {
+  const provider = getAIProvider();
+  return {
+    configured: provider.configured,
+    name: provider.displayName,
+    model: provider.model,
+    missingKey: provider.missingKey,
+  };
 }
