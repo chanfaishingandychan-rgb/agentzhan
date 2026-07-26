@@ -283,8 +283,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于免费资料领取、等待名单、课程预售、企业咨询和工具推荐转化。",
         relatedPack: "线索收集插件方案",
         href: "/skills/lead-capture-plugin",
-        installUrl: "mailto:hello@agentzhan.com?subject=我想获取线索收集插件方案",
-        installLabel: "获取方案",
+        installUrl: "#wechat",
+        installLabel: "微信获取方案",
       },
       {
         slug: "seo-content-plugin",
@@ -299,8 +299,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于 AI 工具站、行业知识库、模板站和长期 SEO 内容增长。",
         relatedPack: "SEO 自动内容插件方案",
         href: "/skills/seo-content-plugin",
-        installUrl: "mailto:hello@agentzhan.com?subject=我想获取 SEO 内容增长插件方案",
-        installLabel: "获取方案",
+        installUrl: "#wechat",
+        installLabel: "微信获取方案",
       },
       {
         slug: "hubspot-crm-plugin",
@@ -387,8 +387,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于售前咨询、价格异议、售后安抚、投诉处理和客服培训。",
         relatedPack: "客服知识库插件方案",
         href: "/skills/customer-service-plugin",
-        installUrl: "mailto:hello@agentzhan.com?subject=我想获取 AI 客服知识库插件方案",
-        installLabel: "获取方案",
+        installUrl: "#wechat",
+        installLabel: "微信获取方案",
       },
       {
         slug: "shopify-store-plugin",

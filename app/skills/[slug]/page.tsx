@@ -112,17 +112,17 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               <div className="mt-8 flex flex-wrap gap-3">
                 <a
                   href={skill.installUrl}
-                  target={skill.installUrl.startsWith("mailto:") ? undefined : "_blank"}
-                  rel={skill.installUrl.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  target={skill.installUrl.startsWith("http") ? "_blank" : undefined}
+                  rel={skill.installUrl.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="inline-flex h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5"
                 >
                   {skill.installLabel}
                 </a>
                 <a
-                  href="mailto:hello@agentzhan.com"
+                  href="#wechat"
                   className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/5 px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
                 >
-                  需要代安装？
+                  微信咨询代安装
                 </a>
               </div>
             </div>
@@ -191,10 +191,10 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               ))}
             </div>
             <a
-              href="mailto:hello@agentzhan.com"
+              href="#wechat"
               className="mt-6 inline-flex h-11 items-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
             >
-              咨询企业插件服务
+              微信咨询企业插件服务
             </a>
           </article>
         </div>

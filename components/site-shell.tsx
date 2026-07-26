@@ -95,7 +95,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div>Sitemap / Robots</div>
             </div>
           </div>
-          <div>
+          <div id="wechat" className="scroll-mt-24">
             <div className="text-sm font-semibold text-slate-950">微信</div>
             <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
               <Image

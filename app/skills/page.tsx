@@ -171,8 +171,8 @@ export default function SkillsPage() {
                             <div className="flex flex-wrap gap-2">
                               <a
                                 href={skill.installUrl}
-                                target={skill.installUrl.startsWith("mailto:") ? undefined : "_blank"}
-                                rel={skill.installUrl.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                                target={skill.installUrl.startsWith("http") ? "_blank" : undefined}
+                                rel={skill.installUrl.startsWith("http") ? "noopener noreferrer" : undefined}
                                 className="inline-flex h-10 items-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
                               >
                                 {skill.installLabel}
