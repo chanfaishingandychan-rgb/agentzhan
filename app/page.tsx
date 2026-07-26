@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { siClaude, siDeepseek, siGooglegemini, siKimi, siPerplexity, siQwen } from "simple-icons";
 
+import { HeroNewsPanel } from "@/components/hero-news-panel";
 import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
@@ -195,19 +196,7 @@ export default function HomePage() {
 
           </div>
 
-          <div className="relative lg:pt-6">
-            <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-violet-500/25 via-blue-500/10 to-cyan-400/20 blur-3xl" />
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] p-3 shadow-2xl backdrop-blur-xl">
-              <Image
-                src="/hero-agent-workstation.svg"
-                alt="Agent站 AI 生产力工作台示意图"
-                width={1200}
-                height={860}
-                priority
-                className="h-auto w-full rounded-[1.5rem]"
-              />
-            </div>
-          </div>
+          <HeroNewsPanel items={latestNews} />
         </div>
       </section>
 
