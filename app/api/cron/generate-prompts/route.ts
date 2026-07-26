@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         draft_count: 0,
         failed_count: 5,
         error_message: error,
-        summary: `${provider ?? "AI"} 生成失败：${error}`,
+        summary: `Prompt 自动生成失败：${provider ?? "AI"} 返回错误。`,
       });
     }
 
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
       draft_count: draftCount,
       failed_count: failedCount,
       error_message: null,
-      summary: `成功生成 ${prompts.length} 条，发布 ${publishedCount} 条，草稿 ${draftCount} 条。`,
+      summary: `Prompt 自动生成完成：生成 ${prompts.length} 条，发布 ${publishedCount} 条，草稿 ${draftCount} 条。`,
       details: prompts.map((p) => ({ slug: p.slug, score: p.qualityScore, status: p.qualityScore >= 7 ? "published" : "draft" })),
     });
   } else {
@@ -152,7 +152,7 @@ export async function GET(request: Request) {
     draft_count: draftCount,
     failed_count: failedCount,
     summary: supabaseOk
-      ? `成功生成 ${prompts.length} 条 Prompt，已写入 Supabase。`
+      ? `Prompt 自动生成完成：成功生成 ${prompts.length} 条，已写入 Supabase。`
       : "AI 生成成功，但 Supabase 未设置，资料未写入数据库。",
     data: prompts.map((p) => ({
       title: p.title,

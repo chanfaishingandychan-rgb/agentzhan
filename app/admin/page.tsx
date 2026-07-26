@@ -5,7 +5,9 @@ import { Badge } from "@/components/ui/badge";
 import {
   getAdminPromptRows,
   getAdminStats,
+  getCronTaskStatuses,
   getSupabasePrompts,
+  getSupabaseLogs,
   getSupabaseStats,
   getSystemReadiness,
   isSupabaseConfigured,
@@ -19,6 +21,17 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
+function formatHongKongTime(value: string) {
+  const date = new Date(value);
+  if (Number.isNaN(+date)) return "时间未知";
+
+  return new Intl.DateTimeFormat("zh-HK", {
+    timeZone: "Asia/Hong_Kong",
+    dateStyle: "medium",
+    timeStyle: "short",
+  }).format(date);
+}
+
 export default async function AdminPage() {
   const readiness = getSystemReadiness();
   const connected = isSupabaseConfigured();
@@ -26,9 +39,14 @@ export default async function AdminPage() {
   // Try Supabase first, fallback to static JSON
   let stats = getAdminStats();
   let prompts = getAdminPromptRows(12);
+  let taskStatuses = getCronTaskStatuses([]);
 
   if (connected) {
-    const [sbStats, sbPrompts] = await Promise.all([getSupabaseStats(), getSupabasePrompts(12)]);
+    const [sbStats, sbPrompts, sbLogs] = await Promise.all([
+      getSupabaseStats(),
+      getSupabasePrompts(12),
+      getSupabaseLogs(50),
+    ]);
     if (sbStats) {
       stats = {
         ...stats,
@@ -41,6 +59,9 @@ export default async function AdminPage() {
     }
     if (sbPrompts && sbPrompts.length > 0) {
       prompts = sbPrompts;
+    }
+    if (sbLogs) {
+      taskStatuses = getCronTaskStatuses(sbLogs);
     }
   }
 
@@ -99,6 +120,78 @@ export default async function AdminPage() {
             <div className="mt-2 text-3xl font-bold text-slate-950">{value}</div>
           </div>
         ))}
+      </section>
+
+      {/* Cron status */}
+      <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-950">自动更新状态</h2>
+            <p className="mt-1 text-sm text-slate-500">
+              两个自动任务都会在香港时间 03:00 执行。这里显示今天是否已经跑过，以及最近一次结果。
+            </p>
+          </div>
+          <Link href="/admin/logs" className="text-sm font-semibold text-violet-600 hover:text-violet-700">
+            查看完整日志
+          </Link>
+        </div>
+        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+          {taskStatuses.map((task) => {
+            const latestLog = task.latestLog;
+            const statusLabel =
+              task.status === "ok"
+                ? "今日已更新"
+                : task.status === "error"
+                  ? "最近有错误"
+                  : task.status === "waiting"
+                    ? "今日未见更新"
+                    : "暂无日志";
+            const statusVariant =
+              task.status === "ok" ? "success" : task.status === "error" ? "premium" : "muted";
+
+            return (
+              <article key={task.key} className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <div className="text-sm text-slate-500">{task.schedule}</div>
+                    <h3 className="mt-1 text-xl font-bold tracking-tight text-slate-950">{task.title}</h3>
+                    <p className="mt-1 text-xs text-slate-400">{task.expectedTime}</p>
+                  </div>
+                  <Badge variant={statusVariant}>{statusLabel}</Badge>
+                </div>
+
+                <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs text-slate-400">上次执行</div>
+                    <div className="mt-1 text-sm font-semibold text-slate-800">
+                      {latestLog ? formatHongKongTime(latestLog.run_time) : "暂无记录"}
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs text-slate-400">发布</div>
+                    <div className="mt-1 text-2xl font-bold text-slate-950">
+                      {latestLog ? latestLog.published_count : 0}
+                    </div>
+                  </div>
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs text-slate-400">失败</div>
+                    <div className="mt-1 text-2xl font-bold text-slate-950">
+                      {latestLog ? latestLog.failed_count : 0}
+                    </div>
+                  </div>
+                </div>
+
+                {latestLog ? (
+                  <p className="mt-4 line-clamp-2 text-sm leading-6 text-slate-500">{latestLog.summary}</p>
+                ) : (
+                  <p className="mt-4 text-sm leading-6 text-slate-500">
+                    暂时未读取到 Supabase 日志。等下一次自动任务执行后，这里会自动显示结果。
+                  </p>
+                )}
+              </article>
+            );
+          })}
+        </div>
       </section>
 
       {/* Readiness */}

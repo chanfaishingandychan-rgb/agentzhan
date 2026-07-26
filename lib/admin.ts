@@ -49,6 +49,18 @@ export type GenerationLog = {
   summary: string;
 };
 
+export type CronTaskKey = "prompts" | "news";
+
+export type CronTaskStatus = {
+  key: CronTaskKey;
+  title: string;
+  schedule: string;
+  expectedTime: string;
+  latestLog: GenerationLog | null;
+  hasRunToday: boolean;
+  status: "ok" | "error" | "waiting" | "unknown";
+};
+
 export type LeadRow = {
   id: string;
   email: string;
@@ -113,6 +125,73 @@ export function getMockGenerationLogs(): GenerationLog[] {
       summary: "Supabase 尚未设置，显示静态 fallback 资料。",
     },
   ];
+}
+
+const cronTasks: Array<Omit<CronTaskStatus, "latestLog" | "hasRunToday" | "status">> = [
+  {
+    key: "prompts",
+    title: "Prompt 自动生成",
+    schedule: "每天 03:00",
+    expectedTime: "03:00 Asia/Hong_Kong",
+  },
+  {
+    key: "news",
+    title: "AI 资讯更新",
+    schedule: "每天 03:00",
+    expectedTime: "03:00 Asia/Hong_Kong",
+  },
+];
+
+function getHongKongDateKey(value: Date) {
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Hong_Kong",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(value);
+}
+
+export function inferCronTaskFromLog(log: GenerationLog): CronTaskKey | null {
+  const summary = log.summary.toLowerCase();
+  if (summary.includes("ai资讯") || summary.includes("ai 資訊") || summary.includes("news")) {
+    return "news";
+  }
+  if (
+    summary.includes("prompt") ||
+    summary.includes("提示词") ||
+    summary.includes("生成") ||
+    log.draft_count > 0
+  ) {
+    return "prompts";
+  }
+  return null;
+}
+
+export function getCronTaskStatuses(logs: GenerationLog[]): CronTaskStatus[] {
+  const todayKey = getHongKongDateKey(new Date());
+
+  return cronTasks.map((task) => {
+    const latestLog =
+      logs.find((log) => inferCronTaskFromLog(log) === task.key) ?? null;
+    const latestRunTime = latestLog ? new Date(latestLog.run_time) : null;
+    const hasRunToday =
+      latestRunTime !== null &&
+      !Number.isNaN(+latestRunTime) &&
+      getHongKongDateKey(latestRunTime) === todayKey;
+
+    return {
+      ...task,
+      latestLog,
+      hasRunToday,
+      status: !latestLog
+        ? "unknown"
+        : latestLog.failed_count > 0
+          ? "error"
+          : hasRunToday
+            ? "ok"
+            : "waiting",
+    };
+  });
 }
 
 export function getSystemReadiness() {
