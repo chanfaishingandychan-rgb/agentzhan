@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 
+import { getAllCollections } from "@/lib/collections";
 import { getAllPrompts } from "@/lib/prompts";
 import { categories, siteConfig } from "@/lib/site";
 
@@ -18,6 +19,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
+  const collectionEntries = getAllCollections().map((collection) => ({
+    url: `${siteConfig.url}/collections/${collection.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "weekly" as const,
+    priority: 0.75,
+  }));
+
   return [
     {
       url: siteConfig.url,
@@ -31,8 +39,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.6,
     },
+    {
+      url: `${siteConfig.url}/collections`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    },
+    ...collectionEntries,
     ...categoryEntries,
     ...promptEntries,
   ];
 }
-

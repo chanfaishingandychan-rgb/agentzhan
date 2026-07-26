@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PromptCard } from "@/components/prompt-card";
 import { SearchBox } from "@/components/search-box";
 import { SectionHeading } from "@/components/section-heading";
+import { getAllCollections } from "@/lib/collections";
 import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
 import { categories, siteConfig } from "@/lib/site";
 
@@ -23,6 +24,7 @@ export default function HomePage() {
   const latestPrompts = getLatestPrompts(8);
   const popularPrompts = getPopularPrompts(8);
   const hotTags = getHotTags(20);
+  const collections = getAllCollections();
 
   return (
     <main>
@@ -105,7 +107,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Categories ── */}
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <section id="categories" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeading
           eyebrow="場景分類"
           title="按場景快速找到可用的中文提示詞"
@@ -134,8 +136,35 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── Collections ── */}
+      <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="精品合集"
+            title="不只是单条 Prompt，而是一套工作方案"
+            description="按办公、小红书、短视频、电商和编程等真实场景整理，让新手也能快速找到可直接复制的 AI 工作方法。"
+          />
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
+            {collections.map((collection) => (
+              <Link
+                key={collection.slug}
+                href={`/collections/${collection.slug}`}
+                className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_50px_rgba(124,58,237,0.12)]"
+              >
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-xs font-bold text-white shadow-[0_10px_26px_rgba(124,58,237,0.2)]">
+                  AI
+                </div>
+                <h3 className="text-base font-bold leading-6 text-slate-950">{collection.title}</h3>
+                <p className="mt-3 flex-1 text-sm leading-6 text-slate-500 line-clamp-4">{collection.description}</p>
+                <span className="mt-5 text-sm font-semibold text-violet-600">查看合集 &rarr;</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ── Popular Prompts ── */}
-      <section className="bg-white py-16 lg:py-24">
+      <section id="popular" className="scroll-mt-24 bg-white py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="熱門提示詞"
@@ -151,7 +180,7 @@ export default function HomePage() {
       </section>
 
       {/* ── Latest Prompts ── */}
-      <section className="py-16 lg:py-24">
+      <section id="latest" className="scroll-mt-24 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="最新收錄"

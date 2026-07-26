@@ -6,6 +6,7 @@ import { categories, siteConfig } from "@/lib/site";
 
 const navItems = [
   { label: "搜尋", href: "/search" },
+  { label: "合集", href: "/collections" },
   { label: "分類", href: "/#categories" },
   { label: "最新", href: "/#latest" },
   { label: "熱門", href: "/#popular" },
