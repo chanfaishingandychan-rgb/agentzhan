@@ -54,12 +54,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href="/skills" className={buttonStyles({ variant: "outline", size: "sm" })}>
               找插件
             </Link>
-            <Link
-              href="/admin"
-              className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-400 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600 sm:inline-flex"
-            >
-              后台入口
-            </Link>
           </div>
         </div>
       </header>
@@ -98,7 +92,6 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div>插件介绍</div>
               <div>工作包</div>
               <div>Sitemap / Robots</div>
-              <Link href="/admin" className="transition hover:text-violet-600">后台与自动化</Link>
             </div>
           </div>
         </div>
