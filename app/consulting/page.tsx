@@ -3,10 +3,22 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 import { Badge } from "@/components/ui/badge";
+import { buildFaqSchema, buildServiceSchema } from "@/lib/schema";
+import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "AI 咨询与交流群",
-  description: "Agent站提供模型使用咨询、AI 插件安装、工作流搭建、AI 小白微信交流群和企业 AI 落地建议。",
+  title: "AI 咨询服务与 AI 小白微信交流群",
+  description: "Agent站提供模型使用咨询、AI 插件安装、AI 工作流搭建、AI 小白微信交流群和企业 AI 落地建议。",
+  keywords: ["AI咨询", "AI小白交流群", "ChatGPT咨询", "AI插件安装", "AI工作流搭建", "企业AI落地"],
+  alternates: {
+    canonical: "/consulting",
+  },
+  openGraph: {
+    title: "AI 咨询服务与 AI 小白微信交流群 - Agent站",
+    description: "模型使用咨询、AI 插件安装、工作流搭建和企业 AI 落地建议。",
+    url: `${siteConfig.url}/consulting`,
+    type: "website",
+  },
 };
 
 const serviceItems = [
@@ -42,9 +54,40 @@ const processSteps = [
   ["给出做法", "整理成可以直接执行的步骤，必要时帮你检查设置和测试效果。"],
 ];
 
+const faqItems = [
+  {
+    question: "AI 小白可以加入交流群吗？",
+    answer: "可以。交流群适合刚开始使用 AI 的朋友，主要讨论模型选择、提示词写法、插件使用和常见工具问题。",
+  },
+  {
+    question: "一对一 AI 咨询适合哪些问题？",
+    answer: "适合模型选择、AI 插件安装、Prompt 优化、网站接入、内容流程、客服流程和企业 AI 落地方案。",
+  },
+  {
+    question: "如果群二维码失效怎么办？",
+    answer: "可以扫描个人微信咨询二维码，说明想加入 AI 小白交流群，我会再发送新的入群方式。",
+  },
+];
+
 export default function ConsultingPage() {
+  const serviceSchema = buildServiceSchema({
+    name: "Agent站 AI 咨询服务",
+    description: "模型使用咨询、AI 插件安装、AI 工作流搭建、AI 小白微信交流群和企业 AI 落地建议。",
+    url: `${siteConfig.url}/consulting`,
+    serviceType: ["AI 咨询", "AI 插件安装", "AI 工作流搭建", "Prompt 咨询", "企业 AI 落地"],
+  });
+  const faqSchema = buildFaqSchema(faqItems);
+
   return (
     <main>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <section className="border-b border-slate-200 bg-white">
         <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-24">
           <div className="flex flex-col justify-center">
@@ -150,6 +193,21 @@ export default function ConsultingPage() {
               </div>
             </div>
           </article>
+        </div>
+      </section>
+
+      <section className="border-t border-slate-200 bg-slate-50 py-16">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+          <Badge variant="blue">常见问题</Badge>
+          <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-slate-950">扫码前可以先看这里</h2>
+          <div className="mt-8 space-y-4">
+            {faqItems.map((item) => (
+              <article key={item.question} className="rounded-2xl border border-slate-200 bg-white p-5">
+                <h3 className="font-bold text-slate-950">{item.question}</h3>
+                <p className="mt-2 text-sm leading-7 text-slate-600">{item.answer}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 

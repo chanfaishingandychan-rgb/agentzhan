@@ -65,6 +65,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    {
+      url: `${siteConfig.url}/consulting`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.82,
+    },
     ...skillEntries,
     ...collectionEntries,
     ...categoryEntries,
