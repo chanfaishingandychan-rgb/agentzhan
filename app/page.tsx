@@ -1,62 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { siClaude, siDeepseek, siGooglegemini, siKimi, siPerplexity, siQwen } from "simple-icons";
 
 import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
 import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
-
-const scenes = [
-  {
-    slug: "notion-plugin",
-    title: "Notion 知识库插件",
-    desc: "让 Agent 读取、整理和更新 Notion 页面，把会议记录、项目资料和 SOP 变成可搜索知识库。",
-    icon: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z",
-    bgGradient: "from-rose-50 to-pink-50",
-    link: "/skills#productivity",
-  },
-  {
-    slug: "gmail-plugin",
-    title: "Gmail 邮件助手插件",
-    desc: "自动分类邮件、提取待办、生成回复草稿和跟进提醒，适合销售、客服和管理者。",
-    icon: "M8 6l10 6-10 6z",
-    bgGradient: "from-violet-50 to-purple-50",
-    link: "/skills#productivity",
-  },
-  {
-    slug: "github-plugin",
-    title: "GitHub 代码仓库插件",
-    desc: "让 Agent 读取代码、创建分支、提交修改、追踪 Issue，并协助生成 PR。",
-    icon: "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
-    bgGradient: "from-amber-50 to-orange-50",
-    link: "/skills#development",
-  },
-  {
-    slug: "vercel-plugin",
-    title: "Vercel 自动部署插件",
-    desc: "连接部署平台，查看构建日志、定位上线错误、协助修复网站部署问题。",
-    icon: "M4 8h16M4 16h16M8 4v16M16 4v16",
-    bgGradient: "from-blue-50 to-cyan-50",
-    link: "/skills#development",
-  },
-  {
-    slug: "lead-plugin",
-    title: "潜在客户收集插件",
-    desc: "在网站中收集邮箱、需求和感兴趣产品，为后续课程、工具包和企业服务转化做准备。",
-    icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
-    bgGradient: "from-emerald-50 to-teal-50",
-    link: "/skills#marketing",
-  },
-  {
-    slug: "support-plugin",
-    title: "AI 客服知识库插件",
-    desc: "连接产品资料和 FAQ，辅助客服回复、售后处理、投诉安抚和知识库更新。",
-    icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5",
-    bgGradient: "from-slate-50 to-slate-100",
-    link: "/skills#business",
-  },
-];
 
 const premiumPacks = [
   {
@@ -99,6 +49,86 @@ const tools = [
   { name: "Codex", desc: "桌面 AI 代理", url: "https://openai.com/codex", tag: "AI 编程" },
   { name: "Notion AI", desc: "文档和知识库", url: "https://notion.so", tag: "AI 办公" },
   { name: "Gamma", desc: "AI PPT 生成", url: "https://gamma.app", tag: "AI 办公" },
+];
+
+const aiModels = [
+  {
+    name: "ChatGPT",
+    company: "OpenAI",
+    url: "https://chatgpt.com",
+    fallback: "AI",
+    color: "from-slate-900 to-slate-700",
+    desc: "综合能力强，适合写作、分析、编程、图片理解和日常工作助手。",
+    strengths: ["通用能力均衡", "工具生态成熟", "适合复杂任务拆解"],
+    weaknesses: ["国内访问门槛较高", "部分高级能力需要付费", "中文本地化语气需调整"],
+    bestFor: "日常办公、写作、编程、综合问答",
+  },
+  {
+    name: "Claude",
+    company: "Anthropic",
+    url: "https://claude.ai",
+    icon: siClaude,
+    color: "from-orange-500 to-amber-600",
+    desc: "长文理解和结构化表达表现好，适合文档分析、写作润色和复杂资料整理。",
+    strengths: ["长文处理优秀", "表达自然克制", "适合文档和逻辑分析"],
+    weaknesses: ["部分地区访问不稳定", "工具生态相对少", "实时联网能力依赖版本"],
+    bestFor: "长文总结、资料分析、写作润色",
+  },
+  {
+    name: "Gemini",
+    company: "Google",
+    url: "https://gemini.google.com",
+    icon: siGooglegemini,
+    color: "from-blue-500 to-cyan-500",
+    desc: "和 Google 生态结合紧密，适合搜索、资料整理、多模态理解和办公协作。",
+    strengths: ["Google 生态强", "多模态能力好", "适合搜索和资料交叉验证"],
+    weaknesses: ["部分地区服务限制", "中文细腻表达有时需润色", "企业功能依赖账号体系"],
+    bestFor: "搜索研究、图片理解、Google 办公协作",
+  },
+  {
+    name: "DeepSeek",
+    company: "DeepSeek",
+    url: "https://chat.deepseek.com",
+    icon: siDeepseek,
+    color: "from-sky-500 to-blue-700",
+    desc: "中文推理和代码能力突出，适合低成本做分析、编程、学习和中文任务。",
+    strengths: ["中文体验好", "推理和代码能力强", "性价比高"],
+    weaknesses: ["高峰期可能较慢", "生态插件较少", "复杂多模态能力需搭配其他工具"],
+    bestFor: "中文分析、编程、学习、性价比任务",
+  },
+  {
+    name: "Kimi",
+    company: "月之暗面",
+    url: "https://kimi.moonshot.cn",
+    icon: siKimi,
+    color: "from-violet-500 to-purple-700",
+    desc: "中文长文阅读和资料整理友好，适合文件阅读、总结、提纲和学习辅助。",
+    strengths: ["中文长文阅读方便", "文件处理体验好", "适合学生和办公资料整理"],
+    weaknesses: ["深度 Agent 生态仍在发展", "复杂代码任务不是主场", "跨工具自动化能力有限"],
+    bestFor: "文件阅读、中文总结、学习整理",
+  },
+  {
+    name: "通义千问",
+    company: "阿里云",
+    url: "https://tongyi.aliyun.com/qianwen/",
+    icon: siQwen,
+    color: "from-indigo-500 to-blue-700",
+    desc: "适合中文办公、企业应用和阿里云生态场景，后续接入企业服务比较顺。",
+    strengths: ["中文和企业场景友好", "阿里云生态适配", "适合国内合规场景"],
+    weaknesses: ["海外工具生态较少", "个别创意表达需二次打磨", "高级能力依赖具体版本"],
+    bestFor: "企业办公、国内云服务、中文业务流程",
+  },
+  {
+    name: "Perplexity",
+    company: "Perplexity",
+    url: "https://www.perplexity.ai",
+    icon: siPerplexity,
+    color: "from-teal-500 to-cyan-700",
+    desc: "偏 AI 搜索和资料查证，适合找资料、看来源、做竞品和行业研究。",
+    strengths: ["搜索体验强", "来源引用清楚", "适合快速研究"],
+    weaknesses: ["不适合深度工作流执行", "中文内容覆盖取决于来源", "创作和自动化不是主场"],
+    bestFor: "资料搜索、竞品研究、行业调研",
+  },
 ];
 
 export default function HomePage() {
@@ -151,19 +181,6 @@ export default function HomePage() {
               </a>
             </div>
 
-            <div className="mt-10 flex flex-wrap gap-x-10 gap-y-3">
-              {[
-                { value: "8+", label: "插件介绍" },
-                { value: "4", label: "插件分支" },
-                { value: "10+", label: "工具推荐" },
-                { value: "服务", label: "企业安装支持" },
-              ].map(({ value, label }) => (
-                <div key={label}>
-                  <div className="text-xl font-bold text-white">{value}</div>
-                  <div className="mt-1 text-xs text-slate-500">{label}</div>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div className="relative lg:pt-6">
@@ -182,34 +199,74 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="scenes" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <section id="models" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
-          eyebrow="AI 插件分支"
-          title="给 Agent 装上插件，让它真正帮你工作"
-          description="每个插件都说明能连接什么工具、适合什么人、可以自动完成什么任务，以及如何变成可收费服务。"
+          eyebrow="AI 模型入口"
+          title="主流 AI 模型怎么选？"
+          description="先了解每个模型的长处和短处，再选择适合你当前任务的 AI 工具。"
         />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {scenes.map((scene) => (
-            <Link
-              key={scene.slug}
-              href={scene.link}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(124,58,237,0.10)]"
+        <div className="grid gap-5 lg:grid-cols-2">
+          {aiModels.map((model) => (
+            <a
+              key={model.name}
+              href={model.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
             >
-              <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${scene.bgGradient}`}>
-                <svg className="h-5 w-5 text-slate-600 transition-colors group-hover:text-violet-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d={scene.icon} />
-                </svg>
+              <div className="flex gap-4">
+                <div className={`relative flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-3xl bg-gradient-to-br ${model.color} shadow-lg`}>
+                  <div className="absolute inset-0 bg-white/10" />
+                  {model.icon ? (
+                    <svg className="relative h-8 w-8" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d={model.icon.path} fill="white" />
+                    </svg>
+                  ) : (
+                    <span className="relative text-base font-black text-white">{model.fallback}</span>
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-xl font-bold tracking-tight text-slate-950">{model.name}</h3>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">{model.company}</span>
+                  </div>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">{model.desc}</p>
+                  <div className="mt-3 rounded-2xl border border-slate-200 bg-slate-50 p-3 text-sm text-slate-600">
+                    <span className="font-semibold text-slate-950">适合：</span>
+                    {model.bestFor}
+                  </div>
+                </div>
               </div>
-              <h3 className="text-base font-semibold text-slate-900 transition-colors group-hover:text-violet-700">{scene.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{scene.desc}</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-600 transition-all group-hover:gap-1.5">
-                查看插件介绍
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                </svg>
-              </span>
-              <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
-            </Link>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4">
+                  <div className="text-xs font-bold text-emerald-700">长处</div>
+                  <ul className="mt-2 space-y-1.5 text-sm leading-6 text-emerald-950/80">
+                    {model.strengths.map((item) => (
+                      <li key={item}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="rounded-2xl border border-amber-100 bg-amber-50/70 p-4">
+                  <div className="text-xs font-bold text-amber-700">短处</div>
+                  <ul className="mt-2 space-y-1.5 text-sm leading-6 text-amber-950/80">
+                    {model.weaknesses.map((item) => (
+                      <li key={item}>• {item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                <span className="text-sm text-slate-500">官方入口</span>
+                <span className="inline-flex items-center gap-1 text-sm font-semibold text-violet-600 transition-all group-hover:gap-1.5">
+                  打开 {model.name}
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                </span>
+              </div>
+            </a>
           ))}
         </div>
       </section>
