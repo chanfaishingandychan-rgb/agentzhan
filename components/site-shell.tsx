@@ -97,6 +97,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
           <div id="wechat" className="scroll-mt-24">
             <div className="text-sm font-semibold text-slate-950">微信</div>
+            <p className="mt-3 text-sm leading-6 text-slate-500">
+              扫码添加微信，备注：AI小白，建群后拉你入群
+            </p>
             <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
               <Image
                 src="/wechat-qr.jpg"

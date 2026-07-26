@@ -63,6 +63,10 @@ const featuredPlugins = allSkills.filter((skill) =>
 
 const serviceScopes = [
   {
+    title: "AI小白交流群预约",
+    desc: "适合刚开始学 AI 的朋友，先扫码添加微信并备注，建群后再拉你入群交流。",
+  },
+  {
     title: "模型使用咨询",
     desc: "帮你判断 ChatGPT、Claude、DeepSeek、Kimi 等模型该怎么选，适合哪些工作场景。",
   },
@@ -630,7 +634,7 @@ export default function HomePage() {
               提供模型使用咨询、AI 插件安装、工作流搭建和企业 AI 落地建议，适合个人站长、小团队和中小企业。
             </p>
           </div>
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {serviceScopes.map((service) => (
               <div key={service.title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-left">
                 <div className="text-sm font-bold text-white">{service.title}</div>
@@ -647,6 +651,12 @@ export default function HomePage() {
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
+            </a>
+            <a
+              href="#wechat"
+              className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+            >
+              预约加入 AI小白交流群
             </a>
             <Link
               href="/search"
