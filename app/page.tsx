@@ -366,16 +366,16 @@ export default function HomePage() {
               第三步：学会沟通
             </div>
             <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
-              模型和插件都选好了，真正拉开差距的是 Prompt
+              没有好的 Prompt，AI 会让你花更多钱反复修改
             </h2>
             <p className="mt-4 text-base leading-8 text-slate-600">
-              AI 不是越问越聪明，而是你给它的任务越清楚，结果越稳定。好的提示词会告诉 AI：扮演什么角色、完成什么目标、使用什么资料、按什么格式输出。
+              AI 不是越问越聪明，而是你给它的任务越清楚，结果越接近可用。问题问得模糊，AI 就会反复跑偏，你要不断重写、重新生成、重新修改，最后浪费的是会员额度、API 成本和人工时间。
             </p>
             <div className="mt-7 grid gap-3">
               {[
-                ["少走弯路", "不用每次从零组织问题，直接套用成熟结构。"],
-                ["结果更稳定", "同一个任务可重复得到接近的质量，方便交付工作。"],
-                ["更适合插件", "插件读取资料后，需要 Prompt 指挥它分析、整理和执行。"],
+                ["少花冤枉钱", "减少反复生成和来回修改，降低 API 调用、会员额度和外包修改成本。"],
+                ["少浪费时间", "不用每次从零组织问题，直接套用成熟结构，更快得到可交付结果。"],
+                ["让插件真正有用", "插件能读取资料和调用工具，但需要 Prompt 指挥它分析、整理和执行。"],
               ].map(([title, desc]) => (
                 <div key={title} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                   <div className="font-semibold text-slate-950">{title}</div>
@@ -390,7 +390,7 @@ export default function HomePage() {
               <div className="flex items-center justify-between border-b border-white/10 pb-4">
                 <div>
                   <div className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-200">Prompt Framework</div>
-                  <div className="mt-1 text-xl font-bold">一个好 Prompt 的 5 个部分</div>
+                  <div className="mt-1 text-xl font-bold">一个省钱 Prompt 的 5 个部分</div>
                 </div>
                 <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">可复制结构</span>
               </div>
@@ -418,7 +418,7 @@ export default function HomePage() {
             <div className="mt-5 rounded-3xl border border-violet-100 bg-violet-50/70 p-5">
               <div className="text-sm font-bold text-violet-900">从这里开始</div>
               <p className="mt-2 text-sm leading-7 text-violet-950/75">
-                先选模型，再接插件，最后用 Prompt 指挥 AI 完成具体任务。Agent站会把这三件事整理成可直接使用的中文方案。
+                先选模型，再接插件，最后用 Prompt 把任务讲清楚。Agent站会把这三件事整理成可直接使用的中文方案，帮你少试错、少返工、少花钱。
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
