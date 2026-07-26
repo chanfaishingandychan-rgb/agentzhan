@@ -97,6 +97,8 @@ app/
   search/page.tsx           站内搜索页
   category/[slug]/page.tsx  分类页
   prompt/[slug]/page.tsx    提示词详情页
+  admin/leads/page.tsx      潜在客户查看页
+  api/leads/route.ts        免费领取表单提交接口
   sitemap.ts                Sitemap.xml
   robots.ts                 Robots.txt
 components/
@@ -141,9 +143,9 @@ scripts/
 
 ## 后续扩展建议
 
-1. 把 `content/prompts.json` 升级为 CMS 或数据库，支持编辑后台与批量导入
-2. 增加收藏、登录、会员权限、付费提示词和订单体系
-3. 拆出工作流库、Agent Skills、MCP 资源库等二级频道
-4. 接入百度统计、百度站长平台、自动推送与日志监控
-5. 为分类页和标签页增加分页、筛选和排序，提高规模化收录能力
-6. 为详情页增加相关推荐规则、作者页、专题页和内部链接网络
+1. 在 Supabase SQL Editor 执行 `supabase/schema.sql`，启用 `leads`、`prompts` 与自动生成日志表
+2. 把首页免费领取表单接入邮件发送，自动把工作包发给用户
+3. 增加收藏、登录、会员权限、付费提示词和订单体系
+4. 拆出工作流库、Agent Skills、MCP 资源库等二级频道
+5. 接入百度统计、百度站长平台、自动推送与日志监控
+6. 为分类页和标签页增加分页、筛选和排序，提高规模化收录能力

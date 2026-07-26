@@ -64,6 +64,12 @@ export default async function AdminPage() {
         </div>
         <div className="flex gap-3">
           <Link
+            href="/admin/leads"
+            className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50"
+          >
+            查看潜在客户
+          </Link>
+          <Link
             href="/admin/logs"
             className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50"
           >

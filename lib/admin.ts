@@ -49,6 +49,15 @@ export type GenerationLog = {
   summary: string;
 };
 
+export type LeadRow = {
+  id: string;
+  email: string;
+  source: string;
+  interestedPack: string;
+  status: string;
+  createdAt: string;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseRow = Record<string, any>;
 
@@ -206,6 +215,73 @@ export async function getSupabasePrompts(limit = 50): Promise<AdminPromptRow[] |
       viewCount: row.view_count ?? 0,
       updatedAt: row.updated_at ?? row.created_at,
     }));
+  } catch {
+    return null;
+  }
+}
+
+export async function getSupabaseLeads(limit = 100): Promise<LeadRow[] | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from("leads")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return null;
+
+    return data.map((row: SupabaseRow) => ({
+      id: String(row.id),
+      email: row.email ?? "",
+      source: row.source ?? "",
+      interestedPack: row.interested_pack ?? "",
+      status: row.status ?? "new",
+      createdAt: row.created_at ?? "",
+    }));
+  } catch {
+    return null;
+  }
+}
+
+export async function getSupabaseLeadStats(): Promise<{
+  totalLeads: number;
+  xiaohongshuCount: number;
+  ecommerceCount: number;
+  officeCount: number;
+  enterpriseCount: number;
+} | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { count: total } = await client.from("leads").select("*", { count: "exact", head: true });
+    const { count: xiaohongshu } = await client
+      .from("leads")
+      .select("*", { count: "exact", head: true })
+      .eq("interested_pack", "xiaohongshu-content-pack");
+    const { count: ecommerce } = await client
+      .from("leads")
+      .select("*", { count: "exact", head: true })
+      .eq("interested_pack", "ecommerce-sales-pack");
+    const { count: office } = await client
+      .from("leads")
+      .select("*", { count: "exact", head: true })
+      .eq("interested_pack", "office-productivity-pack");
+    const { count: enterprise } = await client
+      .from("leads")
+      .select("*", { count: "exact", head: true })
+      .eq("interested_pack", "enterprise-ai-workflow");
+
+    return {
+      totalLeads: total ?? 0,
+      xiaohongshuCount: xiaohongshu ?? 0,
+      ecommerceCount: ecommerce ?? 0,
+      officeCount: office ?? 0,
+      enterpriseCount: enterprise ?? 0,
+    };
   } catch {
     return null;
   }

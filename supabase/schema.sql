@@ -80,6 +80,22 @@ CREATE TABLE IF NOT EXISTS prompt_quality_scores (
 
 CREATE INDEX IF NOT EXISTS idx_scores_slug ON prompt_quality_scores(prompt_slug);
 
+-- 5. leads
+CREATE TABLE IF NOT EXISTS leads (
+  id              BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  email           TEXT NOT NULL,
+  source          TEXT NOT NULL DEFAULT 'homepage',
+  interested_pack TEXT NOT NULL DEFAULT 'free-prompt-pack',
+  status          TEXT NOT NULL DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'converted', 'ignored')),
+  user_agent      TEXT,
+  created_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_leads_email_pack ON leads (email, interested_pack);
+CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_leads_pack ON leads(interested_pack);
+CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
+
 -- 輔助：自動更新 updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
