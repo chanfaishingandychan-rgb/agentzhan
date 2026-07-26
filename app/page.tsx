@@ -143,12 +143,12 @@ export default function HomePage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
               </Link>
-              <Link
-                href="/skills"
+              <a
+                href="mailto:hello@agentzhan.com?subject=我想了解 Agent 插件安装服务"
                 className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
-                查看 AI 插件
-              </Link>
+                获取安装服务
+              </a>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-10 gap-y-3">
@@ -156,7 +156,7 @@ export default function HomePage() {
                 { value: "8+", label: "插件介绍" },
                 { value: "4", label: "插件分支" },
                 { value: "10+", label: "工具推荐" },
-                { value: "23:30", label: "自动更新计划" },
+                { value: "服务", label: "企业安装支持" },
               ].map(({ value, label }) => (
                 <div key={label}>
                   <div className="text-xl font-bold text-white">{value}</div>
