@@ -13,7 +13,7 @@ export async function GET() {
     return NextResponse.json(
       {
         error: `${aiProvider.missingKey} is not configured`,
-        summary: "缺少 AI API Key，無法測試生成。建議在 Vercel 環境變數中設定 DEEPSEEK_API_KEY。",
+        summary: "缺少 AI API Key，无法测试生成。建议在 Vercel 环境变量中设置 DEEPSEEK_API_KEY。",
         readiness,
       },
       { status: 500 },
@@ -28,7 +28,7 @@ export async function GET() {
       {
         error,
         raw_response: rawResponse?.slice(0, 1000),
-        summary: `${provider ?? "AI"} 呼叫失敗：${error}。網站本身不受影響。`,
+        summary: `${provider ?? "AI"} 调用失败：${error}。网站本身不受影响。`,
         readiness,
       },
       { status: 500 },
@@ -62,7 +62,7 @@ export async function GET() {
       prompt_preview: p.promptContent.slice(0, 300) + "...",
     })),
     summary: supabaseOk
-      ? "測試成功。正式 cron 觸發時會寫入 Supabase。"
-      : "測試成功。但 Supabase 未設定，正式 cron 不會寫入資料庫。",
+      ? "测试成功。正式 cron 触发时会写入 Supabase。"
+      : "测试成功。但 Supabase 未设置，正式 cron 不会写入数据库。",
   });
 }

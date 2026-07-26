@@ -61,7 +61,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   if (!isSupabaseConfigured()) {
     return NextResponse.json(
-      { error: "Database is not configured yet.", message: "請先設定 Supabase 環境變數。" },
+      { error: "Database is not configured yet.", message: "请先设置 Supabase 环境变量。" },
       { status: 501 },
     );
   }
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
       seo_description: body.seoDescription ?? "",
       category_slug: body.categorySlug ?? body.category,
       tags: body.tags ?? [],
-      difficulty: body.difficulty ?? "入門",
+      difficulty: body.difficulty ?? "入门",
       model: body.model ?? "ChatGPT",
       tier: body.tier ?? "free",
       status: body.status ?? "draft",

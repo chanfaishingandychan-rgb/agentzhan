@@ -67,7 +67,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "首頁", item: siteConfig.url },
+      { "@type": "ListItem", position: 1, name: "首页", item: siteConfig.url },
       { "@type": "ListItem", position: 2, name: prompt.category.name, item: `${siteConfig.url}/category/${prompt.category.slug}` },
       { "@type": "ListItem", position: 3, name: prompt.title, item: `${siteConfig.url}/prompt/${prompt.slug}` },
     ],
@@ -82,7 +82,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
 
       {/* Breadcrumb */}
       <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-        <Link href="/" className="text-violet-600 hover:text-violet-700">首頁</Link>
+        <Link href="/" className="text-violet-600 hover:text-violet-700">首页</Link>
         <span>/</span>
         <Link href={`/category/${prompt.category.slug}`} className="text-violet-600 hover:text-violet-700">
           {prompt.category.name}
@@ -98,7 +98,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
           <Badge variant="blue">{prompt.model}</Badge>
           <Badge variant="muted">{prompt.difficulty}</Badge>
           {prompt.tier === "vip" && <Badge variant="premium">VIP</Badge>}
-          {prompt.tier === "free" && <Badge variant="success">免費</Badge>}
+          {prompt.tier === "free" && <Badge variant="success">免费</Badge>}
         </div>
         <h1 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl lg:text-4xl">
           {prompt.title}
@@ -109,9 +109,9 @@ export default async function PromptPage({ params }: PromptPageProps) {
       {/* Quick info grid */}
       <div className="mb-10 grid gap-4 sm:grid-cols-3">
         {[
-          ["適用場景", prompt.useScene],
-          ["適用模型", prompt.model],
-          ["預期效果", prompt.expectedResult],
+          ["适用场景", prompt.useScene],
+          ["适用模型", prompt.model],
+          ["预期效果", prompt.expectedResult],
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="text-xs font-semibold uppercase tracking-wider text-slate-400">{label}</div>
@@ -123,7 +123,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
       {/* Prompt + Copy */}
       <section className="mb-10">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <h2 className="text-xl font-semibold text-slate-900">完整提示詞</h2>
+          <h2 className="text-xl font-semibold text-slate-900">完整提示词</h2>
           <CopyButton text={prompt.prompt} />
         </div>
         <div className="relative rounded-2xl bg-slate-950 p-4 sm:p-6 lg:p-8">
@@ -156,7 +156,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
 
       {/* Best practices */}
       <section className="mb-10">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">最佳實踐</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">最佳实践</h2>
         <div className="grid gap-4 sm:grid-cols-3">
           {prompt.bestPractices.map((item, i) => (
             <div key={i} className="rounded-2xl border border-slate-200 bg-white p-5">
@@ -171,7 +171,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
 
       {/* FAQ */}
       <section className="mb-10">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">常見問題</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">常见问题</h2>
         <div className="space-y-3">
           {prompt.faq.map((item) => (
             <details key={item.question} className="group rounded-2xl border border-slate-200 bg-white transition-colors hover:border-violet-100">
@@ -191,7 +191,7 @@ export default async function PromptPage({ params }: PromptPageProps) {
 
       {/* Tags */}
       <section className="mb-10">
-        <h2 className="mb-4 text-lg font-semibold text-slate-900">標籤</h2>
+        <h2 className="mb-4 text-lg font-semibold text-slate-900">标签</h2>
         <div className="flex flex-wrap gap-2">
           {prompt.tags.map((tag) => (
             <Link
@@ -211,38 +211,38 @@ export default async function PromptPage({ params }: PromptPageProps) {
           href={`/category/${prompt.category.slug}`}
           className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-violet-200 hover:-translate-y-0.5"
         >
-          <div className="text-sm font-semibold text-slate-900">所屬分類</div>
+          <div className="text-sm font-semibold text-slate-900">所属分类</div>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            瀏覽更多 {prompt.category.name} 提示詞
+            浏览更多 {prompt.category.name} 提示词
           </p>
-          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">查看分類 &rarr;</span>
+          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">查看分类 &rarr;</span>
         </Link>
         <Link
           href={`/search?model=${encodeURIComponent(prompt.model)}`}
           className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-violet-200 hover:-translate-y-0.5"
         >
-          <div className="text-sm font-semibold text-slate-900">適用模型</div>
+          <div className="text-sm font-semibold text-slate-900">适用模型</div>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            主適配 {prompt.model}，兼容 ChatGPT、Claude、DeepSeek
+            主适配 {prompt.model}，兼容 ChatGPT、Claude、DeepSeek
           </p>
-          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">同模型內容 &rarr;</span>
+          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">同模型内容 &rarr;</span>
         </Link>
         <Link
           href={`/search?q=${encodeURIComponent(prompt.title)}`}
           className="rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-violet-200 hover:-translate-y-0.5"
         >
-          <div className="text-sm font-semibold text-slate-900">延伸搜尋</div>
+          <div className="text-sm font-semibold text-slate-900">延伸搜索</div>
           <p className="mt-2 text-sm leading-6 text-slate-500">
-            搜尋相關標籤、場景詞和業務關鍵詞
+            搜索相关标签、场景词和业务关键词
           </p>
-          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">搜尋相近內容 &rarr;</span>
+          <span className="mt-2 inline-block text-sm font-semibold text-violet-600">搜索相近内容 &rarr;</span>
         </Link>
       </section>
 
       {/* Related */}
       {related.length > 0 && (
         <section className="border-t border-slate-200 pt-12">
-          <h2 className="mb-6 text-xl font-bold text-slate-900">相關推薦</h2>
+          <h2 className="mb-6 text-xl font-bold text-slate-900">相关推荐</h2>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {related.map((item) => (
               <PromptCard key={item.slug} prompt={item} />

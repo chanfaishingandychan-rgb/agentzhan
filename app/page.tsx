@@ -70,13 +70,13 @@ export default function HomePage() {
             {/* Eyebrow */}
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
               <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-medium text-slate-300">100+ Prompts · 10 Categories · Updated Weekly</span>
+              <span className="text-xs font-medium text-slate-300">100+ Prompts · 10 个分类 · 持续更新</span>
             </div>
 
             <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
               <span className="text-gradient">Agent站</span>
               <br />
-              <span className="text-white/90">中文最全 AI Prompt 工具站</span>
+              <span className="text-white/90">中文 AI Prompt 工具库</span>
             </h1>
 
             <p className="mt-6 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
@@ -85,16 +85,16 @@ export default function HomePage() {
 
             {/* Search */}
             <div className="mt-8 max-w-2xl">
-              <SearchBox placeholder="搜尋 ChatGPT、Claude、DeepSeek 提示詞..." buttonLabel="搜尋提示詞" />
+              <SearchBox placeholder="搜索 ChatGPT、Claude、DeepSeek 提示词..." buttonLabel="搜索提示词" />
             </div>
 
             {/* Stats row */}
             <div className="mt-12 flex flex-wrap gap-x-12 gap-y-4">
               {[
-                { value: "100+", label: "高質量提示詞" },
-                { value: "10", label: "場景分類" },
-                { value: "5+", label: "主流模型覆蓋" },
-                { value: "SEO", label: "百度收錄友好" },
+                { value: "100+", label: "高质量提示词" },
+                { value: "10", label: "场景分类" },
+                { value: "5+", label: "主流模型覆盖" },
+                { value: "SEO", label: "百度收录友好" },
               ].map(({ value, label }) => (
                 <div key={label}>
                   <div className="text-2xl font-bold text-white">{value}</div>
@@ -109,9 +109,9 @@ export default function HomePage() {
       {/* ── Categories ── */}
       <section id="categories" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeading
-          eyebrow="場景分類"
-          title="按場景快速找到可用的中文提示詞"
-          description="10 大分類覆蓋寫作、辦公、學習、短視頻、電商等高頻場景，每個分類均有專屬提示詞庫。"
+          eyebrow="场景分类"
+          title="按场景快速找到可用的中文提示词"
+          description="10 大分类覆盖写作、办公、学习、短视频、电商等高频场景，每个分类都有专属提示词库。"
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {categories.map((cat, i) => (
@@ -167,9 +167,9 @@ export default function HomePage() {
       <section id="popular" className="scroll-mt-24 bg-white py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="熱門提示詞"
-            title="高搜索意圖頁面"
-            description="百度 SEO 優先的精選提示詞頁面，每個頁面獨立 title、description、FAQ Schema，適合搜索引擎收錄。"
+            eyebrow="热门提示词"
+            title="高搜索意图页面"
+            description="面向百度 SEO 的精选提示词页面，每个页面都有独立 title、description 和 FAQ Schema，适合搜索引擎收录。"
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {popularPrompts.map((prompt) => (
@@ -183,9 +183,9 @@ export default function HomePage() {
       <section id="latest" className="scroll-mt-24 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="最新收錄"
-            title="最新提示詞內容"
-            description="持續更新中文提示詞庫，每週新增高質量內容，緊跟 AI 工具生態發展。"
+            eyebrow="最新收录"
+            title="最新提示词内容"
+            description="持续更新中文提示词库，每周新增高质量内容，紧跟 AI 工具生态发展。"
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {latestPrompts.map((prompt) => (
@@ -200,30 +200,30 @@ export default function HomePage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
             eyebrow="平台能力"
-            title="不只是提示詞庫"
-            description="Agent站 正在從提示詞庫進化為完整的 AI Agent 生態平台，後續將陸續上線工作流、技能商店與協作空間。"
+            title="不只是提示词库"
+            description="Agent站 正在从提示词库进化为完整的 AI Agent 生产力平台，后续将陆续上线工作流、技能商店与协作空间。"
           />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {[
               {
                 icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
-                title: "AI 工作流庫",
-                desc: "可複製的工作流模板，一鍵導入你的 AI 工具鏈。",
+                title: "AI 工作流库",
+                desc: "可复制的工作流模板，一键导入你的 AI 工具链。",
               },
               {
                 icon: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
-                title: "付費提示詞專區",
-                desc: "會員權限、收藏夾、購買與授權分層，專業版內容。",
+                title: "付费提示词专区",
+                desc: "会员权限、收藏夹、购买与授权分层，提供专业版内容。",
               },
               {
                 icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z",
                 title: "AI Agent Skills",
-                desc: "Agent、MCP 資源庫和技能商店，形成長期增長結構。",
+                desc: "Agent、MCP 资源库和技能商店，形成长期增长结构。",
               },
               {
                 icon: "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197",
-                title: "社群協作",
-                desc: "提示詞評論、分享、協作編輯，建立 AI 創作者社群。",
+                title: "社群协作",
+                desc: "提示词评论、分享、协作编辑，建立 AI 创作者社区。",
               },
             ].map(({ icon, title, desc }) => (
               <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg">
@@ -244,9 +244,9 @@ export default function HomePage() {
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeading
-            eyebrow="熱門標籤"
-            title="高頻檢索關鍵詞"
-            description="從熱門標籤快速定位感興趣的提示詞主題，每個標籤都有對應的搜索結果頁。"
+            eyebrow="热门标签"
+            title="高频检索关键词"
+            description="从热门标签快速定位感兴趣的提示词主题，每个标签都有对应的搜索结果页。"
           />
           <div className="flex flex-wrap gap-3">
             {hotTags.map(({ tag, count }) => (
@@ -268,17 +268,17 @@ export default function HomePage() {
       <section className="bg-slate-950 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            準備好用 AI 提升效率了嗎？
+            准备好用 AI 提升效率了吗？
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-400">
-            100+ 高質量中文提示詞，覆蓋 ChatGPT、Claude、DeepSeek，免費取用，直接複製。
+            100+ 高质量中文提示词，覆盖 ChatGPT、Claude、DeepSeek，免费使用，直接复制。
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/search"
               className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
             >
-              開始搜尋提示詞
+              开始搜索提示词
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
               </svg>
@@ -287,7 +287,7 @@ export default function HomePage() {
               href={`/category/${categories[0].slug}`}
               className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
             >
-              瀏覽分類
+              浏览分类
             </Link>
           </div>
         </div>

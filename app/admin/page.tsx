@@ -12,8 +12,8 @@ import {
 } from "@/lib/admin";
 
 export const metadata: Metadata = {
-  title: "後台管理",
-  description: "Agent站內容管理後台。",
+  title: "后台管理",
+  description: "Agent站内容管理后台。",
   robots: { index: false, follow: false },
 };
 
@@ -55,11 +55,11 @@ export default async function AdminPage() {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <Badge variant="violet">Admin</Badge>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">Agent站後台</h1>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">Agent站后台</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
             {connected
-              ? "已連接 Supabase，顯示即時資料庫內容。"
-              : "使用靜態 JSON fallback。設定 Supabase 環境變數後會自動切換至即時資料。"}
+              ? "已连接 Supabase，显示实时数据库内容。"
+              : "使用静态 JSON fallback。设置 Supabase 环境变量后会自动切换至实时数据。"}
           </p>
         </div>
         <div className="flex gap-3">
@@ -67,13 +67,13 @@ export default async function AdminPage() {
             href="/admin/logs"
             className="inline-flex h-10 items-center rounded-xl border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50"
           >
-            查看任務日誌
+            查看任务日志
           </Link>
           <Link
             href="/api/cron/test-generate-prompts"
             className="inline-flex h-10 items-center rounded-xl bg-slate-950 px-4 text-sm font-semibold text-white transition hover:bg-slate-800"
           >
-            測試生成接口
+            测试生成接口
           </Link>
         </div>
       </div>
@@ -81,10 +81,10 @@ export default async function AdminPage() {
       {/* Stats */}
       <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
-          ["Prompt 總數", stats.totalPrompts],
-          ["已發布", stats.publishedCount],
+          ["Prompt 总数", stats.totalPrompts],
+          ["已发布", stats.publishedCount],
           ["草稿", stats.draftCount],
-          ["VIP 內容", stats.vipCount],
+          ["VIP 内容", stats.vipCount],
         ].map(([label, value]) => (
           <div key={label} className="rounded-2xl border border-slate-200 bg-white p-5">
             <div className="text-sm text-slate-500">{label}</div>
@@ -97,10 +97,10 @@ export default async function AdminPage() {
       <section className="mt-8 rounded-2xl border border-slate-200 bg-white p-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold text-slate-950">系統準備狀態</h2>
+            <h2 className="text-lg font-semibold text-slate-950">系统准备状态</h2>
             <p className="mt-1 text-sm text-slate-500">
-              綠色 = 已配置，灰色 = 需在 Vercel 環境變數中補齊。
-              {connected && " Supabase 已連接。"}
+              绿色 = 已配置，灰色 = 需在 Vercel 环境变量中补齐。
+              {connected && " Supabase 已连接。"}
             </p>
           </div>
         </div>
@@ -119,24 +119,24 @@ export default async function AdminPage() {
       {/* Prompts table */}
       <section className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white">
         <div className="border-b border-slate-100 p-5">
-          <h2 className="text-lg font-semibold text-slate-950">內容管理</h2>
+          <h2 className="text-lg font-semibold text-slate-950">内容管理</h2>
           <p className="mt-1 text-sm text-slate-500">
             {connected
-              ? "資料來自 Supabase。後續可在此進行審核、編輯、刪除。"
-              : "目前使用靜態 JSON。接入 Supabase 後將開放新增、修改、刪除。"}
+              ? "资料来自 Supabase。后续可在此进行审核、编辑、删除。"
+              : "目前使用静态 JSON。接入 Supabase 后将开放新增、修改、删除。"}
           </p>
         </div>
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-slate-100 text-sm">
             <thead className="bg-slate-50 text-left text-xs uppercase text-slate-400">
               <tr>
-                <th className="px-5 py-3">標題</th>
-                <th className="px-5 py-3">分類</th>
+                <th className="px-5 py-3">标题</th>
+                <th className="px-5 py-3">分类</th>
                 <th className="px-5 py-3">模型</th>
-                <th className="px-5 py-3">難度</th>
-                <th className="px-5 py-3">狀態</th>
-                <th className="px-5 py-3">權限</th>
-                <th className="px-5 py-3">品質</th>
+                <th className="px-5 py-3">难度</th>
+                <th className="px-5 py-3">状态</th>
+                <th className="px-5 py-3">权限</th>
+                <th className="px-5 py-3">质量</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -156,12 +156,12 @@ export default async function AdminPage() {
                   <td className="px-5 py-4 text-slate-600">{prompt.difficulty}</td>
                   <td className="px-5 py-4">
                     <Badge variant={prompt.status === "published" ? "success" : "muted"}>
-                      {prompt.status === "published" ? "已發布" : "草稿"}
+                      {prompt.status === "published" ? "已发布" : "草稿"}
                     </Badge>
                   </td>
                   <td className="px-5 py-4">
                     <Badge variant={prompt.tier === "vip" ? "premium" : "success"}>
-                      {prompt.tier === "vip" ? "VIP" : "免費"}
+                      {prompt.tier === "vip" ? "VIP" : "免费"}
                     </Badge>
                   </td>
                   <td className="px-5 py-4 font-semibold text-slate-700">{prompt.qualityScore}/10</td>

@@ -74,20 +74,20 @@ function getAIProvider(): AIProvider {
   };
 }
 
-const DIFFICULTIES = ["入門", "進階", "專業"] as const;
-const MODELS = ["ChatGPT", "Claude", "DeepSeek", "通義千問", "文心一言"] as const;
+const DIFFICULTIES = ["入门", "进阶", "专业"] as const;
+const MODELS = ["ChatGPT", "Claude", "DeepSeek", "通义千问", "文心一言"] as const;
 
 const SCENARIO_POOL = [
-  { category: "AI寫作", slug: "ai-writing", topic: "公眾號爆款選題", model: "ChatGPT" },
-  { category: "AI辦公", slug: "ai-office", topic: "週報自動生成", model: "Claude" },
-  { category: "AI學習", slug: "ai-learning", topic: "錯題分析教練", model: "DeepSeek" },
-  { category: "AI短視頻", slug: "ai-short-video", topic: "抖音腳本分鏡", model: "ChatGPT" },
-  { category: "AI電商", slug: "ai-ecommerce", topic: "淘寶標題優化", model: "DeepSeek" },
-  { category: "AI營銷", slug: "ai-marketing", topic: "小紅書投放文案", model: "Claude" },
-  { category: "AI客服", slug: "ai-customer-service", topic: "售後話術模板", model: "通義千問" },
-  { category: "AI創業", slug: "ai-startup", topic: "商業計劃書大綱", model: "ChatGPT" },
-  { category: "AI個人助理", slug: "ai-personal-assistant", topic: "個人週計畫安排", model: "Claude" },
-  { category: "AI效率工具", slug: "ai-efficiency-tools", topic: "工作流自動化設計", model: "DeepSeek" },
+  { category: "AI写作", slug: "ai-writing", topic: "公众号爆款选题", model: "ChatGPT" },
+  { category: "AI办公", slug: "ai-office", topic: "周报自动生成", model: "Claude" },
+  { category: "AI学习", slug: "ai-learning", topic: "错题分析教练", model: "DeepSeek" },
+  { category: "AI短视频", slug: "ai-short-video", topic: "抖音脚本分镜", model: "ChatGPT" },
+  { category: "AI电商", slug: "ai-ecommerce", topic: "淘宝标题优化", model: "DeepSeek" },
+  { category: "AI营销", slug: "ai-marketing", topic: "小红书投放文案", model: "Claude" },
+  { category: "AI客服", slug: "ai-customer-service", topic: "售后话术模板", model: "通义千问" },
+  { category: "AI创业", slug: "ai-startup", topic: "商业计划书大纲", model: "ChatGPT" },
+  { category: "AI个人助理", slug: "ai-personal-assistant", topic: "个人周计划安排", model: "Claude" },
+  { category: "AI效率工具", slug: "ai-efficiency-tools", topic: "工作流自动化设计", model: "DeepSeek" },
 ];
 
 /**
@@ -107,44 +107,44 @@ export async function generatePromptsWithOpenAI(existingSlugs: Set<string>): Pro
 
   const selected = SCENARIO_POOL.sort(() => Math.random() - 0.5).slice(0, 5);
 
-  const systemPrompt = `你是一個專業的 AI Prompt 工程師，負責為中文用戶生成高質量的 AI 提示詞。你需要輸出嚴格的 JSON 陣列格式。
+  const systemPrompt = `你是一个专业的 AI Prompt 工程师，负责为中文用户生成高质量的 AI 提示词。你需要输出严格的 JSON 数组格式。
 
 要求：
-- 全部使用繁體中文
-- 每個提示詞必須包含完整、可直接使用的 prompt 內容
-- 場景描述必須具體、可執行
-- FAQ 至少 2 條
-- 標籤 4-6 個
-- quality_score 是 1-10 的整數，根據內容完整度、實用性、可複製性評分
-- 輸出必須是合法的 JSON 陣列，不要有 markdown 代碼塊標記
+- 全部使用简体中文
+- 每个提示词必须包含完整、可直接使用的 prompt 内容
+- 场景描述必须具体、可执行
+- FAQ 至少 2 条
+- 标签 4-6 个
+- quality_score 是 1-10 的整数，根据内容完整度、实用性、可复制性评分
+- 输出必须是合法的 JSON 数组，不要有 markdown 代码块标记
 
-請為以下 5 個主題各生成一個提示詞：${selected.map((s) => s.topic).join("、")}
+请为以下 5 个主题各生成一个提示词：${selected.map((s) => s.topic).join("、")}
 
 JSON schema:
 [
   {
-    "title": "提示詞標題",
-    "summary": "一句話描述（30字以內）",
-    "seoTitle": "SEO標題（含關鍵詞）",
-    "seoDescription": "SEO描述（120字以內）",
+    "title": "提示词标题",
+    "summary": "一句话描述（30字以内）",
+    "seoTitle": "SEO标题（含关键词）",
+    "seoDescription": "SEO描述（120字以内）",
     "categorySlug": "${selected[0].slug}",
-    "tags": ["標籤1", "標籤2"],
-    "difficulty": "入門",
+    "tags": ["标签1", "标签2"],
+    "difficulty": "入门",
     "model": "ChatGPT",
     "tier": "free",
-    "promptContent": "完整的提示詞，包含角色設定、任務描述、輸出要求、格式規範",
-    "instructions": ["使用步驟1", "使用步驟2"],
-    "useCases": ["場景1", "場景2"],
-    "bestPractices": ["最佳實踐1"],
+    "promptContent": "完整的提示词，包含角色设置、任务描述、输出要求、格式规范",
+    "instructions": ["使用步骤1", "使用步骤2"],
+    "useCases": ["场景1", "场景2"],
+    "bestPractices": ["最佳实践1"],
     "example": "使用案例描述",
-    "expectedResult": "預期效果",
-    "useScene": "適用場景",
-    "faq": [{"question": "問題", "answer": "答案"}],
+    "expectedResult": "预期效果",
+    "useScene": "适用场景",
+    "faq": [{"question": "问题", "answer": "答案"}],
     "qualityScore": 8
   }
 ]
 
-注意：5 個提示詞分別對應以下主題：${selected.map((s, i) => `${i + 1}. ${s.topic}（categorySlug: ${s.slug}, model: ${s.model}）`).join("，")}`;
+注意：5 个提示词分别对应以下主题：${selected.map((s, i) => `${i + 1}. ${s.topic}（categorySlug: ${s.slug}, model: ${s.model}）`).join("，")}`;
 
   try {
     const completion = await provider.client.chat.completions.create({
@@ -153,7 +153,7 @@ JSON schema:
         { role: "system", content: systemPrompt },
         {
           role: "user",
-          content: `現有 slugs（避免重複）：${[...existingSlugs].slice(0, 200).join(", ")}。請生成 5 個高質量中文提示詞。`,
+          content: `现有 slugs（避免重复）：${[...existingSlugs].slice(0, 200).join(", ")}。请生成 5 个高质量中文提示词。`,
         },
       ],
       temperature: 0.8,
@@ -228,15 +228,15 @@ function parseGeneratedJSON(
       seoDescription: String(item.seoDescription ?? "").slice(0, 160),
       categorySlug: String(item.categorySlug ?? scenario.slug),
       tags: Array.isArray(item.tags) ? item.tags.slice(0, 6).map(String) : [scenario.category, scenario.model],
-      difficulty: DIFFICULTIES.includes(item.difficulty) ? item.difficulty : "入門",
+      difficulty: DIFFICULTIES.includes(item.difficulty) ? item.difficulty : "入门",
       model: MODELS.includes(item.model) ? item.model : scenario.model,
       tier,
       promptContent: String(item.promptContent),
-      instructions: Array.isArray(item.instructions) ? item.instructions.slice(0, 5).map(String) : ["直接複製貼上使用"],
+      instructions: Array.isArray(item.instructions) ? item.instructions.slice(0, 5).map(String) : ["直接复制粘贴使用"],
       useCases: Array.isArray(item.useCases) ? item.useCases.slice(0, 5).map(String) : [item.useScene ?? scenario.topic],
       bestPractices: Array.isArray(item.bestPractices) ? item.bestPractices.slice(0, 5).map(String) : [],
       example: String(item.example ?? ""),
-      expectedResult: String(item.expectedResult ?? "更快產出結構完整的內容"),
+      expectedResult: String(item.expectedResult ?? "更快产出结构完整的内容"),
       useScene: String(item.useScene ?? scenario.topic),
       faq: Array.isArray(item.faq)
         ? item.faq.slice(0, 5).map((f: Record<string, unknown>) => ({ question: String(f.question ?? ""), answer: String(f.answer ?? "") }))

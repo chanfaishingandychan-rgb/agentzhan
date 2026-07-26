@@ -15,9 +15,9 @@ type SearchBarProps = {
 };
 
 export function SearchBar({
-  placeholder = "今天想用 AI 做什麼？",
+  placeholder = "今天想用 AI 做什么？",
   initialKeyword = "",
-  buttonLabel = "開始搜索",
+  buttonLabel = "开始搜索",
   className,
 }: SearchBarProps) {
   const router = useRouter();
@@ -42,7 +42,7 @@ export function SearchBar({
         onChange={(event) => setKeyword(event.target.value)}
         className="h-12 border-transparent bg-transparent shadow-none focus:border-transparent focus:ring-0"
         placeholder={placeholder}
-        aria-label="搜尋提示詞"
+        aria-label="搜索提示词"
       />
       <Button type="submit" size="lg" className="shrink-0 rounded-xl">
         {buttonLabel}

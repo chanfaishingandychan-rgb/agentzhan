@@ -26,7 +26,7 @@ export async function GET(request: Request) {
     return NextResponse.json(
       {
         error: `${aiProvider.missingKey} is not configured`,
-        summary: "缺少 AI API Key 環境變數，無法生成新 Prompt。建議設定 DEEPSEEK_API_KEY。",
+        summary: "缺少 AI API Key 环境变量，无法生成新 Prompt。建议设置 DEEPSEEK_API_KEY。",
       },
       { status: 500 },
     );
@@ -56,7 +56,7 @@ export async function GET(request: Request) {
         draft_count: 0,
         failed_count: 5,
         error_message: error,
-        summary: `${provider ?? "AI"} 生成失敗：${error}`,
+        summary: `${provider ?? "AI"} 生成失败：${error}`,
       });
     }
 
@@ -64,7 +64,7 @@ export async function GET(request: Request) {
       {
         error,
         raw_response: rawResponse,
-        summary: `${provider ?? "AI"} 呼叫失敗。網站本身不受影響。`,
+        summary: `${provider ?? "AI"} 调用失败。网站本身不受影响。`,
       },
       { status: 500 },
     );
@@ -120,7 +120,7 @@ export async function GET(request: Request) {
       prompt_slug: p.slug,
       prompt_title: p.title,
       score: p.qualityScore,
-      reason: p.qualityScore >= 8 ? "內容完整度高，可直接發布" : p.qualityScore >= 7 ? "內容可用，建議人工複審" : "品質不足，需人工編輯",
+      reason: p.qualityScore >= 8 ? "内容完整度高，可直接发布" : p.qualityScore >= 7 ? "内容可用，建议人工复审" : "品质不足，需人工编辑",
     }));
     await client.from("prompt_quality_scores").insert(scoreRows);
 
@@ -132,7 +132,7 @@ export async function GET(request: Request) {
       draft_count: draftCount,
       failed_count: failedCount,
       error_message: null,
-      summary: `成功生成 ${prompts.length} 條，發布 ${publishedCount} 條，草稿 ${draftCount} 條。`,
+      summary: `成功生成 ${prompts.length} 条，发布 ${publishedCount} 条，草稿 ${draftCount} 条。`,
       details: prompts.map((p) => ({ slug: p.slug, score: p.qualityScore, status: p.qualityScore >= 7 ? "published" : "draft" })),
     });
   } else {
@@ -151,8 +151,8 @@ export async function GET(request: Request) {
     draft_count: draftCount,
     failed_count: failedCount,
     summary: supabaseOk
-      ? `成功生成 ${prompts.length} 條 Prompt，已寫入 Supabase。`
-      : "AI 生成成功，但 Supabase 未設定，資料未寫入資料庫。",
+      ? `成功生成 ${prompts.length} 条 Prompt，已写入 Supabase。`
+      : "AI 生成成功，但 Supabase 未设置，资料未写入数据库。",
     data: prompts.map((p) => ({
       title: p.title,
       slug: p.slug,

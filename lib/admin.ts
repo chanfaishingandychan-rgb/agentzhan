@@ -101,7 +101,7 @@ export function getMockGenerationLogs(): GenerationLog[] {
       draft_count: 0,
       failed_count: 0,
       error_message: null,
-      summary: "Supabase 尚未設定，顯示靜態 fallback 資料。",
+      summary: "Supabase 尚未设置，显示静态 fallback 资料。",
     },
   ];
 }

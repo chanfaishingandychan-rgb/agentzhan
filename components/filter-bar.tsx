@@ -16,7 +16,7 @@ type FilterBarProps = {
 
 const tierOptions = [
   { value: "all", label: "全部" },
-  { value: "free", label: "免費" },
+  { value: "free", label: "免费" },
   { value: "vip", label: "VIP" },
 ];
 
@@ -52,7 +52,7 @@ export function FilterBar({
     <div className="space-y-3">
       {!hideCategory && (
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">分類</span>
+          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">分类</span>
           <FilterPill onClick={() => push("category", "all")} active={currentCategory === "all"}>
             全部
           </FilterPill>
@@ -78,7 +78,7 @@ export function FilterBar({
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">難度</span>
+          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">难度</span>
           <FilterPill onClick={() => push("difficulty", "all")} active={currentDifficulty === "all"}>
             全部
           </FilterPill>
@@ -90,7 +90,7 @@ export function FilterBar({
         </div>
 
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
-          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">權限</span>
+          <span className="shrink-0 text-xs font-semibold uppercase tracking-wider text-slate-400">权限</span>
           {tierOptions.map((t) => (
             <FilterPill key={t.value} onClick={() => push("tier", t.value)} active={currentTier === t.value}>
               {t.label}

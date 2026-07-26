@@ -11,7 +11,7 @@ export function ClearFiltersLink() {
       onClick={() => router.push(pathname)}
       className="text-sm text-violet-600 hover:text-violet-700"
     >
-      清除全部篩選
+      清除全部筛选
     </button>
   );
 }

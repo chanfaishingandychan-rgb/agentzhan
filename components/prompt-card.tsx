@@ -38,7 +38,7 @@ export function PromptCard({ prompt, compact = false }: { prompt: PromptItem; co
       </CardContent>
       <CardFooter>
         <Link href={`/prompt/${prompt.slug}`} className="text-sm font-semibold text-violet-600">
-          查看完整提示詞 &rarr;
+          查看完整提示词 &rarr;
         </Link>
       </CardFooter>
     </Card>
