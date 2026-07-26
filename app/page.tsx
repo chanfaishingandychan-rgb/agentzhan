@@ -9,52 +9,52 @@ import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
 
 const scenes = [
   {
-    slug: "xiaohongshu",
-    title: "小红书文案助手",
-    desc: "种草笔记、产品测评、探店攻略，AI 帮你写出更容易被收藏和互动的小红书内容。",
+    slug: "notion-plugin",
+    title: "Notion 知识库插件",
+    desc: "让 Agent 读取、整理和更新 Notion 页面，把会议记录、项目资料和 SOP 变成可搜索知识库。",
     icon: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z",
     bgGradient: "from-rose-50 to-pink-50",
-    link: "/skills#content",
+    link: "/skills#productivity",
   },
   {
-    slug: "douyin",
-    title: "抖音脚本助手",
-    desc: "3 秒钩子、分镜脚本、话题标签，快速产出更适合短视频发布的脚本。",
+    slug: "gmail-plugin",
+    title: "Gmail 邮件助手插件",
+    desc: "自动分类邮件、提取待办、生成回复草稿和跟进提醒，适合销售、客服和管理者。",
     icon: "M8 6l10 6-10 6z",
     bgGradient: "from-violet-50 to-purple-50",
-    link: "/skills#content",
+    link: "/skills#productivity",
   },
   {
-    slug: "ecommerce",
-    title: "电商卖货助手",
-    desc: "商品标题、详情页卖点、客服话术和活动文案，帮卖家提升转化效率。",
+    slug: "github-plugin",
+    title: "GitHub 代码仓库插件",
+    desc: "让 Agent 读取代码、创建分支、提交修改、追踪 Issue，并协助生成 PR。",
     icon: "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
     bgGradient: "from-amber-50 to-orange-50",
-    link: "/skills#ecommerce",
+    link: "/skills#development",
   },
   {
-    slug: "office",
-    title: "AI 办公助手",
-    desc: "会议纪要、周报、邮件、PPT 大纲，上班族每天都能直接用的提效模板。",
+    slug: "vercel-plugin",
+    title: "Vercel 自动部署插件",
+    desc: "连接部署平台，查看构建日志、定位上线错误、协助修复网站部署问题。",
     icon: "M4 8h16M4 16h16M8 4v16M16 4v16",
     bgGradient: "from-blue-50 to-cyan-50",
-    link: "/skills#office",
+    link: "/skills#development",
   },
   {
-    slug: "boss",
-    title: "老板方案助手",
-    desc: "商业计划书、融资路演、增长策略和管理制度，帮老板快速产出决策材料。",
+    slug: "lead-plugin",
+    title: "潜在客户收集插件",
+    desc: "在网站中收集邮箱、需求和感兴趣产品，为后续课程、工具包和企业服务转化做准备。",
     icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
     bgGradient: "from-emerald-50 to-teal-50",
-    link: "/skills#automation",
+    link: "/skills#marketing",
   },
   {
-    slug: "dev",
-    title: "Cursor / Codex 开发助手",
-    desc: "代码生成、Bug 排查、重构优化和测试补齐，让 AI 成为你的编程搭档。",
+    slug: "support-plugin",
+    title: "AI 客服知识库插件",
+    desc: "连接产品资料和 FAQ，辅助客服回复、售后处理、投诉安抚和知识库更新。",
     icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5",
     bgGradient: "from-slate-50 to-slate-100",
-    link: "/skills#automation",
+    link: "/skills#business",
   },
 ];
 
@@ -120,7 +120,7 @@ export default function HomePage() {
           <div className="flex flex-col justify-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-              <span className="text-xs font-medium text-slate-300">AI技能 · Prompt · 工作流 · 自动化</span>
+              <span className="text-xs font-medium text-slate-300">AI插件 · Agent能力 · 工作流 · 自动化</span>
             </div>
 
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -130,31 +130,31 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              Agent站整理 AI 技能、Prompt、工具和工作流，帮你完成写作、办公、电商、短视频、编程和自动化任务。
+              Agent站整理 AI 插件、工具和工作流，帮你把邮箱、文档、代码仓库、数据库和网站连接到 AI Agent。
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <a
-                href="#free-pack"
+              <Link
+                href="/skills"
                 className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-7 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
               >
-                免费领取 Prompt 包
+                查看插件库
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
                 </svg>
-              </a>
+              </Link>
               <Link
                 href="/skills"
                 className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
-                查看 AI 技能
+                查看 AI 插件
               </Link>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-10 gap-y-3">
               {[
-                { value: "100+", label: "可复制 Prompt" },
-                { value: "6", label: "AI 技能分支" },
+                { value: "8+", label: "插件介绍" },
+                { value: "4", label: "插件分支" },
                 { value: "10+", label: "工具推荐" },
                 { value: "23:30", label: "自动更新计划" },
               ].map(({ value, label }) => (
@@ -184,9 +184,9 @@ export default function HomePage() {
 
       <section id="scenes" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
-          eyebrow="AI 技能分支"
-          title="从一个任务开始，让 AI 帮你完成工作"
-          description="每个分支都包含工具选择、操作步骤、可复制 Prompt 和工作包，适合直接照着做。"
+          eyebrow="AI 插件分支"
+          title="给 Agent 装上插件，让它真正帮你工作"
+          description="每个插件都说明能连接什么工具、适合什么人、可以自动完成什么任务，以及如何变成可收费服务。"
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {scenes.map((scene) => (
@@ -203,7 +203,7 @@ export default function HomePage() {
               <h3 className="text-base font-semibold text-slate-900 transition-colors group-hover:text-violet-700">{scene.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">{scene.desc}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-600 transition-all group-hover:gap-1.5">
-                查看技能介绍
+                查看插件介绍
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>

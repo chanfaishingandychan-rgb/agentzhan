@@ -5,7 +5,7 @@ import { buttonStyles } from "@/components/ui/button";
 import { categories, siteConfig } from "@/lib/site";
 
 const navItems = [
-  { label: "AI技能", href: "/skills" },
+  { label: "AI插件", href: "/skills" },
   { label: "搜索", href: "/search" },
   { label: "合集", href: "/collections" },
   { label: "最新", href: "/#latest" },
@@ -50,8 +50,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link href="/search" className={buttonStyles({ variant: "outline", size: "sm" })}>
-              找 Prompt
+            <Link href="/skills" className={buttonStyles({ variant: "outline", size: "sm" })}>
+              找插件
             </Link>
             <Link
               href="/admin"
@@ -76,7 +76,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div className="text-base font-semibold text-slate-950">{siteConfig.name}</div>
             </div>
             <p className="mt-4 max-w-xl text-sm leading-7 text-slate-500">
-              中文 AI 生产力工作站，整理 AI 技能、Prompt、工具和工作流，帮助普通人和小团队更快完成工作。
+              中文 AI 生产力工作站，整理 Agent 插件、AI 工具和自动化工作流，帮助普通人和小团队更快完成工作。
             </p>
           </div>
           <div>
@@ -92,8 +92,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div>
             <div className="text-sm font-semibold text-slate-950">平台能力</div>
             <div className="mt-3 space-y-2 text-sm text-slate-500">
-              <Link href="/skills" className="transition hover:text-violet-600">AI 技能库</Link>
-              <div>Prompt 搜索</div>
+              <Link href="/skills" className="transition hover:text-violet-600">AI 插件库</Link>
+              <div>插件介绍</div>
               <div>工作包</div>
               <div>Sitemap / Robots</div>
               <Link href="/admin" className="transition hover:text-violet-600">后台与自动化</Link>

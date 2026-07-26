@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getAllCollections } from "@/lib/collections";
 import { getAllPrompts } from "@/lib/prompts";
+import { allSkills } from "@/lib/skills";
 import { categories, siteConfig } from "@/lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -24,6 +25,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date().toISOString(),
     changeFrequency: "weekly" as const,
     priority: 0.75,
+  }));
+
+  const skillEntries = allSkills.map((skill) => ({
+    url: `${siteConfig.url}/skills/${skill.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
   }));
 
   return [
@@ -51,6 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "weekly",
       priority: 0.8,
     },
+    ...skillEntries,
     ...collectionEntries,
     ...categoryEntries,
     ...promptEntries,

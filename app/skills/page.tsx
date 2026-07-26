@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PluginVisual } from "@/components/plugin-visual";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/section-header";
 import { allSkills, skillBranches } from "@/lib/skills";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "AI技能库 - Agent站",
+  title: "AI插件库 - Agent站",
   description:
-    "Agent站 AI技能库，按内容、电商、办公、自动化等场景整理 AI 技能介绍、操作步骤、推荐工具和可复制 Prompt。",
+    "Agent站 AI插件库，按办公、开发、营销、企业流程等场景整理 Agent 外挂程式、连接工具、使用方法和变现方向。",
   alternates: {
     canonical: `${siteConfig.url}/skills`,
   },
   openGraph: {
-    title: "AI技能库 - Agent站",
-    description: "查看可落地的 AI 技能介绍、操作步骤、推荐工具和示例 Prompt。",
+    title: "AI插件库 - Agent站",
+    description: "查看可落地的 Agent 插件介绍、连接工具、适合场景和变现方向。",
     url: `${siteConfig.url}/skills`,
     siteName: siteConfig.name,
     type: "website",
@@ -23,8 +24,8 @@ export const metadata: Metadata = {
 };
 
 const stats = [
-  { label: "技能分支", value: `${skillBranches.length}` },
-  { label: "可学技能", value: `${allSkills.length}+` },
+  { label: "插件分类", value: `${skillBranches.length}` },
+  { label: "可用插件", value: `${allSkills.length}+` },
   { label: "高变现场景", value: `${allSkills.filter((skill) => skill.monetization === "高").length}` },
 ];
 
@@ -39,26 +40,26 @@ export default function SkillsPage() {
         <div className="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-semibold text-violet-100 backdrop-blur">
-              AI技能 · 使用步骤 · 可复制 Prompt
+              Agent插件 · 外挂程式 · 自动化能力
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              AI技能库
+              AI插件库
             </h1>
             <p className="mt-5 text-base leading-8 text-slate-300 sm:text-lg">
-              不只是给你一段 Prompt，而是告诉你这个 AI 技能适合谁、能解决什么、怎么操作、用什么工具，以及如何变成可复用的工作方法。
+              这里整理的是 Agent 可以安装和连接的插件能力：邮箱、文档、代码仓库、数据库、部署平台、客户线索和企业知识库。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 href="#skill-list"
                 className="inline-flex h-11 items-center rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-6 text-sm font-semibold text-white shadow-[0_10px_32px_rgba(124,58,237,0.35)] transition hover:-translate-y-0.5"
               >
-                查看全部技能
+                查看全部插件
               </Link>
               <Link
-                href="/search"
+                href="#skill-list"
                 className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/5 px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
               >
-                搜索 Prompt
+                查看插件分类
               </Link>
             </div>
           </div>
@@ -76,9 +77,9 @@ export default function SkillsPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <SectionHeader
-          eyebrow="技能分支"
-          title="先选一个方向，再照着步骤做"
-          description="这些分支对应未来最容易变现的场景：内容、电商、办公提效和企业自动化。"
+          eyebrow="插件分类"
+          title="先选一个插件方向，再连接到真实工具"
+          description="这些插件方向对应未来最容易变现的场景：办公自动化、开发部署、营销增长和企业流程。"
         />
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {skillBranches.map((branch) => (
@@ -96,7 +97,7 @@ export default function SkillsPage() {
                 <h2 className="text-base font-semibold text-slate-950">{branch.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{branch.description}</p>
                 <div className="mt-4 text-sm font-semibold text-violet-600 transition group-hover:translate-x-0.5">
-                  查看技能介绍 &rarr;
+                  查看插件介绍 &rarr;
                 </div>
               </div>
             </a>
@@ -107,9 +108,9 @@ export default function SkillsPage() {
       <section id="skill-list" className="border-y border-slate-200 bg-white py-14 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
-            eyebrow="技能介绍"
-            title="每个技能都可以直接拿去用"
-            description="你可以先用免费 Prompt 做出结果，再把常用技能整理成付费包、课程或企业服务。"
+            eyebrow="插件介绍"
+            title="每个插件都说明能连接什么、能做什么"
+            description="插件的价值不是一段提示词，而是把 AI 接到真实工具里，替用户完成可交付的任务。"
           />
 
           <div className="space-y-10">
@@ -129,7 +130,9 @@ export default function SkillsPage() {
                       key={skill.slug}
                       className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50/70 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:bg-white hover:shadow-[0_16px_48px_rgba(15,23,42,0.08)]"
                     >
-                      <div className="flex flex-wrap items-center gap-2">
+                      <PluginVisual title={skill.title} accent={branch.color} compact />
+
+                      <div className="mt-5 flex flex-wrap items-center gap-2">
                         <Badge variant="violet">{branch.title}</Badge>
                         <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
                           {skill.difficulty}
@@ -152,7 +155,7 @@ export default function SkillsPage() {
                           <span className="text-slate-600">{skill.timeSaved}</span>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-semibold text-slate-900">推荐工具：</span>
+                          <span className="font-semibold text-slate-900">连接工具：</span>
                           {skill.tools.map((tool) => (
                             <span key={tool} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">
                               {tool}
@@ -162,7 +165,7 @@ export default function SkillsPage() {
                       </div>
 
                       <div className="mt-5">
-                        <h4 className="text-sm font-semibold text-slate-950">操作步骤</h4>
+                        <h4 className="text-sm font-semibold text-slate-950">接入步骤</h4>
                         <ol className="mt-3 space-y-2">
                           {skill.steps.map((step, index) => (
                             <li key={step} className="flex gap-3 text-sm leading-6 text-slate-600">
@@ -176,7 +179,7 @@ export default function SkillsPage() {
                       </div>
 
                       <div className="mt-5 rounded-2xl bg-slate-950 p-4">
-                        <div className="mb-2 text-xs font-semibold text-violet-200">示例 Prompt</div>
+                        <div className="mb-2 text-xs font-semibold text-violet-200">典型应用场景</div>
                         <p className="text-sm leading-7 text-slate-200">{skill.promptExample}</p>
                       </div>
 
@@ -186,7 +189,7 @@ export default function SkillsPage() {
                           href={skill.href}
                           className="inline-flex h-10 items-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
                         >
-                          查看相关 Prompt
+                          查看插件详情
                         </Link>
                       </div>
                     </article>
