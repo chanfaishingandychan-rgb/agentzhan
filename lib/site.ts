@@ -5,9 +5,9 @@ export const siteConfig = {
   name: "Agent站",
   description:
     "Agent站是可直接复制使用的中文 AI Prompt 工具库，收录 ChatGPT、Claude、DeepSeek、Cursor、Codex 等实用提示词，覆盖写作、办公、营销、编程和内容创作。",
-  title: "Agent站 - 中文 AI Prompt 提示词工具库",
+  title: "Agent站 - 选一个工作场景，直接复制能用的 AI Prompt",
   subtitle:
-    "收录 ChatGPT、Claude、DeepSeek、Cursor、Codex 等实用提示词，帮你更快完成写作、办公、营销、编程和内容创作。",
+    "整理小红书、抖音、电商、办公、编程和老板管理等高频场景 Prompt，帮你更快完成实际工作。",
   url: siteUrl,
   keywords: [
     "Agent站",

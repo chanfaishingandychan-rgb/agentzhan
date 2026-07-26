@@ -1,104 +1,156 @@
 import Link from "next/link";
 
+import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { PromptCard } from "@/components/prompt-card";
-import { SearchBox } from "@/components/search-box";
-import { SectionHeading } from "@/components/section-heading";
+import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
 import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
-import { categories, siteConfig } from "@/lib/site";
 
-const categoryIcons: Record<string, string> = {
-  "ai-writing": "M16 4h4v4h-4zM8 4h4v4H8zM16 12h4v4h-4zM8 12h4v4H8zM4 4h2v12H4zM22 4h2v12h-2z",
-  "ai-office": "M4 8h16M4 16h16M8 4v16M16 4v16",
-  "ai-learning": "M12 4l8 8-8 8-8-8z",
-  "ai-short-video": "M8 6l10 6-10 6z",
-  "ai-ecommerce": "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
-  "ai-marketing": "M12 2L2 22h20z",
-  "ai-customer-service": "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0z",
-  "ai-startup": "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
-  "ai-personal-assistant": "M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z",
-  "ai-efficiency-tools": "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
-};
+const scenes = [
+  {
+    slug: "xiaohongshu",
+    title: "小红书文案助手",
+    desc: "种草笔记、产品测评、探店攻略，AI 帮你写出更容易被收藏和互动的小红书内容。",
+    icon: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z",
+    bgGradient: "from-rose-50 to-pink-50",
+    link: "/search?q=小红书",
+  },
+  {
+    slug: "douyin",
+    title: "抖音脚本助手",
+    desc: "3 秒钩子、分镜脚本、话题标签，快速产出更适合短视频发布的脚本。",
+    icon: "M8 6l10 6-10 6z",
+    bgGradient: "from-violet-50 to-purple-50",
+    link: "/search?q=抖音",
+  },
+  {
+    slug: "ecommerce",
+    title: "电商卖货助手",
+    desc: "商品标题、详情页卖点、客服话术和活动文案，帮卖家提升转化效率。",
+    icon: "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
+    bgGradient: "from-amber-50 to-orange-50",
+    link: "/category/ai-ecommerce",
+  },
+  {
+    slug: "office",
+    title: "AI 办公助手",
+    desc: "会议纪要、周报、邮件、PPT 大纲，上班族每天都能直接用的提效模板。",
+    icon: "M4 8h16M4 16h16M8 4v16M16 4v16",
+    bgGradient: "from-blue-50 to-cyan-50",
+    link: "/category/ai-office",
+  },
+  {
+    slug: "boss",
+    title: "老板方案助手",
+    desc: "商业计划书、融资路演、增长策略和管理制度，帮老板快速产出决策材料。",
+    icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
+    bgGradient: "from-emerald-50 to-teal-50",
+    link: "/category/ai-startup",
+  },
+  {
+    slug: "dev",
+    title: "Cursor / Codex 开发助手",
+    desc: "代码生成、Bug 排查、重构优化和测试补齐，让 AI 成为你的编程搭档。",
+    icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5",
+    bgGradient: "from-slate-50 to-slate-100",
+    link: "/collections/cursor-codex-coding",
+  },
+];
+
+const premiumPacks = [
+  {
+    title: "小红书爆款 Prompt 包",
+    desc: "30 条高转化种草文案 Prompt，包含标题、开头、正文、标签和评论区互动模板。",
+    price: "¥29.9",
+    tag: "即将推出",
+  },
+  {
+    title: "电商成交 Prompt 包",
+    desc: "标题优化、详情页卖点、客服话术、促销活动，一套 Prompt 打通电商转化链路。",
+    price: "¥39.9",
+    tag: "即将推出",
+  },
+  {
+    title: "AI 办公提效 Prompt 包",
+    desc: "会议纪要、周报、邮件、数据分析、SOP 文档，职场人每天都能复用。",
+    price: "¥29.9",
+    tag: "即将推出",
+  },
+];
+
+const tools = [
+  { name: "ChatGPT", desc: "全能 AI 对话", url: "https://chat.openai.com", tag: "AI 写作" },
+  { name: "Claude", desc: "长文和分析", url: "https://claude.ai", tag: "AI 写作" },
+  { name: "DeepSeek", desc: "中文推理与编程", url: "https://deepseek.com", tag: "AI 编程" },
+  { name: "Midjourney", desc: "AI 图片生成", url: "https://midjourney.com", tag: "AI 图片" },
+  { name: "Canva AI", desc: "设计和修图", url: "https://canva.com", tag: "AI 图片" },
+  { name: "Runway", desc: "AI 视频生成", url: "https://runwayml.com", tag: "AI 视频" },
+  { name: "Cursor", desc: "AI 代码编辑器", url: "https://cursor.sh", tag: "AI 编程" },
+  { name: "Codex", desc: "桌面 AI 代理", url: "https://openai.com/codex", tag: "AI 编程" },
+  { name: "Notion AI", desc: "文档和知识库", url: "https://notion.so", tag: "AI 办公" },
+  { name: "Gamma", desc: "AI PPT 生成", url: "https://gamma.app", tag: "AI 办公" },
+];
 
 export default function HomePage() {
-  const latestPrompts = getLatestPrompts(8);
   const popularPrompts = getPopularPrompts(8);
-  const hotTags = getHotTags(20);
-  const collections = getAllCollections();
+  const latestPrompts = getLatestPrompts(4);
+  const hotTags = getHotTags(16);
+  const topCollections = getAllCollections().slice(0, 5);
 
   return (
     <main>
-      {/* ── Hero ── */}
       <section className="relative overflow-hidden bg-slate-950">
-        {/* Background layers */}
-        <div className="absolute inset-0 bg-grid opacity-[0.04]" />
-        <div className="absolute inset-0 bg-mesh" />
-        {/* Geometric illustration */}
+        <div className="absolute inset-0 bg-grid opacity-[0.03]" />
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <svg className="absolute right-[-10%] top-[-5%] h-[120%] w-[65%] opacity-30" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stopColor="#7c3aed" />
-                <stop offset="100%" stopColor="#3b82f6" />
-              </linearGradient>
-              <linearGradient id="hg2" x1="1" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#06b6d4" />
-                <stop offset="100%" stopColor="#7c3aed" />
-              </linearGradient>
-            </defs>
-            {/* Large orb */}
-            <circle cx="520" cy="350" r="180" fill="url(#hg1)" opacity="0.3" filter="blur(40px)" className="animate-pulse-glow" />
-            {/* Medium orb */}
-            <circle cx="300" cy="200" r="90" fill="url(#hg2)" opacity="0.25" filter="blur(30px)" className="animate-float" />
-            {/* Small accent */}
-            <circle cx="650" cy="550" r="50" fill="#818cf8" opacity="0.2" filter="blur(20px)" className="animate-float-slow" />
-            {/* Connection lines */}
-            <line x1="300" y1="200" x2="520" y2="350" stroke="#7c3aed" strokeWidth="0.5" opacity="0.15" />
-            <line x1="520" y1="350" x2="650" y2="550" stroke="#3b82f6" strokeWidth="0.5" opacity="0.12" />
-            <line x1="300" y1="200" x2="200" y2="500" stroke="#06b6d4" strokeWidth="0.5" opacity="0.1" />
-            {/* Grid dots */}
-            {Array.from({ length: 8 }).flatMap((_, row) =>
-              Array.from({ length: 6 }).map((_, col) => (
-                <circle key={`${row}-${col}`} cx={100 + col * 90} cy={80 + row * 90} r="1.5" fill="#94a3b8" opacity="0.15" />
-              ))
-            )}
-          </svg>
+          <div className="absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-violet-600/20 blur-[120px]" />
+          <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8 lg:pb-32 lg:pt-36">
-          <div className="max-w-4xl">
-            {/* Eyebrow */}
+        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:pb-28 lg:pt-32">
+          <div className="max-w-3xl">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-xs font-medium text-slate-300">100+ Prompts · 10 个分类 · 持续更新</span>
+              <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
+              <span className="text-xs font-medium text-slate-300">100+ Prompts · 6 大场景 · 每周更新</span>
             </div>
 
-            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
-              <span className="text-gradient">Agent站</span>
+            <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
+              选一个工作场景，
               <br />
-              <span className="text-white/90">中文 AI Prompt 工具库</span>
+              <span className="text-gradient">直接复制能用的 AI Prompt</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              {siteConfig.subtitle}
+            <p className="mt-5 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
+              Agent站整理小红书、抖音、电商、办公、编程和老板管理等高频场景 Prompt，帮你更快完成实际工作。
             </p>
 
-            {/* Search */}
-            <div className="mt-8 max-w-2xl">
-              <SearchBox placeholder="搜索 ChatGPT、Claude、DeepSeek 提示词..." buttonLabel="搜索提示词" />
+            <div className="mt-8 flex flex-wrap items-center gap-3">
+              <a
+                href="#free-pack"
+                className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-7 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
+              >
+                免费领取 Prompt 包
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </a>
+              <Link
+                href="#scenes"
+                className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+              >
+                开始探索场景
+              </Link>
             </div>
 
-            {/* Stats row */}
-            <div className="mt-12 flex flex-wrap gap-x-12 gap-y-4">
+            <div className="mt-10 flex flex-wrap gap-x-10 gap-y-3">
               {[
-                { value: "100+", label: "高质量提示词" },
-                { value: "10", label: "场景分类" },
-                { value: "5+", label: "主流模型覆盖" },
-                { value: "SEO", label: "百度收录友好" },
+                { value: "100+", label: "精选 Prompt" },
+                { value: "6", label: "工作场景" },
+                { value: "10+", label: "AI 模型覆盖" },
+                { value: "免费", label: "核心功能" },
               ].map(({ value, label }) => (
                 <div key={label}>
-                  <div className="text-2xl font-bold text-white">{value}</div>
-                  <div className="mt-1 text-sm text-slate-500">{label}</div>
+                  <div className="text-xl font-bold text-white">{value}</div>
+                  <div className="mt-1 text-xs text-slate-500">{label}</div>
                 </div>
               ))}
             </div>
@@ -106,154 +158,211 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Categories ── */}
-      <section id="categories" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
-        <SectionHeading
-          eyebrow="场景分类"
-          title="按场景快速找到可用的中文提示词"
-          description="10 大分类覆盖写作、办公、学习、短视频、电商等高频场景，每个分类都有专属提示词库。"
+      <section id="scenes" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <SectionHeader
+          eyebrow="工作场景"
+          title="选一个场景，直接复制 AI Prompt"
+          description="每个场景都整理了经过验证的高频 Prompt，拿来就能用，不用从零开始写提示词。"
         />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-          {categories.map((cat, i) => (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {scenes.map((scene) => (
             <Link
-              key={cat.slug}
-              href={`/category/${cat.slug}`}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(124,58,237,0.10)]"
-              style={{ animationDelay: `${i * 40}ms` }}
+              key={scene.slug}
+              href={scene.link}
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(124,58,237,0.10)]"
             >
-              {/* Card icon */}
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-600 transition-colors group-hover:from-violet-100 group-hover:to-blue-100">
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d={categoryIcons[cat.slug] ?? "M12 4l8 8-8 8-8-8z"} />
+              <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${scene.bgGradient}`}>
+                <svg className="h-5 w-5 text-slate-600 transition-colors group-hover:text-violet-600" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={scene.icon} />
                 </svg>
               </div>
-              <h3 className="text-base font-semibold text-slate-900">{cat.name}</h3>
-              <p className="mt-2 text-sm leading-6 text-slate-500">{cat.description}</p>
-              {/* Hover accent line */}
+              <h3 className="text-base font-semibold text-slate-900 transition-colors group-hover:text-violet-700">{scene.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{scene.desc}</p>
+              <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-600 transition-all group-hover:gap-1.5">
+                进入场景
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+              </span>
               <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
             </Link>
           ))}
         </div>
       </section>
 
-      {/* ── Collections ── */}
-      <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+      <section id="free-pack" className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="精品合集"
-            title="不只是单条 Prompt，而是一套工作方案"
-            description="按办公、小红书、短视频、电商和编程等真实场景整理，让新手也能快速找到可直接复制的 AI 工作方法。"
+          <div className="mx-auto max-w-2xl text-center">
+            <div className="mb-4 inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+              限时免费
+            </div>
+            <h2 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
+              免费领取《100 个 AI 提效 Prompt 包》
+            </h2>
+            <p className="mt-3 text-sm leading-7 text-slate-600">
+              覆盖写作、办公、短视频、电商和编程场景，复制即用。输入邮箱，先锁定免费领取资格。
+            </p>
+            <LeadCaptureForm />
+            <p className="mt-3 text-xs text-slate-400">当前为预登记版本，后续会接入邮件发送和下载链接。</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <SectionHeader
+          eyebrow="热门 Prompt"
+          title="大家都在用的提示词"
+          description="浏览最受欢迎的 Prompt，直接复制到 ChatGPT、Claude、DeepSeek 使用。"
+        />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {popularPrompts.map((prompt) => (
+            <PromptCard key={prompt.slug} prompt={prompt} />
+          ))}
+        </div>
+        <div className="mt-8 text-center">
+          <Link
+            href="/search"
+            className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-violet-600 transition-all hover:border-violet-300 hover:bg-violet-50 hover:shadow-sm"
+          >
+            查看全部 Prompt
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </Link>
+        </div>
+      </section>
+
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="即将推出"
+            title="专业 Prompt 包，深度解决工作难题"
+            description="针对具体岗位和场景定制的 Prompt 合集，开箱即用，也为后续付费产品预热。"
+            align="center"
           />
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-5">
-            {collections.map((collection) => (
-              <Link
-                key={collection.slug}
-                href={`/collections/${collection.slug}`}
-                className="group flex h-full flex-col rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_50px_rgba(124,58,237,0.12)]"
+          <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {premiumPacks.map((pack) => (
+              <div
+                key={pack.title}
+                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-600 to-blue-600 text-xs font-bold text-white shadow-[0_10px_26px_rgba(124,58,237,0.2)]">
-                  AI
+                <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
+                  {pack.tag}
+                </span>
+                <h3 className="mt-4 text-lg font-semibold text-slate-900">{pack.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{pack.desc}</p>
+                <div className="mt-5 flex items-center justify-between">
+                  <span className="text-xl font-bold text-slate-900">{pack.price}</span>
+                  <span className="text-xs text-slate-400">/ 一次性购买</span>
                 </div>
-                <h3 className="text-base font-bold leading-6 text-slate-950">{collection.title}</h3>
-                <p className="mt-3 flex-1 text-sm leading-6 text-slate-500 line-clamp-4">{collection.description}</p>
-                <span className="mt-5 text-sm font-semibold text-violet-600">查看合集 &rarr;</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Popular Prompts ── */}
-      <section id="popular" className="scroll-mt-24 bg-white py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="热门提示词"
-            title="高搜索意图页面"
-            description="面向百度 SEO 的精选提示词页面，每个页面都有独立 title、description 和 FAQ Schema，适合搜索引擎收录。"
-          />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {popularPrompts.map((prompt) => (
-              <PromptCard key={prompt.slug} prompt={prompt} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Latest Prompts ── */}
-      <section id="latest" className="scroll-mt-24 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="最新收录"
-            title="最新提示词内容"
-            description="持续更新中文提示词库，每周新增高质量内容，紧跟 AI 工具生态发展。"
-          />
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {latestPrompts.map((prompt) => (
-              <PromptCard key={prompt.slug} prompt={prompt} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Platform Vision ── */}
-      <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="平台能力"
-            title="不只是提示词库"
-            description="Agent站 正在从提示词库进化为完整的 AI Agent 生产力平台，后续将陆续上线工作流、技能商店与协作空间。"
-          />
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              {
-                icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
-                title: "AI 工作流库",
-                desc: "可复制的工作流模板，一键导入你的 AI 工具链。",
-              },
-              {
-                icon: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
-                title: "付费提示词专区",
-                desc: "会员权限、收藏夹、购买与授权分层，提供专业版内容。",
-              },
-              {
-                icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z",
-                title: "AI Agent Skills",
-                desc: "Agent、MCP 资源库和技能商店，形成长期增长结构。",
-              },
-              {
-                icon: "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197",
-                title: "社群协作",
-                desc: "提示词评论、分享、协作编辑，建立 AI 创作者社区。",
-              },
-            ].map(({ icon, title, desc }) => (
-              <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-100 to-blue-100 text-violet-600">
-                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
-                  </svg>
-                </div>
-                <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-                <p className="mt-2 text-sm leading-6 text-slate-500">{desc}</p>
+                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Tags ── */}
+      <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader
+            eyebrow="精选合集"
+            title="按场景整理的 Prompt 合集"
+            description="五大工作场景精选合集，每个合集包含完整 Prompt、使用指南和常见问题。"
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            {topCollections.map((collection) => (
+              <Link
+                key={collection.slug}
+                href={`/collections/${collection.slug}`}
+                className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(124,58,237,0.10)]"
+              >
+                <h3 className="text-sm font-semibold text-slate-900 transition-colors group-hover:text-violet-700">{collection.title}</h3>
+                <p className="mt-2 line-clamp-2 text-xs leading-5 text-slate-500">{collection.description}</p>
+                <div className="mt-3 flex flex-wrap gap-1">
+                  {collection.relatedModels.slice(0, 3).map((model) => (
+                    <span key={model} className="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-500">
+                      {model}
+                    </span>
+                  ))}
+                </div>
+                <span className="mt-3 inline-block text-xs font-semibold text-violet-600 transition-transform group-hover:translate-x-0.5">
+                  查看合集 &rarr;
+                </span>
+                <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section className="py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            eyebrow="热门标签"
-            title="高频检索关键词"
-            description="从热门标签快速定位感兴趣的提示词主题，每个标签都有对应的搜索结果页。"
+          <SectionHeader
+            eyebrow="工具推荐"
+            title="搭配这些 AI 工具，效率翻倍"
+            description="先把推荐位搭起来，未来可以接广告、联盟分成或工具合作。"
           />
-          <div className="flex flex-wrap gap-3">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {tools.map((tool) => (
+              <a
+                key={tool.name}
+                href={tool.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-md"
+              >
+                <span className="inline-flex rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-semibold text-violet-600">
+                  {tool.tag}
+                </span>
+                <h3 className="mt-3 text-sm font-semibold text-slate-900">{tool.name}</h3>
+                <p className="mt-1 text-xs leading-5 text-slate-500">{tool.desc}</p>
+                <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-violet-600 transition-all group-hover:gap-1.5">
+                  访问工具
+                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                  </svg>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-slate-950 py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">需要帮公司建立 AI 工作流？</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-400">
+            我们为企业团队提供定制 Prompt 库、AI 工作流搭建和内部培训服务。
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="mailto:hello@agentzhan.com"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
+            >
+              联系我们
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+              </svg>
+            </a>
+            <Link
+              href="/search"
+              className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+            >
+              浏览全部 Prompt
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-14 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader eyebrow="热门标签" title="快速定位你需要的 Prompt" description="从标签出发，更快找到对应场景的提示词。" />
+          <div className="flex flex-wrap gap-2.5">
             {hotTags.map(({ tag, count }) => (
               <Link
                 key={tag}
                 href={`/search?q=${encodeURIComponent(tag)}`}
-                className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 hover:shadow-sm"
+                className="group inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 hover:shadow-sm"
               >
                 <span className="text-violet-400 transition-colors group-hover:text-violet-500">#</span>
                 {tag}
@@ -264,31 +373,13 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="bg-slate-950 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-            准备好用 AI 提升效率了吗？
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-400">
-            100+ 高质量中文提示词，覆盖 ChatGPT、Claude、DeepSeek，免费使用，直接复制。
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/search"
-              className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
-            >
-              开始搜索提示词
-              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </Link>
-            <Link
-              href={`/category/${categories[0].slug}`}
-              className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
-            >
-              浏览分类
-            </Link>
+      <section className="border-t border-slate-200 bg-slate-50 py-16 lg:py-20">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeader eyebrow="最新收录" title="最近更新的 Prompt" description="持续新增高质量中文提示词，紧跟 AI 工具发展。" />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {latestPrompts.map((prompt) => (
+              <PromptCard key={prompt.slug} prompt={prompt} />
+            ))}
           </div>
         </div>
       </section>
