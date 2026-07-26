@@ -1,0 +1,21 @@
+<svg width="900" height="560" viewBox="0 0 900 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="560" rx="44" fill="url(#bg)"/>
+  <circle cx="742" cy="100" r="190" fill="white" fill-opacity=".20"/>
+  <circle cx="140" cy="520" r="230" fill="#0E7490" fill-opacity=".22"/>
+  <rect x="64" y="64" width="772" height="432" rx="34" fill="white" fill-opacity=".18" stroke="white" stroke-opacity=".32"/>
+  <text x="96" y="134" fill="white" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="900">Agent站工作包</text>
+  <text x="96" y="226" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">AI办公</text>
+  <text x="96" y="300" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">提效模板包</text>
+  <text x="100" y="360" fill="white" fill-opacity=".82" font-size="24" font-family="Inter, Arial, sans-serif" font-weight="700">周报 · PPT · 会议纪要 · 邮件 · SOP</text>
+  <rect x="96" y="404" width="120" height="46" rx="23" fill="white"/>
+  <text x="128" y="435" fill="#0284C7" font-size="20" font-family="Inter, Arial, sans-serif" font-weight="900">¥29.9</text>
+  <rect x="620" y="262" width="152" height="190" rx="24" fill="white" fill-opacity=".24"/>
+  <path d="M654 314H738M654 354H738M654 394H710" stroke="white" stroke-width="14" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset=".58" stop-color="#06B6D4"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { PromptCard } from "@/components/prompt-card";
@@ -63,18 +64,27 @@ const premiumPacks = [
     desc: "30 条高转化种草文案 Prompt，包含标题、开头、正文、标签和评论区互动模板。",
     price: "¥29.9",
     tag: "即将推出",
+    accent: "from-rose-500 to-violet-600",
+    cover: "小红书\n30天内容包",
+    image: "/pack-xiaohongshu.svg",
   },
   {
     title: "电商成交 Prompt 包",
     desc: "标题优化、详情页卖点、客服话术、促销活动，一套 Prompt 打通电商转化链路。",
     price: "¥39.9",
     tag: "即将推出",
+    accent: "from-amber-500 to-orange-600",
+    cover: "电商成交\n话术包",
+    image: "/pack-ecommerce.svg",
   },
   {
     title: "AI 办公提效 Prompt 包",
     desc: "会议纪要、周报、邮件、数据分析、SOP 文档，职场人每天都能复用。",
     price: "¥29.9",
     tag: "即将推出",
+    accent: "from-blue-500 to-cyan-500",
+    cover: "办公提效\n模板包",
+    image: "/pack-office.svg",
   },
 ];
 
@@ -100,27 +110,27 @@ export default function HomePage() {
   return (
     <main>
       <section className="relative overflow-hidden bg-slate-950">
-        <div className="absolute inset-0 bg-grid opacity-[0.03]" />
+        <div className="absolute inset-0 bg-grid opacity-[0.05]" />
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-violet-600/20 blur-[120px]" />
           <div className="absolute -bottom-40 -left-40 h-[500px] w-[500px] rounded-full bg-blue-600/15 blur-[100px]" />
         </div>
 
-        <div className="relative mx-auto max-w-7xl px-4 pb-20 pt-24 sm:px-6 lg:px-8 lg:pb-28 lg:pt-32">
-          <div className="max-w-3xl">
+        <div className="relative mx-auto grid max-w-7xl gap-12 px-4 pb-20 pt-20 sm:px-6 lg:grid-cols-[0.95fr,1.05fr] lg:px-8 lg:pb-28 lg:pt-28">
+          <div className="flex flex-col justify-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-              <span className="text-xs font-medium text-slate-300">100+ Prompts · 6 大场景 · 每周更新</span>
+              <span className="text-xs font-medium text-slate-300">AI技能 · Prompt · 工作流 · 自动化</span>
             </div>
 
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
-              选一个工作场景，
+              把 AI 变成
               <br />
-              <span className="text-gradient">直接复制能用的 AI Prompt</span>
+              <span className="text-gradient">你的工作助手</span>
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              Agent站整理小红书、抖音、电商、办公、编程和老板管理等高频场景 Prompt，帮你更快完成实际工作。
+              Agent站整理 AI 技能、Prompt、工具和工作流，帮你完成写作、办公、电商、短视频、编程和自动化任务。
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -137,16 +147,16 @@ export default function HomePage() {
                 href="#scenes"
                 className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
-                开始探索场景
+                查看 AI 技能
               </Link>
             </div>
 
             <div className="mt-10 flex flex-wrap gap-x-10 gap-y-3">
               {[
-                { value: "100+", label: "精选 Prompt" },
-                { value: "6", label: "工作场景" },
-                { value: "10+", label: "AI 模型覆盖" },
-                { value: "免费", label: "核心功能" },
+                { value: "100+", label: "可复制 Prompt" },
+                { value: "6", label: "AI 技能分支" },
+                { value: "10+", label: "工具推荐" },
+                { value: "23:30", label: "自动更新计划" },
               ].map(({ value, label }) => (
                 <div key={label}>
                   <div className="text-xl font-bold text-white">{value}</div>
@@ -155,14 +165,28 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+
+          <div className="relative lg:pt-6">
+            <div className="absolute -inset-6 rounded-[2.5rem] bg-gradient-to-br from-violet-500/25 via-blue-500/10 to-cyan-400/20 blur-3xl" />
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.06] p-3 shadow-2xl backdrop-blur-xl">
+              <Image
+                src="/hero-agent-workstation.svg"
+                alt="Agent站 AI 生产力工作台示意图"
+                width={1200}
+                height={860}
+                priority
+                className="h-auto w-full rounded-[1.5rem]"
+              />
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="scenes" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
-          eyebrow="工作场景"
-          title="选一个场景，直接复制 AI Prompt"
-          description="每个场景都整理了经过验证的高频 Prompt，拿来就能用，不用从零开始写提示词。"
+          eyebrow="AI 技能分支"
+          title="从一个任务开始，让 AI 帮你完成工作"
+          description="每个分支都包含工具选择、操作步骤、可复制 Prompt 和工作包，适合直接照着做。"
         />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {scenes.map((scene) => (
@@ -246,9 +270,14 @@ export default function HomePage() {
                 key={pack.title}
                 className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
               >
-                <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">
-                  {pack.tag}
-                </span>
+                <Image
+                  src={pack.image}
+                  alt={`${pack.title}封面`}
+                  width={900}
+                  height={560}
+                  className="mb-5 h-auto w-full rounded-2xl shadow-[0_18px_48px_rgba(15,23,42,0.16)] transition-transform duration-300 group-hover:scale-[1.02]"
+                />
+                <span className="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700">{pack.tag}</span>
                 <h3 className="mt-4 text-lg font-semibold text-slate-900">{pack.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-500">{pack.desc}</p>
                 <div className="mt-5 flex items-center justify-between">

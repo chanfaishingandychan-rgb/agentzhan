@@ -1,0 +1,117 @@
+<svg width="1200" height="860" viewBox="0 0 1200 860" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="860" rx="56" fill="#070A18"/>
+  <rect x="1" y="1" width="1198" height="858" rx="55" stroke="white" stroke-opacity=".12" stroke-width="2"/>
+  <g opacity=".28">
+    <path d="M0 120H1200M0 240H1200M0 360H1200M0 480H1200M0 600H1200M0 720H1200" stroke="white" stroke-opacity=".16"/>
+    <path d="M120 0V860M240 0V860M360 0V860M480 0V860M600 0V860M720 0V860M840 0V860M960 0V860M1080 0V860" stroke="white" stroke-opacity=".16"/>
+  </g>
+  <circle cx="990" cy="120" r="260" fill="#7C3AED" fill-opacity=".28"/>
+  <circle cx="210" cy="780" r="260" fill="#2563EB" fill-opacity=".22"/>
+  <circle cx="1010" cy="720" r="180" fill="#06B6D4" fill-opacity=".14"/>
+  <g filter="url(#blur-a)">
+    <circle cx="990" cy="120" r="260" fill="#7C3AED" fill-opacity=".36"/>
+    <circle cx="210" cy="780" r="260" fill="#2563EB" fill-opacity=".28"/>
+  </g>
+
+  <rect x="90" y="76" width="1020" height="708" rx="34" fill="url(#panel)" stroke="white" stroke-opacity=".16"/>
+  <rect x="122" y="108" width="956" height="64" rx="22" fill="white" fill-opacity=".08" stroke="white" stroke-opacity=".12"/>
+  <circle cx="158" cy="140" r="10" fill="#FB7185"/>
+  <circle cx="190" cy="140" r="10" fill="#FBBF24"/>
+  <circle cx="222" cy="140" r="10" fill="#34D399"/>
+  <rect x="812" y="124" width="222" height="32" rx="16" fill="white" fill-opacity=".08"/>
+  <text x="840" y="146" fill="#CBD5E1" font-size="18" font-family="Inter, Arial, sans-serif" font-weight="700">Agent 工作台</text>
+
+  <rect x="128" y="212" width="318" height="492" rx="28" fill="#0F172A" stroke="white" stroke-opacity=".12"/>
+  <text x="160" y="258" fill="#F8FAFC" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="800">选择任务</text>
+  <text x="160" y="294" fill="#94A3B8" font-size="18" font-family="Inter, Arial, sans-serif">从工作场景开始，不用研究 Prompt</text>
+
+  <g>
+    <rect x="160" y="332" width="254" height="88" rx="20" fill="white" fill-opacity=".08" stroke="white" stroke-opacity=".12"/>
+    <circle cx="192" cy="376" r="18" fill="#A78BFA" fill-opacity=".22"/>
+    <path d="M184 376h16M192 368v16" stroke="#C4B5FD" stroke-width="3" stroke-linecap="round"/>
+    <text x="226" y="366" fill="#F8FAFC" font-size="18" font-family="Inter, Arial, sans-serif" font-weight="800">内容创作</text>
+    <text x="226" y="394" fill="#94A3B8" font-size="15" font-family="Inter, Arial, sans-serif">小红书 / 抖音 / 公众号</text>
+  </g>
+  <g>
+    <rect x="160" y="444" width="254" height="88" rx="20" fill="white" fill-opacity=".06" stroke="white" stroke-opacity=".10"/>
+    <circle cx="192" cy="488" r="18" fill="#60A5FA" fill-opacity=".22"/>
+    <path d="M182 488h20M186 480h12M186 496h18" stroke="#93C5FD" stroke-width="3" stroke-linecap="round"/>
+    <text x="226" y="478" fill="#F8FAFC" font-size="18" font-family="Inter, Arial, sans-serif" font-weight="800">电商卖货</text>
+    <text x="226" y="506" fill="#94A3B8" font-size="15" font-family="Inter, Arial, sans-serif">标题 / 卖点 / 客服话术</text>
+  </g>
+  <g>
+    <rect x="160" y="556" width="254" height="88" rx="20" fill="white" fill-opacity=".06" stroke="white" stroke-opacity=".10"/>
+    <circle cx="192" cy="600" r="18" fill="#22D3EE" fill-opacity=".18"/>
+    <path d="M184 594h16M184 602h16M184 610h10" stroke="#67E8F9" stroke-width="3" stroke-linecap="round"/>
+    <text x="226" y="590" fill="#F8FAFC" font-size="18" font-family="Inter, Arial, sans-serif" font-weight="800">办公提效</text>
+    <text x="226" y="618" fill="#94A3B8" font-size="15" font-family="Inter, Arial, sans-serif">周报 / PPT / 会议纪要</text>
+  </g>
+
+  <path d="M470 376C540 376 536 286 610 286" stroke="url(#line)" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 12"/>
+  <path d="M470 488H610" stroke="url(#line)" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 12"/>
+  <path d="M470 600C540 600 536 692 610 692" stroke="url(#line)" stroke-width="4" stroke-linecap="round" stroke-dasharray="10 12"/>
+
+  <g filter="url(#shadow)">
+    <rect x="564" y="252" width="210" height="210" rx="42" fill="url(#agent)" stroke="white" stroke-opacity=".25"/>
+    <circle cx="669" cy="338" r="52" fill="white" fill-opacity=".15"/>
+    <path d="M640 352C640 332 653 318 670 318C687 318 700 332 700 352" stroke="white" stroke-width="11" stroke-linecap="round"/>
+    <path d="M626 392H712" stroke="white" stroke-width="11" stroke-linecap="round"/>
+    <text x="623" y="430" fill="white" font-size="22" font-family="Inter, Arial, sans-serif" font-weight="900">AI Agent</text>
+  </g>
+
+  <path d="M782 356C844 356 838 270 898 270" stroke="url(#line2)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M782 392H898" stroke="url(#line2)" stroke-width="4" stroke-linecap="round"/>
+  <path d="M782 428C844 428 838 548 898 548" stroke="url(#line2)" stroke-width="4" stroke-linecap="round"/>
+
+  <rect x="874" y="218" width="226" height="122" rx="24" fill="#F8FAFC"/>
+  <rect x="898" y="244" width="80" height="16" rx="8" fill="#7C3AED"/>
+  <rect x="898" y="276" width="160" height="12" rx="6" fill="#CBD5E1"/>
+  <rect x="898" y="300" width="128" height="12" rx="6" fill="#E2E8F0"/>
+  <text x="898" y="326" fill="#0F172A" font-size="16" font-family="Inter, Arial, sans-serif" font-weight="800">爆款标题 + 开头</text>
+
+  <rect x="874" y="374" width="226" height="122" rx="24" fill="#F8FAFC"/>
+  <rect x="898" y="400" width="90" height="16" rx="8" fill="#2563EB"/>
+  <rect x="898" y="432" width="164" height="12" rx="6" fill="#CBD5E1"/>
+  <rect x="898" y="456" width="112" height="12" rx="6" fill="#E2E8F0"/>
+  <text x="898" y="482" fill="#0F172A" font-size="16" font-family="Inter, Arial, sans-serif" font-weight="800">客服成交话术</text>
+
+  <rect x="874" y="530" width="226" height="122" rx="24" fill="#F8FAFC"/>
+  <rect x="898" y="556" width="92" height="16" rx="8" fill="#06B6D4"/>
+  <rect x="898" y="588" width="150" height="12" rx="6" fill="#CBD5E1"/>
+  <rect x="898" y="612" width="136" height="12" rx="6" fill="#E2E8F0"/>
+  <text x="898" y="638" fill="#0F172A" font-size="16" font-family="Inter, Arial, sans-serif" font-weight="800">周报 / PPT 大纲</text>
+
+  <rect x="564" y="526" width="210" height="178" rx="30" fill="white" fill-opacity=".08" stroke="white" stroke-opacity=".12"/>
+  <text x="596" y="568" fill="#F8FAFC" font-size="22" font-family="Inter, Arial, sans-serif" font-weight="900">工作包</text>
+  <rect x="596" y="594" width="126" height="12" rx="6" fill="white" fill-opacity=".20"/>
+  <rect x="596" y="622" width="146" height="12" rx="6" fill="white" fill-opacity=".14"/>
+  <rect x="596" y="650" width="108" height="12" rx="6" fill="white" fill-opacity=".14"/>
+  <rect x="596" y="678" width="86" height="28" rx="14" fill="#7C3AED"/>
+  <text x="616" y="698" fill="white" font-size="14" font-family="Inter, Arial, sans-serif" font-weight="800">领取</text>
+
+  <defs>
+    <filter id="blur-a" x="-120" y="-180" width="1440" height="1220" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="90"/>
+    </filter>
+    <filter id="shadow" x="500" y="188" width="338" height="338" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="28" stdDeviation="34" flood-color="#000000" flood-opacity=".42"/>
+    </filter>
+    <linearGradient id="panel" x1="90" y1="76" x2="1110" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity=".12"/>
+      <stop offset="1" stop-color="white" stop-opacity=".04"/>
+    </linearGradient>
+    <linearGradient id="agent" x1="564" y1="252" x2="774" y2="462" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset=".52" stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="line" x1="470" y1="376" x2="610" y2="692" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <linearGradient id="line2" x1="782" y1="356" x2="898" y2="548" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+</svg>

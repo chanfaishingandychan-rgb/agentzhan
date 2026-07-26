@@ -4,10 +4,10 @@ const siteUrl = rawSiteUrl.replace(/\/+$/, "");
 export const siteConfig = {
   name: "Agent站",
   description:
-    "Agent站是可直接复制使用的中文 AI Prompt 工具库，收录 ChatGPT、Claude、DeepSeek、Cursor、Codex 等实用提示词，覆盖写作、办公、营销、编程和内容创作。",
-  title: "Agent站 - 选一个工作场景，直接复制能用的 AI Prompt",
+    "Agent站是中文 AI 生产力工作站，整理 AI 技能、Prompt、工具和工作流，帮助创作者、电商卖家、上班族和小老板用 AI 更快完成工作。",
+  title: "Agent站 - 把 AI 变成你的工作助手",
   subtitle:
-    "整理小红书、抖音、电商、办公、编程和老板管理等高频场景 Prompt，帮你更快完成实际工作。",
+    "整理 AI 技能、Prompt、工具和工作流，帮你完成写作、办公、电商、短视频、编程和自动化任务。",
   url: siteUrl,
   keywords: [
     "Agent站",

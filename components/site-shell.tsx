@@ -26,7 +26,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <span className="block text-sm font-semibold tracking-tight text-slate-950 sm:text-base">
                 {siteConfig.name}
               </span>
-              <span className="hidden text-xs text-slate-500 sm:block">中文 AI Agent & Prompt 工具站</span>
+              <span className="hidden text-xs text-slate-500 sm:block">中文 AI 生产力工作站</span>
             </span>
           </Link>
 
@@ -76,7 +76,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div className="text-base font-semibold text-slate-950">{siteConfig.name}</div>
             </div>
             <p className="mt-4 max-w-xl text-sm leading-7 text-slate-500">
-              中文 AI Agent & Prompt 工具站，面向写作、办公、营销、开发和内容创作场景持续扩展。
+              中文 AI 生产力工作站，整理 AI 技能、Prompt、工具和工作流，帮助普通人和小团队更快完成工作。
             </p>
           </div>
           <div>
@@ -92,8 +92,9 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div>
             <div className="text-sm font-semibold text-slate-950">平台能力</div>
             <div className="mt-3 space-y-2 text-sm text-slate-500">
+              <div>AI 技能库</div>
               <div>Prompt 搜索</div>
-              <div>分类导航</div>
+              <div>工作包</div>
               <div>Sitemap / Robots</div>
               <Link href="/admin" className="transition hover:text-violet-600">后台与自动化</Link>
             </div>

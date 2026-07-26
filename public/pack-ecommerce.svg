@@ -1,0 +1,21 @@
+<svg width="900" height="560" viewBox="0 0 900 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="560" rx="44" fill="url(#bg)"/>
+  <circle cx="742" cy="114" r="190" fill="white" fill-opacity=".20"/>
+  <circle cx="130" cy="500" r="230" fill="#92400E" fill-opacity=".22"/>
+  <rect x="64" y="64" width="772" height="432" rx="34" fill="white" fill-opacity=".18" stroke="white" stroke-opacity=".32"/>
+  <text x="96" y="134" fill="white" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="900">Agent站工作包</text>
+  <text x="96" y="226" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">电商成交</text>
+  <text x="96" y="300" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">话术包</text>
+  <text x="100" y="360" fill="white" fill-opacity=".82" font-size="24" font-family="Inter, Arial, sans-serif" font-weight="700">标题 · 卖点 · 客服 · 促销 · 差评回复</text>
+  <rect x="96" y="404" width="120" height="46" rx="23" fill="white"/>
+  <text x="128" y="435" fill="#D97706" font-size="20" font-family="Inter, Arial, sans-serif" font-weight="900">¥39.9</text>
+  <rect x="610" y="284" width="170" height="126" rx="28" fill="white" fill-opacity=".24"/>
+  <path d="M642 330H756M660 360H740M674 390H726" stroke="white" stroke-width="14" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F59E0B"/>
+      <stop offset=".52" stop-color="#F97316"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+</svg>

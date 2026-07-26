@@ -1,0 +1,22 @@
+<svg width="900" height="560" viewBox="0 0 900 560" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="900" height="560" rx="44" fill="url(#bg)"/>
+  <circle cx="730" cy="110" r="180" fill="white" fill-opacity=".22"/>
+  <circle cx="160" cy="520" r="220" fill="#7C3AED" fill-opacity=".22"/>
+  <rect x="64" y="64" width="772" height="432" rx="34" fill="white" fill-opacity=".18" stroke="white" stroke-opacity=".32"/>
+  <text x="96" y="134" fill="white" font-size="28" font-family="Inter, Arial, sans-serif" font-weight="900">Agent站工作包</text>
+  <text x="96" y="226" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">小红书</text>
+  <text x="96" y="300" fill="white" font-size="62" font-family="Inter, Arial, sans-serif" font-weight="1000">30天内容包</text>
+  <text x="100" y="360" fill="white" fill-opacity=".82" font-size="24" font-family="Inter, Arial, sans-serif" font-weight="700">选题 · 标题 · 开头 · 正文 · 标签</text>
+  <rect x="96" y="404" width="120" height="46" rx="23" fill="white"/>
+  <text x="128" y="435" fill="#E11D48" font-size="20" font-family="Inter, Arial, sans-serif" font-weight="900">¥29.9</text>
+  <rect x="618" y="286" width="154" height="154" rx="32" fill="white" fill-opacity=".24"/>
+  <path d="M660 365C660 338 676 320 698 320C720 320 736 338 736 365" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <path d="M640 410H754" stroke="white" stroke-width="16" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="900" y2="560" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F43F5E"/>
+      <stop offset=".55" stop-color="#A855F7"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+  </defs>
+</svg>
