@@ -225,53 +225,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="ai-news" className="border-b border-slate-200 bg-white py-14 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
-            <SectionHeader
-              eyebrow="AI 最新资讯"
-              title="每天关注 AI 行业正在发生什么"
-              description="整理 OpenAI、Claude、Gemini、DeepMind 等最新动态，并翻译成普通用户和小团队看得懂的使用建议。"
-            />
-            <Link
-              href="/news"
-              className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
-            >
-              查看全部资讯
-            </Link>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-4">
-            {latestNews.map((item) => (
-              <Link
-                key={item.slug}
-                href="/news"
-                className="group rounded-3xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:bg-white hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 shadow-sm">
-                    {item.category}
-                  </span>
-                  <span className="text-xs text-slate-400">{item.publishedAt.slice(5)}</span>
-                </div>
-                <h3 className="mt-4 line-clamp-2 text-base font-bold leading-6 text-slate-950">
-                  {item.title}
-                </h3>
-                <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-600">
-                  {item.takeaway}
-                </p>
-                <div className="mt-5 flex items-center justify-between border-t border-slate-200 pt-4">
-                  <span className="text-xs font-medium text-slate-400">{item.source}</span>
-                  <span className="text-sm font-semibold text-violet-600 transition group-hover:translate-x-0.5">
-                    阅读 →
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <section id="models" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
           eyebrow="AI 模型入口"
