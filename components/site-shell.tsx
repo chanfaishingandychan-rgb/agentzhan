@@ -63,7 +63,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       {/* ── Footer ── */}
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.5fr,1fr,1fr,1.2fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.4fr,1fr,1fr,1.7fr] lg:px-8">
           <div>
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-sm">
@@ -97,31 +97,31 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
           <div id="wechat" className="scroll-mt-24">
             <div className="text-sm font-semibold text-slate-950">微信</div>
-            <p className="mt-3 text-sm leading-6 text-slate-500">扫码加入 AI小白微信交流群，群码失效可加微信咨询。</p>
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              <div>
-                <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                  <Image
-                    src="/wechat-group-qr.jpg"
-                    alt="AI小白微信交流群二维码"
-                    width={104}
-                    height={104}
-                    className="h-[104px] w-[104px]"
-                  />
+            <p className="mt-3 text-sm leading-6 text-slate-500">按需要选择扫码，群组交流和一对一咨询分开使用。</p>
+            <div className="mt-4 space-y-4">
+              <div className="flex gap-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
+                <div className="shrink-0 rounded-xl border border-white bg-white p-2 shadow-sm">
+                  <Image src="/wechat-group-qr.jpg" alt="AI小白微信交流群二维码" width={112} height={112} className="h-28 w-28" />
                 </div>
-                <div className="mt-2 text-xs font-medium text-slate-500">交流群</div>
+                <div className="min-w-0 py-1">
+                  <div className="inline-flex rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 shadow-sm">
+                    AI小白交流群
+                  </div>
+                  <div className="mt-3 text-sm font-semibold text-slate-950">想和大家交流，扫这个群码</div>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">适合讨论模型使用、提示词、工具选择和 AI 入门问题。</p>
+                </div>
               </div>
-              <div>
-                <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-                  <Image
-                    src="/wechat-qr.jpg"
-                    alt="微信咨询二维码"
-                    width={104}
-                    height={104}
-                    className="h-[104px] w-[104px]"
-                  />
+              <div className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <div className="shrink-0 rounded-xl border border-slate-100 bg-white p-2">
+                  <Image src="/wechat-qr.jpg" alt="微信咨询二维码" width={112} height={112} className="h-28 w-28" />
                 </div>
-                <div className="mt-2 text-xs font-medium text-slate-500">微信咨询</div>
+                <div className="min-w-0 py-1">
+                  <div className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
+                    微信咨询
+                  </div>
+                  <div className="mt-3 text-sm font-semibold text-slate-950">需要私聊咨询，扫这个个人微信</div>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">适合模型选择、插件安装、网站和工作流落地咨询。</p>
+                </div>
               </div>
             </div>
           </div>
