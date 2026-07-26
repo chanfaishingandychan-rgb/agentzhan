@@ -311,18 +311,40 @@ export default async function HomePage() {
             </p>
             <div className="mt-6 grid gap-3 text-sm text-slate-600">
               {[
-                ["模型", "负责理解、推理、生成内容，也需要按场景选择"],
-                ["插件", "负责读取资料、调用工具、执行动作"],
-                ["工作流", "把多个步骤串起来，形成可复用流程"],
-                ["咨询", "帮你梳理模型使用、插件安装和落地优先级"],
-              ].map(([label, desc]) => (
-                <div key={label} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                  <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
-                    {label.slice(0, 1)}
+                {
+                  label: "模型",
+                  desc: "负责理解、推理、生成内容，也需要按场景选择",
+                  iconPath: "M9 3.75A3.25 3.25 0 0 0 5.75 7v1.1A3.5 3.5 0 0 0 7 14.82V17a3.25 3.25 0 0 0 5.45 2.4A3.25 3.25 0 0 0 18.25 17v-2.18a3.5 3.5 0 0 0 1.25-6.72V7A3.25 3.25 0 0 0 16.25 3.75 3.2 3.2 0 0 0 13 6.1 3.2 3.2 0 0 0 9 3.75Z M12 6.25v13.1 M8.25 9.25h2.5 M13.25 9.25h2.5 M8.5 14h2.25 M13.25 14h2.25",
+                  color: "from-violet-500 to-fuchsia-500",
+                },
+                {
+                  label: "插件",
+                  desc: "负责读取资料、调用工具、执行动作",
+                  iconPath: "M8.75 4.5h3.5v3.25h2.6a2.15 2.15 0 0 1 0 4.3h-2.6v3.2h-3.5v-2.6a2.15 2.15 0 0 0-4.3 0v2.6H2.5v-10.75h2.65a1.8 1.8 0 0 0 3.6 0Z M12.25 15.25V19.5H21.5V8.75h-4.25",
+                  color: "from-blue-500 to-cyan-500",
+                },
+                {
+                  label: "工作流",
+                  desc: "把多个步骤串起来，形成可复用流程",
+                  iconPath: "M5 7.5h7.25a3.25 3.25 0 0 1 3.25 3.25V12 M8 4.5 5 7.5l3 3 M19 16.5h-7.25a3.25 3.25 0 0 1-3.25-3.25V12 M16 19.5l3-3-3-3",
+                  color: "from-emerald-500 to-teal-500",
+                },
+                {
+                  label: "咨询",
+                  desc: "帮你梳理模型使用、插件安装和落地优先级",
+                  iconPath: "M5 6.5h14a2 2 0 0 1 2 2v6.25a2 2 0 0 1-2 2h-7l-4.25 3v-3H5a2 2 0 0 1-2-2V8.5a2 2 0 0 1 2-2Z M7.5 10.5h9 M7.5 13.5h5",
+                  color: "from-amber-400 to-orange-500",
+                },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-sm`}>
+                    <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d={item.iconPath} />
+                    </svg>
                   </span>
                   <div>
-                    <div className="font-semibold text-slate-950">{label}</div>
-                    <div>{desc}</div>
+                    <div className="font-semibold text-slate-950">{item.label}</div>
+                    <div>{item.desc}</div>
                   </div>
                 </div>
               ))}
