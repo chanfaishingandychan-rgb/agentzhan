@@ -31,7 +31,9 @@
   },
   "type": "module",
   "dependencies": {
+    "@supabase/supabase-js": "^2.110.8",
     "next": "^16.2.9",
+    "openai": "^6.49.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },

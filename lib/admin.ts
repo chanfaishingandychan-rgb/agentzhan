@@ -1,5 +1,8 @@
-import { categories, difficultyOptions, modelOptions } from "@/lib/site";
+import { categories, modelOptions } from "@/lib/site";
 import { getAllPrompts, type PromptItem } from "@/lib/prompts";
+import { createServiceClient } from "@/lib/supabase/server";
+
+// ── Types ──
 
 export type AdminPromptRow = {
   id: string;
@@ -46,6 +49,11 @@ export type GenerationLog = {
   summary: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type SupabaseRow = Record<string, any>;
+
+// ── Static fallback helpers (when Supabase is not configured) ──
+
 export function toAdminPromptRow(prompt: PromptItem, index: number): AdminPromptRow {
   return {
     id: String(index + 1),
@@ -64,76 +72,36 @@ export function toAdminPromptRow(prompt: PromptItem, index: number): AdminPrompt
   };
 }
 
-export function getAdminPromptRows(limit?: number) {
+export function getAdminPromptRows(limit?: number): AdminPromptRow[] {
   const rows = getAllPrompts().map(toAdminPromptRow);
   return typeof limit === "number" ? rows.slice(0, limit) : rows;
 }
 
 export function getAdminStats() {
   const prompts = getAdminPromptRows();
-  const vipCount = prompts.filter((item) => item.tier === "vip").length;
+  const vipCount = prompts.filter((p) => p.tier === "vip").length;
   return {
     totalPrompts: prompts.length,
-    publishedCount: prompts.filter((item) => item.status === "published").length,
-    draftCount: prompts.filter((item) => item.status === "draft").length,
+    publishedCount: prompts.filter((p) => p.status === "published").length,
+    draftCount: prompts.filter((p) => p.status === "draft").length,
     vipCount,
     freeCount: prompts.length - vipCount,
     categoryCount: categories.length,
-    modelCount: new Set(prompts.map((item) => item.model)).size,
+    modelCount: new Set(prompts.map((p) => p.model)).size,
   };
 }
 
-export function buildGenerationCandidates(): GenerationCandidate[] {
-  const now = new Date();
-  const date = now.toISOString().slice(0, 10).replaceAll("-", "");
-  const sourceCategories = [
-    { category: "AI写作", topic: "公众号选题拆解", model: "ChatGPT" },
-    { category: "AI办公", topic: "Excel销售数据复盘", model: "Claude" },
-    { category: "AI营销", topic: "小红书投放文案测试", model: "DeepSeek" },
-    { category: "AI效率工具", topic: "Cursor代码重构计划", model: "ChatGPT" },
-    { category: "AI短视频", topic: "抖音直播复盘脚本", model: "通义千问" },
-  ];
-
-  return sourceCategories.map((item, index) => {
-    const qualityScore = index === 4 ? 6 : 8 + (index % 2);
-    const status = qualityScore >= 7 ? "published" : "draft";
-    return {
-      title: `${item.topic}提示词`,
-      slug: `auto-${date}-${index + 1}`,
-      description: `适合中文用户直接复制使用的${item.topic}提示词，帮助快速完成真实工作任务。`,
-      prompt_content: `你是一名资深${item.category}顾问，请围绕“${item.topic}”生成一份可直接执行的中文方案。请先确认目标、用户、限制条件，再输出结构化步骤、示例内容、风险提醒和下一步优化建议。`,
-      use_case: item.topic,
-      category: item.category,
-      model: item.model,
-      difficulty: difficultyOptions[index % difficultyOptions.length],
-      tags: [item.category, item.model, item.topic, "中文提示词"],
-      is_vip: index === 3,
-      seo_title: `${item.topic}提示词 - Agent站`,
-      seo_description: `查看${item.topic}中文提示词，适合${item.model}等模型使用，包含场景、方法、案例和优化建议。`,
-      faq: [
-        {
-          question: "这个提示词可以直接复制吗？",
-          answer: "可以。建议补充你的业务背景、目标用户和输出渠道，效果会更稳定。",
-        },
-      ],
-      quality_score: qualityScore,
-      status,
-    };
-  });
-}
-
 export function getMockGenerationLogs(): GenerationLog[] {
-  const candidates = buildGenerationCandidates();
   return [
     {
-      id: "latest-preview",
+      id: "fallback-static",
       run_time: new Date().toISOString(),
-      generated_count: candidates.length,
-      published_count: candidates.filter((item) => item.status === "published").length,
-      draft_count: candidates.filter((item) => item.status === "draft").length,
+      generated_count: 0,
+      published_count: 0,
+      draft_count: 0,
       failed_count: 0,
       error_message: null,
-      summary: "测试生成任务已完成。当前为无数据库预览模式，内容不会写入线上数据表。",
+      summary: "Supabase 尚未設定，顯示靜態 fallback 資料。",
     },
   ];
 }
@@ -147,4 +115,104 @@ export function getSystemReadiness() {
     adminPassword: Boolean(process.env.ADMIN_PASSWORD),
     models: modelOptions,
   };
+}
+
+// ── Supabase-backed queries (used when env vars are set) ──
+
+export async function getSupabaseStats(): Promise<{
+  totalPrompts: number;
+  publishedCount: number;
+  draftCount: number;
+  vipCount: number;
+  freeCount: number;
+  connected: boolean;
+} | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { count: total } = await client.from("prompts").select("*", { count: "exact", head: true });
+    const { count: published } = await client.from("prompts").select("*", { count: "exact", head: true }).eq("status", "published");
+    const { count: draft } = await client.from("prompts").select("*", { count: "exact", head: true }).eq("status", "draft");
+    const { count: vip } = await client.from("prompts").select("*", { count: "exact", head: true }).eq("tier", "vip");
+    return {
+      totalPrompts: total ?? 0,
+      publishedCount: published ?? 0,
+      draftCount: draft ?? 0,
+      vipCount: vip ?? 0,
+      freeCount: (total ?? 0) - (vip ?? 0),
+      connected: true,
+    };
+  } catch {
+    return null;
+  }
+}
+
+export async function getSupabaseLogs(limit = 20): Promise<GenerationLog[] | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from("ai_generation_logs")
+      .select("*")
+      .order("run_time", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return null;
+
+    return data.map((row: SupabaseRow) => ({
+      id: String(row.id),
+      run_time: row.run_time,
+      generated_count: row.generated_count ?? 0,
+      published_count: row.published_count ?? 0,
+      draft_count: row.draft_count ?? 0,
+      failed_count: row.failed_count ?? 0,
+      error_message: row.error_message ?? null,
+      summary: row.summary ?? "",
+    }));
+  } catch {
+    return null;
+  }
+}
+
+export async function getSupabasePrompts(limit = 50): Promise<AdminPromptRow[] | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from("prompts")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) return null;
+
+    return data.map((row: SupabaseRow) => ({
+      id: String(row.id),
+      title: row.title,
+      slug: row.slug,
+      description: row.summary ?? "",
+      category: row.category_slug ?? "",
+      model: row.model ?? "",
+      difficulty: row.difficulty ?? "",
+      tier: row.tier ?? "free",
+      status: row.status ?? "draft",
+      qualityScore: row.quality_score ?? 0,
+      copyCount: row.copy_count ?? 0,
+      viewCount: row.view_count ?? 0,
+      updatedAt: row.updated_at ?? row.created_at,
+    }));
+  } catch {
+    return null;
+  }
+}
+
+/** Check if we have all env vars needed for Supabase write operations */
+export function isSupabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY,
+  );
 }
