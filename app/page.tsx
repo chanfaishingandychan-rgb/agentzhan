@@ -8,7 +8,8 @@ import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
 import { getLatestAiNewsForSite } from "@/lib/news";
-import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
+import { getHotTags, getPopularPrompts } from "@/lib/prompts";
+import { getLatestPromptsForSite } from "@/lib/prompts-server";
 import { allSkills } from "@/lib/skills";
 
 const openAiIconPath =
@@ -170,7 +171,7 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   const popularPrompts = getPopularPrompts(8);
-  const latestPrompts = getLatestPrompts(4);
+  const latestPrompts = await getLatestPromptsForSite(4);
   const hotTags = getHotTags(16);
   const topCollections = getAllCollections().slice(0, 5);
   const latestNews = await getLatestAiNewsForSite(4);

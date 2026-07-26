@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+export const dynamic = "force-dynamic";
+
 const packLabels: Record<string, string> = {
   "free-prompt-pack": "100 个 AI 提效 Prompt 包",
   "xiaohongshu-content-pack": "小红书 30 天内容包",

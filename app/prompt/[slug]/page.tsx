@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import { CopyButton } from "@/components/copy-button";
 import { PromptCard } from "@/components/prompt-card";
 import { Badge } from "@/components/ui/badge";
-import { getAllPrompts, getPromptBySlug, getRelatedPrompts } from "@/lib/prompts";
+import { getAllPrompts } from "@/lib/prompts";
+import { getPromptBySlugForSite, getRelatedPromptsForSite } from "@/lib/prompts-server";
 import { siteConfig } from "@/lib/site";
 
 type PromptPageProps = {
@@ -18,7 +19,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PromptPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const prompt = getPromptBySlug(slug);
+  const prompt = await getPromptBySlugForSite(slug);
   if (!prompt) return {};
   return {
     title: prompt.seoTitle,
@@ -37,9 +38,9 @@ export async function generateMetadata({ params }: PromptPageProps): Promise<Met
 
 export default async function PromptPage({ params }: PromptPageProps) {
   const { slug } = await params;
-  const prompt = getPromptBySlug(slug);
+  const prompt = await getPromptBySlugForSite(slug);
   if (!prompt) notFound();
-  const related = getRelatedPrompts(prompt, 6);
+  const related = await getRelatedPromptsForSite(prompt, 6);
 
   const articleSchema = {
     "@context": "https://schema.org",

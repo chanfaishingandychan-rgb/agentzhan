@@ -13,42 +13,8 @@ export type PromptFilters = {
   tier?: string;
 };
 
-export function getAllPrompts(): PromptItem[] {
-  return prompts as PromptItem[];
-}
-
-export function getPromptBySlug(slug: string): PromptItem | undefined {
-  return (prompts as PromptItem[]).find((item) => item.slug === slug);
-}
-
-export function getCategoryBySlug(slug: string) {
-  return categories.find((item) => item.slug === slug);
-}
-
-export function getPromptsByCategory(slug: string) {
-  return (prompts as PromptItem[]).filter((item) => item.category.slug === slug);
-}
-
-export function getLatestPrompts(limit = 8) {
-  return [...(prompts as PromptItem[])]
-    .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
-    .slice(0, limit);
-}
-
-export function getPopularPrompts(limit = 8) {
-  return [...(prompts as PromptItem[])].sort((a, b) => b.popularity - a.popularity).slice(0, limit);
-}
-
-export function getRelatedPrompts(current: PromptItem, limit = 6) {
-  return (prompts as PromptItem[])
-    .filter((item) => item.slug !== current.slug && item.category.slug === current.category.slug)
-    .slice(0, limit);
-}
-
-/** Apply text search + filters. Filters that match "all" are ignored. */
-export function filterPrompts(filters: PromptFilters): PromptItem[] {
-  const all = prompts as PromptItem[];
-  let results = [...all];
+export function filterPromptItems(items: PromptItem[], filters: PromptFilters): PromptItem[] {
+  let results = [...items];
 
   // Text search
   const q = (filters.query ?? "").trim().toLowerCase();
@@ -89,6 +55,43 @@ export function filterPrompts(filters: PromptFilters): PromptItem[] {
   }
 
   return results;
+}
+
+export function getAllPrompts(): PromptItem[] {
+  return prompts as PromptItem[];
+}
+
+export function getPromptBySlug(slug: string): PromptItem | undefined {
+  return (prompts as PromptItem[]).find((item) => item.slug === slug);
+}
+
+export function getCategoryBySlug(slug: string) {
+  return categories.find((item) => item.slug === slug);
+}
+
+export function getPromptsByCategory(slug: string) {
+  return (prompts as PromptItem[]).filter((item) => item.category.slug === slug);
+}
+
+export function getLatestPrompts(limit = 8) {
+  return [...(prompts as PromptItem[])]
+    .sort((a, b) => Number(new Date(b.publishedAt)) - Number(new Date(a.publishedAt)))
+    .slice(0, limit);
+}
+
+export function getPopularPrompts(limit = 8) {
+  return [...(prompts as PromptItem[])].sort((a, b) => b.popularity - a.popularity).slice(0, limit);
+}
+
+export function getRelatedPrompts(current: PromptItem, limit = 6) {
+  return (prompts as PromptItem[])
+    .filter((item) => item.slug !== current.slug && item.category.slug === current.category.slug)
+    .slice(0, limit);
+}
+
+/** Apply text search + filters. Filters that match "all" are ignored. */
+export function filterPrompts(filters: PromptFilters): PromptItem[] {
+  return filterPromptItems(prompts as PromptItem[], filters);
 }
 
 /** Keep for backward compat – SearchBar still uses this on /search */

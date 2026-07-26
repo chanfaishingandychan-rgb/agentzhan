@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 
-import { filterPrompts } from "@/lib/prompts";
+import { filterPromptsForSite } from "@/lib/prompts-server";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const query = searchParams.get("q") ?? "";
-  const results = filterPrompts({
+  const results = await filterPromptsForSite({
     query,
     category: searchParams.get("category") ?? undefined,
     model: searchParams.get("model") ?? undefined,

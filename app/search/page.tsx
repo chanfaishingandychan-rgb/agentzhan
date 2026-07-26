@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { PromptCard } from "@/components/prompt-card";
 import { SearchBox } from "@/components/search-box";
-import { searchPrompts } from "@/lib/prompts";
+import { searchPromptsForSite } from "@/lib/prompts-server";
 
 export const metadata: Metadata = {
   title: "站内搜索",
@@ -22,7 +22,7 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string }>;
 }) {
   const { q = "" } = await searchParams;
-  const prompts = searchPrompts(q);
+  const prompts = await searchPromptsForSite(q);
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">

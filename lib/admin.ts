@@ -117,8 +117,12 @@ export function getMockGenerationLogs(): GenerationLog[] {
 
 export function getSystemReadiness() {
   return {
-    supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL),
-    supabaseServiceRole: Boolean(process.env.SUPABASE_SERVICE_ROLE_KEY),
+    supabaseUrl: Boolean(process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL),
+    supabaseServiceRole: Boolean(
+      process.env.SUPABASE_SERVICE_ROLE_KEY ||
+        process.env.SUPABASE_SERVICE_KEY ||
+        process.env.SUPABASE_KEY,
+    ),
     openaiApiKey: Boolean(process.env.OPENAI_API_KEY),
     deepseekApiKey: Boolean(process.env.DEEPSEEK_API_KEY),
     aiProvider: process.env.DEEPSEEK_API_KEY ? "DeepSeek" : process.env.OPENAI_API_KEY ? "OpenAI" : null,
@@ -290,7 +294,9 @@ export async function getSupabaseLeadStats(): Promise<{
 /** Check if we have all env vars needed for Supabase write operations */
 export function isSupabaseConfigured(): boolean {
   return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.SUPABASE_SERVICE_ROLE_KEY,
+    (process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL) &&
+      (process.env.SUPABASE_SERVICE_ROLE_KEY ||
+        process.env.SUPABASE_SERVICE_KEY ||
+        process.env.SUPABASE_KEY),
   );
 }

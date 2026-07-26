@@ -1,13 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
 
+function getSupabaseUrl() {
+  return process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL;
+}
+
+function getSupabaseServiceKey() {
+  return (
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SERVICE_KEY ||
+    process.env.SUPABASE_KEY
+  );
+}
+
 /**
  * Supabase admin client — server-side only.
  * Uses service_role key for full database access.
  * Never import this in client components.
  */
 export function createServiceClient() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const url = getSupabaseUrl();
+  const key = getSupabaseServiceKey();
   if (!url || !key) {
     return null;
   }

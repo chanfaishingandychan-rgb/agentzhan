@@ -143,6 +143,7 @@ export async function GET(request: Request) {
 
   return NextResponse.json({
     mode: supabaseOk ? "live-database-write" : "preview-no-database-write",
+    schedule: "03:00 Asia/Hong_Kong",
     ai_provider: provider ?? aiProvider.name,
     ai_model: aiProvider.model,
     run_time: new Date().toISOString(),

@@ -5,7 +5,7 @@
   "crons": [
     {
       "path": "/api/cron/generate-prompts",
-      "schedule": "30 15 * * *"
+      "schedule": "0 19 * * *"
     },
     {
       "path": "/api/cron/update-ai-news",
