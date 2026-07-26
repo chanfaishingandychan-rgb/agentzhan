@@ -1,3 +1,5 @@
+import { createServiceClient } from "@/lib/supabase/server";
+
 export type AiNewsItem = {
   slug: string;
   title: string;
@@ -8,6 +10,18 @@ export type AiNewsItem = {
   summary: string;
   takeaway: string;
   tags: string[];
+};
+
+type SupabaseAiNewsRow = {
+  slug: string;
+  title: string;
+  source: string;
+  source_url: string;
+  published_at: string;
+  category: AiNewsItem["category"];
+  summary: string;
+  takeaway: string;
+  tags: string[] | null;
 };
 
 export const aiNewsItems: AiNewsItem[] = [
@@ -83,4 +97,35 @@ export function getLatestAiNews(limit = aiNewsItems.length) {
   return [...aiNewsItems]
     .sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt))
     .slice(0, limit);
+}
+
+export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promise<AiNewsItem[]> {
+  const client = createServiceClient();
+  if (!client) return getLatestAiNews(limit);
+
+  try {
+    const { data, error } = await client
+      .from("ai_news")
+      .select("slug,title,source,source_url,published_at,category,summary,takeaway,tags")
+      .order("published_at", { ascending: false })
+      .limit(limit);
+
+    if (error || !data || data.length === 0) {
+      return getLatestAiNews(limit);
+    }
+
+    return (data as SupabaseAiNewsRow[]).map((item) => ({
+      slug: item.slug,
+      title: item.title,
+      source: item.source,
+      sourceUrl: item.source_url,
+      publishedAt: item.published_at,
+      category: item.category,
+      summary: item.summary,
+      takeaway: item.takeaway,
+      tags: item.tags ?? [],
+    }));
+  } catch {
+    return getLatestAiNews(limit);
+  }
 }

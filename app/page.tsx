@@ -7,7 +7,7 @@ import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
-import { getLatestAiNews } from "@/lib/news";
+import { getLatestAiNewsForSite } from "@/lib/news";
 import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
 import { allSkills } from "@/lib/skills";
 
@@ -166,12 +166,14 @@ const aiModels = [
   },
 ];
 
-export default function HomePage() {
+export const revalidate = 3600;
+
+export default async function HomePage() {
   const popularPrompts = getPopularPrompts(8);
   const latestPrompts = getLatestPrompts(4);
   const hotTags = getHotTags(16);
   const topCollections = getAllCollections().slice(0, 5);
-  const latestNews = getLatestAiNews(4);
+  const latestNews = await getLatestAiNewsForSite(4);
 
   return (
     <main>

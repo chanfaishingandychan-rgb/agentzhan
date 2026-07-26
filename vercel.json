@@ -6,6 +6,10 @@
     {
       "path": "/api/cron/generate-prompts",
       "schedule": "30 15 * * *"
+    },
+    {
+      "path": "/api/cron/update-ai-news",
+      "schedule": "0 19 * * *"
     }
   ]
 }

@@ -30,6 +30,28 @@ type AIProvider = {
   model: string;
 };
 
+type AiNewsCandidate = {
+  title: string;
+  source: string;
+  sourceUrl: string;
+  publishedAt: string;
+  category: "模型更新" | "产品功能" | "Agent趋势" | "行业应用" | "安全与合规";
+  description: string;
+};
+
+type SummarizedAiNewsItem = {
+  slug: string;
+  title: string;
+  rawTitle: string;
+  source: string;
+  sourceUrl: string;
+  publishedAt: string;
+  category: AiNewsCandidate["category"];
+  summary: string;
+  takeaway: string;
+  tags: string[];
+};
+
 let _client: OpenAI | null = null;
 let _clientSignature = "";
 
@@ -171,6 +193,117 @@ JSON schema:
       provider: provider.displayName,
     };
   }
+}
+
+export async function summarizeAiNewsCandidates(candidates: AiNewsCandidate[]): Promise<{
+  items: SummarizedAiNewsItem[];
+  rawResponse: string;
+  error?: string;
+  provider?: string;
+}> {
+  const provider = getAIProvider();
+  if (!provider.configured) {
+    return { items: [], rawResponse: "", error: `${provider.missingKey} is not configured`, provider: provider.displayName };
+  }
+
+  const systemPrompt = `你是 Agent站的 AI 新闻编辑，负责把官方 AI 新闻整理成简体中文资讯。
+
+要求：
+- 只根据输入材料总结，不要编造不存在的事实
+- 全部使用简体中文
+- title 适合中文 SEO，不能夸大
+- summary 用 1 句到 2 句说明发生了什么
+- takeaway 说明这对普通用户、站长、小团队或企业有什么用
+- tags 3-5 个
+- category 必须从：模型更新、产品功能、Agent趋势、行业应用、安全与合规 中选择
+- 输出严格 JSON 数组，不要 markdown`;
+
+  try {
+    const completion = await provider.client.chat.completions.create({
+      model: provider.model,
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content: JSON.stringify(
+            candidates.map((item) => ({
+              title: item.title,
+              source: item.source,
+              sourceUrl: item.sourceUrl,
+              publishedAt: item.publishedAt,
+              category: item.category,
+              description: item.description,
+            })),
+          ),
+        },
+      ],
+      temperature: 0.4,
+      max_tokens: 4000,
+    });
+
+    const raw = completion.choices[0]?.message?.content ?? "";
+    const parsed = parseSummarizedNewsJSON(raw, candidates);
+    return { items: parsed, rawResponse: raw, provider: provider.displayName };
+  } catch (err: unknown) {
+    return {
+      items: [],
+      rawResponse: "",
+      error: err instanceof Error ? err.message : String(err),
+      provider: provider.displayName,
+    };
+  }
+}
+
+function parseSummarizedNewsJSON(raw: string, candidates: AiNewsCandidate[]): SummarizedAiNewsItem[] {
+  let json = raw.trim();
+  if (json.startsWith("```")) {
+    json = json.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  }
+
+  let parsed: Array<Record<string, unknown>>;
+  try {
+    parsed = JSON.parse(json);
+  } catch {
+    return candidates.map(fallbackSummarizedNews);
+  }
+
+  if (!Array.isArray(parsed)) return candidates.map(fallbackSummarizedNews);
+
+  return candidates.map((candidate, index) => {
+    const item = parsed[index] ?? {};
+    const category = isNewsCategory(item.category) ? item.category : candidate.category;
+    return {
+      slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(String(item.title ?? candidate.title)).slice(0, 80)}`,
+      title: String(item.title ?? candidate.title).slice(0, 120),
+      rawTitle: candidate.title,
+      source: candidate.source,
+      sourceUrl: candidate.sourceUrl,
+      publishedAt: candidate.publishedAt,
+      category,
+      summary: String(item.summary ?? candidate.description ?? candidate.title).slice(0, 260),
+      takeaway: String(item.takeaway ?? "这条更新值得关注，后续可结合具体业务场景评估是否使用。").slice(0, 300),
+      tags: Array.isArray(item.tags) ? item.tags.slice(0, 5).map(String) : [candidate.source, category],
+    };
+  });
+}
+
+function fallbackSummarizedNews(candidate: AiNewsCandidate): SummarizedAiNewsItem {
+  return {
+    slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(candidate.title).slice(0, 80)}`,
+    title: candidate.title.slice(0, 120),
+    rawTitle: candidate.title,
+    source: candidate.source,
+    sourceUrl: candidate.sourceUrl,
+    publishedAt: candidate.publishedAt,
+    category: candidate.category,
+    summary: (candidate.description || candidate.title).slice(0, 260),
+    takeaway: "这条更新来自官方来源，适合关注模型、工具或企业 AI 应用变化的用户进一步查看。",
+    tags: [candidate.source, candidate.category],
+  };
+}
+
+function isNewsCategory(value: unknown): value is AiNewsCandidate["category"] {
+  return ["模型更新", "产品功能", "Agent趋势", "行业应用", "安全与合规"].includes(String(value));
 }
 
 function parseGeneratedJSON(

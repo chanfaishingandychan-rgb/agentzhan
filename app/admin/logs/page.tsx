@@ -31,7 +31,7 @@ export default async function AdminLogsPage() {
         <Badge variant="blue">Cron Logs</Badge>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">自动任务日志</h1>
         <p className="mt-3 text-sm leading-7 text-slate-500">
-          每晚 23:30 港台时间触发 Vercel Cron。
+          Prompt 生成每晚 23:30 港台时间触发；AI资讯每天 03:00 港台时间触发。
           {connected
             ? " 以下资料来自 Supabase ai_generation_logs 资料表。"
             : " 目前显示静态 fallback 资料，设置 Supabase 后会自动读取真实日志。"}

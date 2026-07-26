@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 
-import { getLatestAiNews } from "@/lib/news";
+import { getLatestAiNewsForSite } from "@/lib/news";
 import { siteConfig } from "@/lib/site";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "AI最新资讯 - Agent站",
@@ -26,8 +28,8 @@ const categoryStyles = {
   安全与合规: "border-amber-200 bg-amber-50 text-amber-700",
 };
 
-export default function NewsPage() {
-  const news = getLatestAiNews();
+export default async function NewsPage() {
+  const news = await getLatestAiNewsForSite(20);
 
   return (
     <main className="bg-[#fafafa]">
@@ -47,7 +49,7 @@ export default function NewsPage() {
             </p>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {[
-                ["6", "今日精选"],
+                [String(news.length), "今日精选"],
                 ["5", "资讯分类"],
                 ["每日", "更新计划"],
               ].map(([value, label]) => (
@@ -70,7 +72,7 @@ export default function NewsPage() {
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-slate-500">
-            目前为人工精选版。下一阶段会接入自动抓取和每日摘要，让这里真正变成每天可看的 AI 快讯入口。
+            每天 03:00 自动抓取官方来源并生成中文摘要；如果自动来源暂时不可用，会保留人工精选内容作为备份。
           </p>
         </div>
 
