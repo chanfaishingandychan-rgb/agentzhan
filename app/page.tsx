@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { siClaude, siDeepseek, siGooglegemini, siKimi, siPerplexity, siQwen } from "simple-icons";
 
-import { LeadCaptureForm } from "@/components/lead-capture-form";
 import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
@@ -358,20 +357,84 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section id="free-pack" className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl text-center">
-            <div className="mb-4 inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-              限时免费
+      <section id="prompt-method" className="relative overflow-hidden border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+        <div className="absolute inset-0 bg-grid opacity-[0.35]" />
+        <div className="pointer-events-none absolute right-0 top-0 h-80 w-80 rounded-full bg-violet-200/50 blur-3xl" />
+        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8">
+          <div>
+            <div className="mb-4 inline-flex rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm">
+              第三步：学会沟通
             </div>
-            <h2 className="text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
-              免费领取《100 个 AI 提效 Prompt 包》
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+              模型和插件都选好了，真正拉开差距的是 Prompt
             </h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              覆盖写作、办公、短视频、电商和编程场景，复制即用。输入邮箱，先锁定免费领取资格。
+            <p className="mt-4 text-base leading-8 text-slate-600">
+              AI 不是越问越聪明，而是你给它的任务越清楚，结果越稳定。好的提示词会告诉 AI：扮演什么角色、完成什么目标、使用什么资料、按什么格式输出。
             </p>
-            <LeadCaptureForm />
-            <p className="mt-3 text-xs text-slate-400">当前为预登记版本，后续会接入邮件发送和下载链接。</p>
+            <div className="mt-7 grid gap-3">
+              {[
+                ["少走弯路", "不用每次从零组织问题，直接套用成熟结构。"],
+                ["结果更稳定", "同一个任务可重复得到接近的质量，方便交付工作。"],
+                ["更适合插件", "插件读取资料后，需要 Prompt 指挥它分析、整理和执行。"],
+              ].map(([title, desc]) => (
+                <div key={title} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="font-semibold text-slate-950">{title}</div>
+                  <div className="mt-1 text-sm leading-6 text-slate-600">{desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-[0_24px_80px_rgba(15,23,42,0.10)]">
+            <div className="rounded-3xl bg-slate-950 p-5 text-white">
+              <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                <div>
+                  <div className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-200">Prompt Framework</div>
+                  <div className="mt-1 text-xl font-bold">一个好 Prompt 的 5 个部分</div>
+                </div>
+                <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">可复制结构</span>
+              </div>
+              <div className="mt-5 grid gap-3 text-sm">
+                {[
+                  ["角色", "你是一位资深电商运营顾问"],
+                  ["目标", "帮我优化商品详情页，提高转化率"],
+                  ["背景", "产品、用户、价格、卖点、竞品信息"],
+                  ["要求", "语气、长度、禁忌、重点、输出格式"],
+                  ["检查", "指出风险，并给出可执行修改建议"],
+                ].map(([label, value], index) => (
+                  <div key={label} className="grid grid-cols-[2.5rem_1fr] gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-blue-500 text-xs font-bold">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-white">{label}</div>
+                      <div className="mt-1 leading-6 text-slate-300">{value}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-5 rounded-3xl border border-violet-100 bg-violet-50/70 p-5">
+              <div className="text-sm font-bold text-violet-900">从这里开始</div>
+              <p className="mt-2 text-sm leading-7 text-violet-950/75">
+                先选模型，再接插件，最后用 Prompt 指挥 AI 完成具体任务。Agent站会把这三件事整理成可直接使用的中文方案。
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href="#popular"
+                  className="inline-flex h-10 items-center rounded-full bg-violet-600 px-5 text-sm font-semibold text-white transition hover:bg-violet-700"
+                >
+                  查看热门提示词
+                </Link>
+                <Link
+                  href="/search"
+                  className="inline-flex h-10 items-center rounded-full border border-violet-200 bg-white px-5 text-sm font-semibold text-violet-700 transition hover:bg-violet-50"
+                >
+                  搜索 Prompt
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
