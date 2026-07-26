@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { PluginVisual } from "@/components/plugin-visual";
+import { PluginIcon } from "@/components/plugin-icon";
 import { Badge } from "@/components/ui/badge";
 import { SectionHeader } from "@/components/section-header";
 import { allSkills, skillBranches } from "@/lib/skills";
@@ -124,73 +124,68 @@ export default function SkillsPage() {
                   </div>
                 </div>
 
-                <div className="grid gap-5 lg:grid-cols-2">
+                <div className="grid gap-4">
                   {branch.skills.map((skill) => (
                     <article
                       key={skill.slug}
-                      className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50/70 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:bg-white hover:shadow-[0_16px_48px_rgba(15,23,42,0.08)]"
+                      className="group rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(15,23,42,0.08)]"
                     >
-                      <PluginVisual title={skill.title} accent={branch.color} compact />
+                      <div className="flex gap-4">
+                        <PluginIcon slug={skill.slug} />
+                        <div className="min-w-0 flex-1">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <Badge variant="violet">{branch.title}</Badge>
+                            <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
+                              {skill.difficulty}
+                            </Badge>
+                            <Badge variant={skill.monetization === "高" ? "premium" : "muted"}>
+                              变现潜力：{skill.monetization}
+                            </Badge>
+                          </div>
 
-                      <div className="mt-5 flex flex-wrap items-center gap-2">
-                        <Badge variant="violet">{branch.title}</Badge>
-                        <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
-                          {skill.difficulty}
-                        </Badge>
-                        <Badge variant={skill.monetization === "高" ? "premium" : "muted"}>
-                          变现潜力：{skill.monetization}
-                        </Badge>
-                      </div>
+                          <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-950">{skill.title}</h3>
+                          <p className="mt-2 text-sm leading-7 text-slate-600">{skill.outcome}</p>
 
-                      <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-950">{skill.title}</h3>
-                      <p className="mt-3 text-sm leading-7 text-slate-600">{skill.outcome}</p>
+                          <div className="mt-4 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+                            <div>
+                              <span className="font-semibold text-slate-900">适合：</span>
+                              {skill.audience}
+                            </div>
+                            <div>
+                              <span className="font-semibold text-slate-900">节省：</span>
+                              {skill.timeSaved}
+                            </div>
+                          </div>
 
-                      <div className="mt-5 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-sm">
-                        <div>
-                          <span className="font-semibold text-slate-900">适合人群：</span>
-                          <span className="text-slate-600">{skill.audience}</span>
-                        </div>
-                        <div>
-                          <span className="font-semibold text-slate-900">预计节省：</span>
-                          <span className="text-slate-600">{skill.timeSaved}</span>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="font-semibold text-slate-900">连接工具：</span>
-                          {skill.tools.map((tool) => (
-                            <span key={tool} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">
-                              {tool}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="mt-5">
-                        <h4 className="text-sm font-semibold text-slate-950">接入步骤</h4>
-                        <ol className="mt-3 space-y-2">
-                          {skill.steps.map((step, index) => (
-                            <li key={step} className="flex gap-3 text-sm leading-6 text-slate-600">
-                              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-100 text-xs font-bold text-violet-700">
-                                {index + 1}
+                          <div className="mt-4 flex flex-wrap items-center gap-2">
+                            <span className="text-xs font-semibold text-slate-400">连接工具</span>
+                            {skill.tools.map((tool) => (
+                              <span key={tool} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs text-slate-600">
+                                {tool}
                               </span>
-                              {step}
-                            </li>
-                          ))}
-                        </ol>
-                      </div>
+                            ))}
+                          </div>
 
-                      <div className="mt-5 rounded-2xl bg-slate-950 p-4">
-                        <div className="mb-2 text-xs font-semibold text-violet-200">典型应用场景</div>
-                        <p className="text-sm leading-7 text-slate-200">{skill.promptExample}</p>
-                      </div>
-
-                      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-                        <span className="text-sm text-slate-500">相关产品：{skill.relatedPack}</span>
-                        <Link
-                          href={skill.href}
-                          className="inline-flex h-10 items-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
-                        >
-                          查看插件详情
-                        </Link>
+                          <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
+                            <span className="text-sm text-slate-500">{skill.relatedPack}</span>
+                            <div className="flex flex-wrap gap-2">
+                              <a
+                                href={skill.installUrl}
+                                target={skill.installUrl.startsWith("mailto:") ? undefined : "_blank"}
+                                rel={skill.installUrl.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                                className="inline-flex h-10 items-center rounded-full border border-slate-200 bg-white px-4 text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
+                              >
+                                {skill.installLabel}
+                              </a>
+                              <Link
+                                href={skill.href}
+                                className="inline-flex h-10 items-center rounded-full bg-slate-950 px-5 text-sm font-semibold text-white transition group-hover:bg-violet-700"
+                              >
+                                中文介绍
+                              </Link>
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </article>
                   ))}

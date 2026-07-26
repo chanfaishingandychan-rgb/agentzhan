@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { PluginVisual } from "@/components/plugin-visual";
+import { PluginIcon } from "@/components/plugin-icon";
 import { Badge } from "@/components/ui/badge";
 import { allSkills, getSkillBySlug } from "@/lib/skills";
 import { siteConfig } from "@/lib/site";
@@ -77,14 +77,21 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
         <div className="absolute inset-0 bg-grid opacity-[0.06]" />
         <div className={`pointer-events-none absolute -right-28 -top-28 h-96 w-96 rounded-full bg-gradient-to-br ${skill.color} opacity-25 blur-3xl`} />
 
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.95fr,1.05fr] lg:px-8 lg:py-20">
-          <div>
+        <div className="relative mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
+          <div className="max-w-4xl">
             <Link href="/skills" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-300 transition hover:text-white">
               <span aria-hidden="true">&larr;</span>
               返回 AI 插件库
             </Link>
 
             <div className="mt-8 max-w-4xl">
+              <div className="mb-6 flex items-center gap-4">
+                <PluginIcon slug={skill.slug} className="h-16 w-16 rounded-3xl" />
+                <div className="text-sm text-slate-400">
+                  官方入口：{skill.installLabel}
+                </div>
+              </div>
+
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="violet">{skill.branch}</Badge>
                 <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
@@ -101,11 +108,24 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
                 {skill.outcome}
               </p>
-            </div>
-          </div>
 
-          <div className="lg:pt-10">
-            <PluginVisual title={skill.title} accent={skill.color} />
+              <div className="mt-8 flex flex-wrap gap-3">
+                <a
+                  href={skill.installUrl}
+                  target={skill.installUrl.startsWith("mailto:") ? undefined : "_blank"}
+                  rel={skill.installUrl.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                  className="inline-flex h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5"
+                >
+                  {skill.installLabel}
+                </a>
+                <a
+                  href="mailto:hello@agentzhan.com"
+                  className="inline-flex h-11 items-center rounded-full border border-white/15 bg-white/5 px-6 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/10"
+                >
+                  需要代安装？
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

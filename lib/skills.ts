@@ -11,6 +11,8 @@ export type SkillItem = {
   promptExample: string;
   relatedPack: string;
   href: string;
+  installUrl: string;
+  installLabel: string;
 };
 
 export type SkillBranch = {
@@ -41,6 +43,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于自动整理会议记录、客户需求、选题库、项目资料和 SOP 文档。",
         relatedPack: "Notion 知识库插件方案",
         href: "/skills/notion-agent-plugin",
+        installUrl: "https://www.notion.com/connections",
+        installLabel: "Notion 官方连接",
       },
       {
         slug: "gmail-agent-plugin",
@@ -55,6 +59,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于客户跟进、报价回复、会议安排、投诉处理和销售线索整理。",
         relatedPack: "邮件自动化插件方案",
         href: "/skills/gmail-agent-plugin",
+        installUrl: "https://workspace.google.com/marketplace",
+        installLabel: "Google 插件市场",
       },
     ],
   },
@@ -77,6 +83,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于网站改版、Bug 修复、功能迭代、文档更新和自动化维护。",
         relatedPack: "GitHub Agent 开发插件",
         href: "/skills/github-agent-plugin",
+        installUrl: "https://github.com/marketplace?type=apps",
+        installLabel: "GitHub Marketplace",
       },
       {
         slug: "vercel-deploy-plugin",
@@ -91,6 +99,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于 Next.js 网站上线、域名绑定、构建失败排查和自动部署流程。",
         relatedPack: "Vercel 部署插件方案",
         href: "/skills/vercel-deploy-plugin",
+        installUrl: "https://vercel.com/marketplace",
+        installLabel: "Vercel Marketplace",
       },
       {
         slug: "supabase-database-plugin",
@@ -105,6 +115,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于会员系统、收藏功能、线索表单、自动生成内容和后台管理。",
         relatedPack: "Supabase 数据库插件方案",
         href: "/skills/supabase-database-plugin",
+        installUrl: "https://supabase.com/partners/catalog",
+        installLabel: "Supabase 集成目录",
       },
     ],
   },
@@ -127,6 +139,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于免费资料领取、等待名单、课程预售、企业咨询和工具推荐转化。",
         relatedPack: "线索收集插件方案",
         href: "/skills/lead-capture-plugin",
+        installUrl: "mailto:hello@agentzhan.com?subject=我想获取线索收集插件方案",
+        installLabel: "获取方案",
       },
       {
         slug: "seo-content-plugin",
@@ -141,6 +155,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于 AI 工具站、行业知识库、模板站和长期 SEO 内容增长。",
         relatedPack: "SEO 自动内容插件方案",
         href: "/skills/seo-content-plugin",
+        installUrl: "mailto:hello@agentzhan.com?subject=我想获取 SEO 内容增长插件方案",
+        installLabel: "获取方案",
       },
     ],
   },
@@ -163,6 +179,8 @@ export const skillBranches: SkillBranch[] = [
         promptExample: "适合用于售前咨询、价格异议、售后安抚、投诉处理和客服培训。",
         relatedPack: "客服知识库插件方案",
         href: "/skills/customer-service-plugin",
+        installUrl: "mailto:hello@agentzhan.com?subject=我想获取 AI 客服知识库插件方案",
+        installLabel: "获取方案",
       },
     ],
   },
