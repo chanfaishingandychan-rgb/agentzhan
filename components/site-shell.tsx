@@ -52,9 +52,12 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <Link href="/search" className={buttonStyles({ variant: "outline", size: "sm" })}>
               找 Prompt
             </Link>
-            <span className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-400 sm:inline-flex">
+            <Link
+              href="/admin"
+              className="hidden rounded-full border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-medium text-slate-400 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600 sm:inline-flex"
+            >
               後台入口
-            </span>
+            </Link>
           </div>
         </div>
       </header>
@@ -91,7 +94,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div>Prompt 搜索</div>
               <div>分類導航</div>
               <div>Sitemap / Robots</div>
-              <div>會員與自動化預留</div>
+              <Link href="/admin" className="transition hover:text-violet-600">後台與自動化</Link>
             </div>
           </div>
         </div>
