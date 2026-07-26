@@ -5,9 +5,9 @@ import { buttonStyles } from "@/components/ui/button";
 import { categories, siteConfig } from "@/lib/site";
 
 const navItems = [
+  { label: "AI技能", href: "/skills" },
   { label: "搜索", href: "/search" },
   { label: "合集", href: "/collections" },
-  { label: "分类", href: "/#categories" },
   { label: "最新", href: "/#latest" },
   { label: "热门", href: "/#popular" },
 ];
@@ -92,7 +92,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
           <div>
             <div className="text-sm font-semibold text-slate-950">平台能力</div>
             <div className="mt-3 space-y-2 text-sm text-slate-500">
-              <div>AI 技能库</div>
+              <Link href="/skills" className="transition hover:text-violet-600">AI 技能库</Link>
               <div>Prompt 搜索</div>
               <div>工作包</div>
               <div>Sitemap / Robots</div>

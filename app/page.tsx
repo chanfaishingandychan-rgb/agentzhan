@@ -14,7 +14,7 @@ const scenes = [
     desc: "种草笔记、产品测评、探店攻略，AI 帮你写出更容易被收藏和互动的小红书内容。",
     icon: "M15.362 5.214A8.252 8.252 0 0112 21 8.25 8.25 0 016.038 7.048 8.287 8.287 0 009 9.6a8.983 8.983 0 013.361-6.867 8.21 8.21 0 003 2.48z",
     bgGradient: "from-rose-50 to-pink-50",
-    link: "/search?q=小红书",
+    link: "/skills#content",
   },
   {
     slug: "douyin",
@@ -22,7 +22,7 @@ const scenes = [
     desc: "3 秒钩子、分镜脚本、话题标签，快速产出更适合短视频发布的脚本。",
     icon: "M8 6l10 6-10 6z",
     bgGradient: "from-violet-50 to-purple-50",
-    link: "/search?q=抖音",
+    link: "/skills#content",
   },
   {
     slug: "ecommerce",
@@ -30,7 +30,7 @@ const scenes = [
     desc: "商品标题、详情页卖点、客服话术和活动文案，帮卖家提升转化效率。",
     icon: "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
     bgGradient: "from-amber-50 to-orange-50",
-    link: "/category/ai-ecommerce",
+    link: "/skills#ecommerce",
   },
   {
     slug: "office",
@@ -38,7 +38,7 @@ const scenes = [
     desc: "会议纪要、周报、邮件、PPT 大纲，上班族每天都能直接用的提效模板。",
     icon: "M4 8h16M4 16h16M8 4v16M16 4v16",
     bgGradient: "from-blue-50 to-cyan-50",
-    link: "/category/ai-office",
+    link: "/skills#office",
   },
   {
     slug: "boss",
@@ -46,7 +46,7 @@ const scenes = [
     desc: "商业计划书、融资路演、增长策略和管理制度，帮老板快速产出决策材料。",
     icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
     bgGradient: "from-emerald-50 to-teal-50",
-    link: "/category/ai-startup",
+    link: "/skills#automation",
   },
   {
     slug: "dev",
@@ -54,7 +54,7 @@ const scenes = [
     desc: "代码生成、Bug 排查、重构优化和测试补齐，让 AI 成为你的编程搭档。",
     icon: "M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5",
     bgGradient: "from-slate-50 to-slate-100",
-    link: "/collections/cursor-codex-coding",
+    link: "/skills#automation",
   },
 ];
 
@@ -144,7 +144,7 @@ export default function HomePage() {
                 </svg>
               </a>
               <Link
-                href="#scenes"
+                href="/skills"
                 className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
                 查看 AI 技能
@@ -203,7 +203,7 @@ export default function HomePage() {
               <h3 className="text-base font-semibold text-slate-900 transition-colors group-hover:text-violet-700">{scene.title}</h3>
               <p className="mt-2 text-sm leading-6 text-slate-500">{scene.desc}</p>
               <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-violet-600 transition-all group-hover:gap-1.5">
-                进入场景
+                查看技能介绍
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
                 </svg>
@@ -232,7 +232,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <section id="popular" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
           eyebrow="热门 Prompt"
           title="大家都在用的提示词"
@@ -402,7 +402,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-t border-slate-200 bg-slate-50 py-16 lg:py-20">
+      <section id="latest" className="scroll-mt-24 border-t border-slate-200 bg-slate-50 py-16 lg:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader eyebrow="最新收录" title="最近更新的 Prompt" description="持续新增高质量中文提示词，紧跟 AI 工具发展。" />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
