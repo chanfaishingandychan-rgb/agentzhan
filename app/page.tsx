@@ -63,8 +63,8 @@ const featuredPlugins = allSkills.filter((skill) =>
 
 const serviceScopes = [
   {
-    title: "AI小白交流群预约",
-    desc: "适合刚开始学 AI 的朋友，先扫码添加微信并备注，建群后再拉你入群交流。",
+    title: "AI小白微信交流群",
+    desc: "适合刚开始学 AI 的朋友，交流模型使用、提示词写法、工具选择和实际案例。",
   },
   {
     title: "模型使用咨询",
@@ -656,7 +656,7 @@ export default function HomePage() {
               href="#wechat"
               className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
             >
-              预约加入 AI小白交流群
+              加入 AI小白交流群
             </a>
             <Link
               href="/search"

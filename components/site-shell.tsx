@@ -63,7 +63,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       {/* ── Footer ── */}
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.7fr,1fr,1fr,0.8fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.5fr,1fr,1fr,1.2fr] lg:px-8">
           <div>
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-sm">
@@ -97,17 +97,32 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </div>
           <div id="wechat" className="scroll-mt-24">
             <div className="text-sm font-semibold text-slate-950">微信</div>
-            <p className="mt-3 text-sm leading-6 text-slate-500">
-              扫码添加微信，备注：AI小白，建群后拉你入群
-            </p>
-            <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
-              <Image
-                src="/wechat-qr.jpg"
-                alt="微信二维码"
-                width={112}
-                height={112}
-                className="h-28 w-28"
-              />
+            <p className="mt-3 text-sm leading-6 text-slate-500">扫码加入 AI小白微信交流群，群码失效可加微信咨询。</p>
+            <div className="mt-3 grid grid-cols-2 gap-3">
+              <div>
+                <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                  <Image
+                    src="/wechat-group-qr.jpg"
+                    alt="AI小白微信交流群二维码"
+                    width={104}
+                    height={104}
+                    className="h-[104px] w-[104px]"
+                  />
+                </div>
+                <div className="mt-2 text-xs font-medium text-slate-500">交流群</div>
+              </div>
+              <div>
+                <div className="inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+                  <Image
+                    src="/wechat-qr.jpg"
+                    alt="微信咨询二维码"
+                    width={104}
+                    height={104}
+                    className="h-[104px] w-[104px]"
+                  />
+                </div>
+                <div className="mt-2 text-xs font-medium text-slate-500">微信咨询</div>
+              </div>
             </div>
           </div>
         </div>
