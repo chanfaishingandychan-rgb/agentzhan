@@ -1,389 +1,268 @@
-import {
-  ArrowRight,
-  BadgeCheck,
-  Blocks,
-  Bot,
-  BriefcaseBusiness,
-  ChartNoAxesCombined,
-  ChevronRight,
-  CircleCheck,
-  Code2,
-  FileText,
-  Globe2,
-  LibraryBig,
-  Megaphone,
-  MessageSquareMore,
-  MousePointerClick,
-  Network,
-  PackageOpen,
-  Play,
-  Search,
-  ShieldCheck,
-  Sparkles,
-  Store,
-  Workflow,
-  Zap,
-} from "lucide-react";
+import Link from "next/link";
 
-import { SiteHeader } from "@/components/site-header";
-import { BrandMark } from "@/components/brand-mark";
+import { PromptCard } from "@/components/prompt-card";
+import { SearchBox } from "@/components/search-box";
+import { SectionHeading } from "@/components/section-heading";
+import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
+import { categories, siteConfig } from "@/lib/site";
 
-const categories = [
-  { name: "办公效率", description: "汇报、会议与文档处理", count: 46, icon: BriefcaseBusiness },
-  { name: "内容创作", description: "选题、写作与多平台发布", count: 38, icon: FileText },
-  { name: "营销增长", description: "获客、转化与用户运营", count: 31, icon: Megaphone },
-  { name: "电商运营", description: "商品、客服与店铺增长", count: 27, icon: Store },
-  { name: "开发编程", description: "代码、测试与自动部署", count: 35, icon: Code2 },
-  { name: "数据分析", description: "报表、洞察与决策建议", count: 22, icon: ChartNoAxesCombined },
-];
+const categoryIcons: Record<string, string> = {
+  "ai-writing": "M16 4h4v4h-4zM8 4h4v4H8zM16 12h4v4h-4zM8 12h4v4H8zM4 4h2v12H4zM22 4h2v12h-2z",
+  "ai-office": "M4 8h16M4 16h16M8 4v16M16 4v16",
+  "ai-learning": "M12 4l8 8-8 8-8-8z",
+  "ai-short-video": "M8 6l10 6-10 6z",
+  "ai-ecommerce": "M3 10h18M7 15h1m4 0h1m4 0h1M5 10l1-6h12l1 6",
+  "ai-marketing": "M12 2L2 22h20z",
+  "ai-customer-service": "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0z",
+  "ai-startup": "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
+  "ai-personal-assistant": "M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z",
+  "ai-efficiency-tools": "M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z",
+};
 
-const agents = [
-  {
-    title: "全能内容运营官",
-    description: "从选题研究到成稿、改写和多平台发布，一次完成整套内容生产。",
-    category: "内容创作",
-    model: "Claude / ChatGPT",
-    uses: "12.8k",
-    icon: Sparkles,
-    tone: "violet",
-  },
-  {
-    title: "小红书爆款策划师",
-    description: "分析人群痛点，生成选题、标题、正文结构和高互动评论引导。",
-    category: "营销增长",
-    model: "ChatGPT",
-    uses: "9.6k",
-    icon: MessageSquareMore,
-    tone: "rose",
-  },
-  {
-    title: "智能会议执行助理",
-    description: "把会议记录整理成结论、待办、负责人和截止时间，并自动跟进。",
-    category: "办公效率",
-    model: "Gemini / Claude",
-    uses: "8.4k",
-    icon: CircleCheck,
-    tone: "blue",
-  },
-  {
-    title: "电商增长分析师",
-    description: "读取店铺数据，定位转化问题，并给出可以立即执行的优化清单。",
-    category: "电商运营",
-    model: "DeepSeek",
-    uses: "7.1k",
-    icon: Store,
-    tone: "amber",
-  },
-  {
-    title: "SEO 内容研究员",
-    description: "完成关键词聚类、搜索意图判断、内容大纲和内链规划。",
-    category: "营销增长",
-    model: "Claude",
-    uses: "6.7k",
-    icon: Globe2,
-    tone: "emerald",
-  },
-  {
-    title: "代码审查工程师",
-    description: "检查潜在缺陷、安全问题和性能风险，输出按优先级排列的建议。",
-    category: "开发编程",
-    model: "Codex / Cursor",
-    uses: "5.9k",
-    icon: Code2,
-    tone: "slate",
-  },
-];
+export default function HomePage() {
+  const latestPrompts = getLatestPrompts(8);
+  const popularPrompts = getPopularPrompts(8);
+  const hotTags = getHotTags(20);
 
-const workflows = [
-  {
-    step: "01",
-    title: "热点到多平台内容",
-    description: "追踪热点 → 筛选选题 → 生成长文 → 拆分短内容 → 排期发布",
-    tools: ["搜索", "Claude", "Notion"],
-  },
-  {
-    step: "02",
-    title: "客户咨询自动跟进",
-    description: "接收咨询 → 判断意向 → 生成回复 → 写入 CRM → 提醒销售",
-    tools: ["邮箱", "AI Agent", "CRM"],
-  },
-  {
-    step: "03",
-    title: "每日经营数据简报",
-    description: "汇总数据 → 发现异常 → 解释原因 → 给出行动建议 → 定时推送",
-    tools: ["表格", "DeepSeek", "飞书"],
-  },
-];
-
-const resources = [
-  {
-    label: "SKILL",
-    title: "长文深度研究",
-    description: "让 Agent 从多个可信来源收集、核验并整合信息。",
-    icon: LibraryBig,
-    color: "resource-indigo",
-  },
-  {
-    label: "SKILL",
-    title: "社媒内容改写",
-    description: "将一篇内容适配小红书、公众号、抖音等平台。",
-    icon: PackageOpen,
-    color: "resource-cyan",
-  },
-  {
-    label: "MCP",
-    title: "网页搜索连接器",
-    description: "为 Agent 提供实时网页搜索和来源引用能力。",
-    icon: Globe2,
-    color: "resource-emerald",
-  },
-  {
-    label: "MCP",
-    title: "本地文件连接器",
-    description: "安全读取指定文件夹中的文档与结构化数据。",
-    icon: Network,
-    color: "resource-amber",
-  },
-];
-
-export default function Home() {
   return (
-    <div id="top">
-      <SiteHeader />
+    <main>
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden bg-slate-950">
+        {/* Background layers */}
+        <div className="absolute inset-0 bg-grid opacity-[0.04]" />
+        <div className="absolute inset-0 bg-mesh" />
+        {/* Geometric illustration */}
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <svg className="absolute right-[-10%] top-[-5%] h-[120%] w-[65%] opacity-30" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hg1" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stopColor="#7c3aed" />
+                <stop offset="100%" stopColor="#3b82f6" />
+              </linearGradient>
+              <linearGradient id="hg2" x1="1" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#06b6d4" />
+                <stop offset="100%" stopColor="#7c3aed" />
+              </linearGradient>
+            </defs>
+            {/* Large orb */}
+            <circle cx="520" cy="350" r="180" fill="url(#hg1)" opacity="0.3" filter="blur(40px)" className="animate-pulse-glow" />
+            {/* Medium orb */}
+            <circle cx="300" cy="200" r="90" fill="url(#hg2)" opacity="0.25" filter="blur(30px)" className="animate-float" />
+            {/* Small accent */}
+            <circle cx="650" cy="550" r="50" fill="#818cf8" opacity="0.2" filter="blur(20px)" className="animate-float-slow" />
+            {/* Connection lines */}
+            <line x1="300" y1="200" x2="520" y2="350" stroke="#7c3aed" strokeWidth="0.5" opacity="0.15" />
+            <line x1="520" y1="350" x2="650" y2="550" stroke="#3b82f6" strokeWidth="0.5" opacity="0.12" />
+            <line x1="300" y1="200" x2="200" y2="500" stroke="#06b6d4" strokeWidth="0.5" opacity="0.1" />
+            {/* Grid dots */}
+            {Array.from({ length: 8 }).flatMap((_, row) =>
+              Array.from({ length: 6 }).map((_, col) => (
+                <circle key={`${row}-${col}`} cx={100 + col * 90} cy={80 + row * 90} r="1.5" fill="#94a3b8" opacity="0.15" />
+              ))
+            )}
+          </svg>
+        </div>
 
-      <main>
-        <section className="hero-section">
-          <div className="hero-grid" aria-hidden="true" />
-          <div className="shell hero-content">
-            <a className="eyebrow" href="#agents">
-              <span className="eyebrow-dot" />
-              中文 AI Agent 资源平台
-              <ChevronRight size={14} />
-            </a>
-            <h1>
-              让 AI 真正替你
-              <span>完成工作</span>
+        <div className="relative mx-auto max-w-7xl px-4 pb-24 pt-28 sm:px-6 lg:px-8 lg:pb-32 lg:pt-36">
+          <div className="max-w-4xl">
+            {/* Eyebrow */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
+              <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-xs font-medium text-slate-300">100+ Prompts · 10 Categories · Updated Weekly</span>
+            </div>
+
+            <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+              <span className="text-gradient">Agent站</span>
+              <br />
+              <span className="text-white/90">中文最全 AI Prompt 工具站</span>
             </h1>
-            <p className="hero-description">
-              发现可直接使用的 AI Agent、自动化工作流、Skills 与 MCP 资源，
-              <br className="desktop-break" />
-              从一个想法到完整结果，少走弯路，更快交付。
+
+            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
+              {siteConfig.subtitle}
             </p>
 
-            <form className="hero-search" action="#agents">
-              <Search size={21} aria-hidden="true" />
-              <input aria-label="搜索资源" placeholder="搜索 Agent、工作流、Skills 或 MCP" />
-              <button type="submit">
-                开始探索
-                <ArrowRight size={17} />
-              </button>
-            </form>
-
-            <div className="quick-links" aria-label="热门搜索">
-              <span>热门：</span>
-              <a href="#agents">内容创作</a>
-              <a href="#agents">办公自动化</a>
-              <a href="#agents">小红书</a>
-              <a href="#resources">MCP</a>
+            {/* Search */}
+            <div className="mt-8 max-w-2xl">
+              <SearchBox placeholder="搜尋 ChatGPT、Claude、DeepSeek 提示詞..." buttonLabel="搜尋提示詞" />
             </div>
 
-            <div className="agent-demo" aria-label="Agent 工作演示">
-              <div className="demo-topbar">
-                <div className="demo-window-dots" aria-hidden="true">
-                  <span />
-                  <span />
-                  <span />
+            {/* Stats row */}
+            <div className="mt-12 flex flex-wrap gap-x-12 gap-y-4">
+              {[
+                { value: "100+", label: "高質量提示詞" },
+                { value: "10", label: "場景分類" },
+                { value: "5+", label: "主流模型覆蓋" },
+                { value: "SEO", label: "百度收錄友好" },
+              ].map(({ value, label }) => (
+                <div key={label}>
+                  <div className="text-2xl font-bold text-white">{value}</div>
+                  <div className="mt-1 text-sm text-slate-500">{label}</div>
                 </div>
-                <span className="demo-title">Agent 工作台</span>
-                <span className="demo-status">
-                  <span />运行中
-                </span>
-              </div>
-              <div className="demo-body">
-                <div className="demo-request">
-                  <span className="demo-avatar">你</span>
-                  <div>
-                    <span className="demo-label">任务需求</span>
-                    <p>分析本周行业热点，生成一份适合公众号和小红书的内容计划。</p>
-                  </div>
-                </div>
-                <div className="demo-steps">
-                  <div className="demo-step complete">
-                    <span className="step-icon"><Search size={16} /></span>
-                    <span><strong>热点研究</strong><small>已筛选 18 个可信来源</small></span>
-                    <BadgeCheck size={18} />
-                  </div>
-                  <span className="step-line complete" />
-                  <div className="demo-step active">
-                    <span className="step-icon"><Bot size={16} /></span>
-                    <span><strong>内容策划</strong><small>正在生成双平台内容框架</small></span>
-                    <span className="loading-dots"><i /><i /><i /></span>
-                  </div>
-                  <span className="step-line" />
-                  <div className="demo-step pending">
-                    <span className="step-icon"><FileText size={16} /></span>
-                    <span><strong>交付结果</strong><small>公众号长文 + 5 篇小红书笔记</small></span>
-                  </div>
-                </div>
-                <div className="demo-output">
-                  <div className="output-icon"><Zap size={18} /></div>
-                  <div>
-                    <span>预计节省时间</span>
-                    <strong>4.5 小时</strong>
-                  </div>
-                  <button type="button"><Play size={14} fill="currentColor" />查看演示</button>
-                </div>
-              </div>
-            </div>
-
-            <div className="trust-row">
-              <span><ShieldCheck size={17} />经过测试与人工筛选</span>
-              <span><MousePointerClick size={17} />直接复制，即刻使用</span>
-              <span><Zap size={17} />持续更新实用资源</span>
-            </div>
-          </div>
-        </section>
-
-        <section className="section shell" id="agents">
-          <div className="section-heading">
-            <div>
-              <span className="section-kicker">按场景探索</span>
-              <h2>找到适合你的 AI 工作方式</h2>
-            </div>
-            <a href="#agents">查看全部分类 <ArrowRight size={16} /></a>
-          </div>
-          <div className="category-grid">
-            {categories.map(({ name, description, count, icon: Icon }) => (
-              <a className="category-card" href="#featured" key={name}>
-                <span className="category-icon"><Icon size={21} /></span>
-                <span className="category-copy"><strong>{name}</strong><small>{description}</small></span>
-                <span className="category-count">{count}</span>
-                <ChevronRight className="category-arrow" size={17} />
-              </a>
-            ))}
-          </div>
-        </section>
-
-        <section className="section section-soft" id="featured">
-          <div className="shell">
-            <div className="section-heading">
-              <div>
-                <span className="section-kicker">编辑精选</span>
-                <h2>本周热门 Agent</h2>
-                <p>经过实际任务测试，可以立即放进你的工作流程。</p>
-              </div>
-              <a href="#agents">浏览全部 Agent <ArrowRight size={16} /></a>
-            </div>
-            <div className="agent-grid">
-              {agents.map(({ title, description, category, model, uses, icon: Icon, tone }) => (
-                <article className="agent-card" key={title}>
-                  <div className="agent-card-top">
-                    <span className={`agent-icon ${tone}`}><Icon size={22} /></span>
-                    <span className="verified"><BadgeCheck size={14} />精选</span>
-                  </div>
-                  <div className="agent-meta"><span>{category}</span><span>{model}</span></div>
-                  <h3>{title}</h3>
-                  <p>{description}</p>
-                  <div className="agent-footer">
-                    <span><Play size={13} fill="currentColor" />{uses} 次使用</span>
-                    <a href="#cta" aria-label={`查看${title}`}><ArrowRight size={17} /></a>
-                  </div>
-                </article>
               ))}
             </div>
           </div>
-        </section>
-
-        <section className="workflow-section" id="workflows">
-          <div className="shell">
-            <div className="workflow-heading">
-              <span className="section-kicker light">自动化工作流</span>
-              <h2>不只是回答，<br />而是把整件事做完</h2>
-              <p>把多个工具和步骤连接起来，让 Agent 按照清晰流程持续完成任务。</p>
-              <a className="button button-light" href="#cta">探索工作流 <ArrowRight size={17} /></a>
-            </div>
-            <div className="workflow-list">
-              {workflows.map((workflow) => (
-                <article className="workflow-card" key={workflow.step}>
-                  <div className="workflow-number">{workflow.step}</div>
-                  <div className="workflow-content">
-                    <h3>{workflow.title}</h3>
-                    <p>{workflow.description}</p>
-                    <div className="tool-tags">
-                      {workflow.tools.map((tool) => <span key={tool}>{tool}</span>)}
-                    </div>
-                  </div>
-                  <a href="#cta" aria-label={`查看${workflow.title}`}><ArrowRight size={18} /></a>
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section shell" id="resources">
-          <div className="section-heading">
-            <div>
-              <span className="section-kicker">能力扩展</span>
-              <h2>为你的 Agent 装上新能力</h2>
-              <p>精选 Skills 与 MCP 连接器，让智能体能搜索、读取、分析和执行。</p>
-            </div>
-            <a href="#resources">查看资源库 <ArrowRight size={16} /></a>
-          </div>
-          <div className="resource-grid">
-            {resources.map(({ label, title, description, icon: Icon, color }) => (
-              <article className="resource-card" key={title}>
-                <div className={`resource-icon ${color}`}><Icon size={21} /></div>
-                <span className="resource-label">{label}</span>
-                <h3>{title}</h3>
-                <p>{description}</p>
-                <a href="#cta">查看详情 <ArrowRight size={15} /></a>
-              </article>
-            ))}
-          </div>
-        </section>
-
-        <section className="proof-section" id="learn">
-          <div className="shell proof-grid">
-            <div>
-              <span className="section-kicker">为什么选择 Agent站</span>
-              <h2>少一点概念，<br />多一点真实结果</h2>
-              <p>每项资源都围绕实际工作任务设计。清楚说明适用场景、配置方法与预期结果。</p>
-            </div>
-            <div className="proof-points">
-              <div><span><CircleCheck size={20} /></span><strong>可直接使用</strong><p>提供完整配置、提示词和操作步骤。</p></div>
-              <div><span><BadgeCheck size={20} /></span><strong>中文场景优化</strong><p>针对本地平台与真实工作习惯设计。</p></div>
-              <div><span><ShieldCheck size={20} /></span><strong>人工测试筛选</strong><p>明确标注限制，不收录低质量重复资源。</p></div>
-              <div><span><Workflow size={20} /></span><strong>从入门到进阶</strong><p>普通用户能直接用，开发者也能深入扩展。</p></div>
-            </div>
-          </div>
-        </section>
-
-        <section className="cta-section shell" id="cta">
-          <div className="cta-panel">
-            <div className="cta-pattern" aria-hidden="true" />
-            <div className="cta-icon"><Blocks size={26} /></div>
-            <h2>找到你的第一个 AI Agent</h2>
-            <p>从今天开始，把重复工作交给 AI，把时间留给更重要的决定。</p>
-            <div className="cta-actions">
-              <a className="button button-light" href="#agents">立即探索 <ArrowRight size={17} /></a>
-              <a className="button button-ghost-light" href="#workflows">查看工作流</a>
-            </div>
-          </div>
-        </section>
-      </main>
-
-      <footer id="footer">
-        <div className="shell footer-grid">
-          <div className="footer-brand">
-            <a className="brand" href="#top"><BrandMark /><span>Agent站</span></a>
-            <p>中文 AI Agent、工作流、Skills 与 MCP 资源平台。</p>
-          </div>
-          <div><strong>资源</strong><a href="#agents">AI Agent</a><a href="#workflows">工作流</a><a href="#resources">Skills</a><a href="#resources">MCP</a></div>
-          <div><strong>探索</strong><a href="#featured">热门精选</a><a href="#featured">最新发布</a><a href="#learn">学习中心</a><a href="#footer">提交资源</a></div>
-          <div><strong>关于</strong><a href="#footer">关于我们</a><a href="#footer">联系我们</a><a href="#footer">隐私政策</a><a href="#footer">使用条款</a></div>
         </div>
-        <div className="shell footer-bottom"><span>© 2026 Agent站</span><span>agentzhan.com</span></div>
-      </footer>
-    </div>
+      </section>
+
+      {/* ── Categories ── */}
+      <section className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+        <SectionHeading
+          eyebrow="場景分類"
+          title="按場景快速找到可用的中文提示詞"
+          description="10 大分類覆蓋寫作、辦公、學習、短視頻、電商等高頻場景，每個分類均有專屬提示詞庫。"
+        />
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {categories.map((cat, i) => (
+            <Link
+              key={cat.slug}
+              href={`/category/${cat.slug}`}
+              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_16px_48px_rgba(124,58,237,0.10)]"
+              style={{ animationDelay: `${i * 40}ms` }}
+            >
+              {/* Card icon */}
+              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-50 to-blue-50 text-violet-600 transition-colors group-hover:from-violet-100 group-hover:to-blue-100">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={categoryIcons[cat.slug] ?? "M12 4l8 8-8 8-8-8z"} />
+                </svg>
+              </div>
+              <h3 className="text-base font-semibold text-slate-900">{cat.name}</h3>
+              <p className="mt-2 text-sm leading-6 text-slate-500">{cat.description}</p>
+              {/* Hover accent line */}
+              <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Popular Prompts ── */}
+      <section className="bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="熱門提示詞"
+            title="高搜索意圖頁面"
+            description="百度 SEO 優先的精選提示詞頁面，每個頁面獨立 title、description、FAQ Schema，適合搜索引擎收錄。"
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {popularPrompts.map((prompt) => (
+              <PromptCard key={prompt.slug} prompt={prompt} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Latest Prompts ── */}
+      <section className="py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="最新收錄"
+            title="最新提示詞內容"
+            description="持續更新中文提示詞庫，每週新增高質量內容，緊跟 AI 工具生態發展。"
+          />
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {latestPrompts.map((prompt) => (
+              <PromptCard key={prompt.slug} prompt={prompt} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Platform Vision ── */}
+      <section className="border-y border-slate-200 bg-slate-50 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="平台能力"
+            title="不只是提示詞庫"
+            description="Agent站 正在從提示詞庫進化為完整的 AI Agent 生態平台，後續將陸續上線工作流、技能商店與協作空間。"
+          />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              {
+                icon: "M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z",
+                title: "AI 工作流庫",
+                desc: "可複製的工作流模板，一鍵導入你的 AI 工具鏈。",
+              },
+              {
+                icon: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z",
+                title: "付費提示詞專區",
+                desc: "會員權限、收藏夾、購買與授權分層，專業版內容。",
+              },
+              {
+                icon: "M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09z",
+                title: "AI Agent Skills",
+                desc: "Agent、MCP 資源庫和技能商店，形成長期增長結構。",
+              },
+              {
+                icon: "M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197",
+                title: "社群協作",
+                desc: "提示詞評論、分享、協作編輯，建立 AI 創作者社群。",
+              },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} className="rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg">
+                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-violet-100 to-blue-100 text-violet-600">
+                  <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d={icon} />
+                  </svg>
+                </div>
+                <h3 className="text-base font-semibold text-slate-900">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-slate-500">{desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Tags ── */}
+      <section className="py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SectionHeading
+            eyebrow="熱門標籤"
+            title="高頻檢索關鍵詞"
+            description="從熱門標籤快速定位感興趣的提示詞主題，每個標籤都有對應的搜索結果頁。"
+          />
+          <div className="flex flex-wrap gap-3">
+            {hotTags.map(({ tag, count }) => (
+              <Link
+                key={tag}
+                href={`/search?q=${encodeURIComponent(tag)}`}
+                className="group inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm text-slate-600 transition-all duration-200 hover:border-violet-300 hover:bg-violet-50 hover:text-violet-700 hover:shadow-sm"
+              >
+                <span className="text-violet-400 transition-colors group-hover:text-violet-500">#</span>
+                {tag}
+                <span className="text-xs text-slate-400">({count})</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="bg-slate-950 py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+            準備好用 AI 提升效率了嗎？
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-8 text-slate-400">
+            100+ 高質量中文提示詞，覆蓋 ChatGPT、Claude、DeepSeek，免費取用，直接複製。
+          </p>
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/search"
+              className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
+            >
+              開始搜尋提示詞
+              <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </Link>
+            <Link
+              href={`/category/${categories[0].slug}`}
+              className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+            >
+              瀏覽分類
+            </Link>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }

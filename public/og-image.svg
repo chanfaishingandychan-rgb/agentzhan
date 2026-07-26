@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#3b82f6"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="900" cy="150" r="200" fill="#7c3aed" opacity="0.15" filter="blur(60px)"/>
+  <circle cx="300" cy="480" r="180" fill="#3b82f6" opacity="0.12" filter="blur(50px)"/>
+  <text x="80" y="200" font-family="system-ui,sans-serif" font-size="72" font-weight="800" fill="white">Agent站</text>
+  <text x="80" y="280" font-family="system-ui,sans-serif" font-size="32" fill="#94a3b8">AI 提示词库 · 中文最全 Agent &amp; Prompt 工具站</text>
+  <text x="80" y="380" font-family="system-ui,sans-serif" font-size="22" fill="#64748b">100+ 高质量中文提示词 · 10 大分类 · ChatGPT / Claude / DeepSeek</text>
+  <rect x="80" y="440" width="300" height="56" rx="28" fill="url(#accent)"/>
+  <text x="230" y="476" font-family="system-ui,sans-serif" font-size="22" font-weight="600" fill="white" text-anchor="middle">agentzhan.com</text>
+</svg>

@@ -2,31 +2,65 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 
+import { SiteShell } from "@/components/site-shell";
+import { buildOrganizationSchema, buildWebsiteSchema } from "@/lib/schema";
+import { siteConfig } from "@/lib/site";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://agentzhan.com"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "Agent站 - 中文 AI Agent、工作流与技能库",
-    template: "%s | Agent站",
+    default: siteConfig.title,
+    template: `%s | ${siteConfig.name}`,
   },
-  description:
-    "发现可直接使用的中文 AI Agent、自动化工作流、Skills 与 MCP 资源，让 AI 真正替你完成工作。",
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  icons: {
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Agent站 - 让 AI 真正替你完成工作",
-    description: "中文 AI Agent、工作流、Skills 与 MCP 资源平台。",
-    url: "https://agentzhan.com",
-    siteName: "Agent站",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
     locale: "zh_CN",
     type: "website",
+    images: [
+      {
+        url: `${siteConfig.url}/og-image.svg`,
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [`${siteConfig.url}/og-image.svg`],
   },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const organizationSchema = buildOrganizationSchema();
+  const websiteSchema = buildWebsiteSchema();
+
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
+        <SiteShell>{children}</SiteShell>
+      </body>
     </html>
   );
 }
