@@ -3,10 +3,12 @@ import Image from "next/image";
 import { siClaude, siDeepseek, siGooglegemini, siKimi, siPerplexity, siQwen } from "simple-icons";
 
 import { LeadCaptureForm } from "@/components/lead-capture-form";
+import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
 import { getHotTags, getLatestPrompts, getPopularPrompts } from "@/lib/prompts";
+import { allSkills } from "@/lib/skills";
 
 const openAiIconPath =
   "M14.949 6.547a3.94 3.94 0 0 0-.348-3.273 4.11 4.11 0 0 0-4.4-1.934A4.1 4.1 0 0 0 8.423.2 4.15 4.15 0 0 0 6.305.086a4.1 4.1 0 0 0-1.891.948 4.04 4.04 0 0 0-1.158 1.753 4.1 4.1 0 0 0-1.563.679A4 4 0 0 0 .554 4.72a3.99 3.99 0 0 0 .502 4.731 3.94 3.94 0 0 0 .346 3.274 4.11 4.11 0 0 0 4.402 1.933c.382.425.852.764 1.377.995.526.231 1.095.35 1.67.346 1.78.002 3.358-1.132 3.901-2.804a4.1 4.1 0 0 0 1.563-.68 4 4 0 0 0 1.14-1.253 3.99 3.99 0 0 0-.506-4.716m-6.097 8.406a3.05 3.05 0 0 1-1.945-.694l.096-.054 3.23-1.838a.53.53 0 0 0 .265-.455v-4.49l1.366.778q.02.011.025.035v3.722c-.003 1.653-1.361 2.992-3.037 2.996m-6.53-2.75a2.95 2.95 0 0 1-.36-2.01l.095.057L5.29 12.09a.53.53 0 0 0 .527 0l3.949-2.246v1.555a.05.05 0 0 1-.022.041L6.473 13.3c-1.454.826-3.311.335-4.15-1.098m-.85-6.94A3.02 3.02 0 0 1 3.07 3.949v3.785a.51.51 0 0 0 .262.451l3.93 2.237-1.366.779a.05.05 0 0 1-.048 0L2.585 9.342a2.98 2.98 0 0 1-1.113-4.094zm11.216 2.571L8.747 5.576l1.362-.776a.05.05 0 0 1 .048 0l3.265 1.86a3 3 0 0 1 1.173 1.207 2.96 2.96 0 0 1-.27 3.2 3.05 3.05 0 0 1-1.36.997V8.279a.52.52 0 0 0-.276-.445m1.36-2.015-.097-.057-3.226-1.855a.53.53 0 0 0-.53 0L6.249 6.153V4.598a.04.04 0 0 1 .019-.04L9.533 2.7a3.07 3.07 0 0 1 3.257.139c.474.325.843.778 1.066 1.303.223.526.289 1.103.191 1.664zM5.503 8.575 4.139 7.8a.05.05 0 0 1-.026-.037V4.049c0-.57.166-1.127.476-1.607s.752-.864 1.275-1.105a3.08 3.08 0 0 1 3.234.41l-.096.054-3.23 1.838a.53.53 0 0 0-.265.455zm.742-1.577 1.758-1 1.762 1v2l-1.755 1-1.762-1z";
@@ -53,6 +55,10 @@ const tools = [
   { name: "Notion AI", desc: "文档和知识库", url: "https://notion.so", tag: "AI 办公" },
   { name: "Gamma", desc: "AI PPT 生成", url: "https://gamma.app", tag: "AI 办公" },
 ];
+
+const featuredPlugins = allSkills.filter((skill) =>
+  ["notion-agent-plugin", "gmail-agent-plugin", "github-agent-plugin", "supabase-database-plugin"].includes(skill.slug),
+);
 
 const aiModels = [
   {
@@ -273,6 +279,82 @@ export default function HomePage() {
               </div>
             </a>
           ))}
+        </div>
+      </section>
+
+      <section id="plugin-bridge" className="border-y border-slate-200 bg-white py-16 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+          <div className="lg:sticky lg:top-24 lg:self-start">
+            <div className="mb-4 inline-flex rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+              下一步：插件能力
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+              选好模型之后，还要懂得用插件让 AI 真正做事
+            </h2>
+            <p className="mt-4 text-base leading-8 text-slate-600">
+              模型负责思考，插件负责连接真实工具。把邮箱、知识库、代码仓库和数据库接入 Agent，AI 才能从“回答问题”变成“完成任务”。
+            </p>
+            <div className="mt-6 grid gap-3 text-sm text-slate-600">
+              {[
+                ["模型", "负责理解、推理、生成内容"],
+                ["插件", "负责读取资料、调用工具、执行动作"],
+                ["工作流", "把多个步骤串起来，形成可复用流程"],
+              ].map(([label, desc]) => (
+                <div key={label} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
+                    {label.slice(0, 1)}
+                  </span>
+                  <div>
+                    <div className="font-semibold text-slate-950">{label}</div>
+                    <div>{desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link
+              href="/skills"
+              className="mt-7 inline-flex h-11 items-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+            >
+              查看 AI 插件库
+            </Link>
+          </div>
+
+          <div className="grid gap-4">
+            {featuredPlugins.map((plugin) => (
+              <Link
+                key={plugin.slug}
+                href={plugin.href}
+                className="group flex gap-4 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
+              >
+                <PluginIcon slug={plugin.slug} className="h-16 w-16 rounded-3xl" />
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="text-lg font-bold tracking-tight text-slate-950">{plugin.title}</h3>
+                    <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700">
+                      {plugin.difficulty}
+                    </span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">
+                      变现潜力：{plugin.monetization}
+                    </span>
+                  </div>
+                  <p className="mt-2 text-sm leading-7 text-slate-600">{plugin.outcome}</p>
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {plugin.tools.map((tool) => (
+                      <span key={tool} className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-500">
+                        {tool}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+                    <span className="text-sm text-slate-500">适合：{plugin.audience}</span>
+                    <span className="text-sm font-semibold text-violet-600 transition-all group-hover:translate-x-0.5">
+                      查看插件介绍 →
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
         </div>
       </section>
 
