@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
@@ -62,7 +63,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       {/* ── Footer ── */}
       <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[2fr,1fr,1fr] lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.7fr,1fr,1fr,0.8fr] lg:px-8">
           <div>
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-sm">
@@ -92,6 +93,18 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <div>插件介绍</div>
               <div>工作包</div>
               <div>Sitemap / Robots</div>
+            </div>
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-slate-950">微信</div>
+            <div className="mt-3 inline-flex rounded-xl border border-slate-200 bg-white p-2 shadow-sm">
+              <Image
+                src="/wechat-qr.jpg"
+                alt="微信二维码"
+                width={112}
+                height={112}
+                className="h-28 w-28"
+              />
             </div>
           </div>
         </div>
