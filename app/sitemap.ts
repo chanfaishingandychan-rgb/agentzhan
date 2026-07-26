@@ -54,6 +54,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
     },
     {
+      url: `${siteConfig.url}/news`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "daily",
+      priority: 0.85,
+    },
+    {
       url: `${siteConfig.url}/collections`,
       lastModified: new Date().toISOString(),
       changeFrequency: "weekly",
