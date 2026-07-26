@@ -61,6 +61,25 @@ const featuredPlugins = allSkills.filter((skill) =>
   ["notion-agent-plugin", "gmail-agent-plugin", "github-agent-plugin", "supabase-database-plugin"].includes(skill.slug),
 );
 
+const serviceScopes = [
+  {
+    title: "模型使用咨询",
+    desc: "帮你判断 ChatGPT、Claude、DeepSeek、Kimi 等模型该怎么选，适合哪些工作场景。",
+  },
+  {
+    title: "AI 插件安装",
+    desc: "协助连接邮箱、文档、数据库、代码仓库和网站，让 Agent 能读取资料和执行任务。",
+  },
+  {
+    title: "AI 工作流搭建",
+    desc: "把选题、写作、客服、线索收集、内容更新等重复工作整理成可复用流程。",
+  },
+  {
+    title: "企业 AI 咨询",
+    desc: "面向小团队和中小企业，梳理 AI 落地场景、工具组合、培训和后续维护方案。",
+  },
+];
+
 const aiModels = [
   {
     name: "ChatGPT",
@@ -163,7 +182,7 @@ export default function HomePage() {
           <div className="flex flex-col justify-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur">
               <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
-              <span className="text-xs font-medium text-slate-300">AI插件 · Agent能力 · 工作流 · 自动化</span>
+              <span className="text-xs font-medium text-slate-300">模型使用 · AI插件 · 工作流 · 咨询服务</span>
             </div>
 
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl">
@@ -173,7 +192,7 @@ export default function HomePage() {
             </h1>
 
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-400 sm:text-lg">
-              Agent站整理 AI 插件、工具和工作流，帮你把邮箱、文档、代码仓库、数据库和网站连接到 AI Agent。
+              Agent站整理 AI 模型、插件、工具和工作流，也提供模型使用咨询、插件安装和企业 AI 落地建议。
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -190,7 +209,7 @@ export default function HomePage() {
                 href="#wechat"
                 className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
-                微信咨询安装服务
+                微信咨询 AI 服务
               </a>
             </div>
 
@@ -329,13 +348,14 @@ export default function HomePage() {
               选好模型之后，还要懂得用插件让 AI 真正做事
             </h2>
             <p className="mt-4 text-base leading-8 text-slate-600">
-              模型负责思考，插件负责连接真实工具。把邮箱、知识库、代码仓库和数据库接入 Agent，AI 才能从“回答问题”变成“完成任务”。
+              模型负责思考，插件负责连接真实工具，咨询服务帮你判断哪些场景值得先做。把邮箱、知识库、代码仓库和数据库接入 Agent，AI 才能从“回答问题”变成“完成任务”。
             </p>
             <div className="mt-6 grid gap-3 text-sm text-slate-600">
               {[
-                ["模型", "负责理解、推理、生成内容"],
+                ["模型", "负责理解、推理、生成内容，也需要按场景选择"],
                 ["插件", "负责读取资料、调用工具、执行动作"],
                 ["工作流", "把多个步骤串起来，形成可复用流程"],
+                ["咨询", "帮你梳理模型使用、插件安装和落地优先级"],
               ].map(([label, desc]) => (
                 <div key={label} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-slate-950 text-xs font-bold text-white">
@@ -603,17 +623,27 @@ export default function HomePage() {
       </section>
 
       <section className="bg-slate-950 py-16 lg:py-20">
-        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">需要帮公司建立 AI 工作流？</h2>
-          <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-400">
-            我们为企业团队提供定制 Prompt 库、AI 工作流搭建和内部培训服务。
-          </p>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">需要有人帮你把 AI 真正用起来？</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-7 text-slate-400">
+              提供模型使用咨询、AI 插件安装、工作流搭建和企业 AI 落地建议，适合个人站长、小团队和中小企业。
+            </p>
+          </div>
+          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {serviceScopes.map((service) => (
+              <div key={service.title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-left">
+                <div className="text-sm font-bold text-white">{service.title}</div>
+                <p className="mt-2 text-sm leading-6 text-slate-400">{service.desc}</p>
+              </div>
+            ))}
+          </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
             <a
               href="#wechat"
               className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
             >
-              扫微信联系我们
+              扫微信咨询 AI 服务
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
               </svg>
