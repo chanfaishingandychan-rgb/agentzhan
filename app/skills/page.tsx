@@ -99,7 +99,7 @@ export default function SkillsPage() {
             <div className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm">
               <div className="text-xs font-semibold text-slate-500">首批试用价</div>
               <div className="mt-2 text-4xl font-black text-slate-950">¥98</div>
-              <div className="mt-1 text-xs text-slate-500">人民币，一次性工具包</div>
+              <div className="mt-1 text-xs text-slate-500">一次性工具包</div>
               <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
                 查看详情 →
               </div>

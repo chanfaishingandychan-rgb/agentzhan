@@ -6,7 +6,7 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Mac Codex 接入 DeepSeek 自助安装包 - Agent站",
   description:
-    "Mac Codex 接入 DeepSeek 自助安装包，首批试用价人民币 98，支持 DeepSeek Flash / Pro 独立入口，保留原本 GPT 设置。",
+    "Mac Codex 接入 DeepSeek 自助安装包，首批试用价 ¥98，支持 DeepSeek Flash / Pro 独立入口，保留原本 GPT 设置。",
   alternates: {
     canonical: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
   },
@@ -49,7 +49,7 @@ export default function CodexDeepSeekProductPage() {
     "@type": "Product",
     name: "Mac Codex 接入 DeepSeek 自助安装包",
     description:
-      "为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。首批试用价人民币 98。",
+      "为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。首批试用价 ¥98。",
     brand: {
       "@type": "Brand",
       name: "Agent站",
@@ -111,7 +111,7 @@ export default function CodexDeepSeekProductPage() {
           <aside className="rounded-3xl border border-white/10 bg-white/[0.06] p-6 text-white shadow-[0_24px_80px_rgba(0,0,0,0.24)] backdrop-blur">
             <div className="text-sm text-slate-300">首批试用价</div>
             <div className="mt-2 text-5xl font-black tracking-tight">¥98</div>
-            <div className="mt-2 text-sm text-slate-300">人民币，一次性自助安装包</div>
+            <div className="mt-2 text-sm text-slate-300">一次性自助安装包</div>
             <div className="mt-6 space-y-3 text-sm text-slate-200">
               <SummaryLine label="交付" value="ZIP 安装包" />
               <SummaryLine label="系统" value="macOS" />
@@ -189,7 +189,7 @@ export default function CodexDeepSeekProductPage() {
             </p>
             <div className="mt-5 rounded-2xl border border-violet-100 bg-violet-50 p-4">
               <div className="text-xs font-semibold text-violet-700">首批试用价</div>
-              <div className="mt-1 text-3xl font-black text-slate-950">人民币 98</div>
+              <div className="mt-1 text-3xl font-black text-slate-950">¥98</div>
               <div className="mt-1 text-xs leading-5 text-slate-500">不含 DeepSeek API 用量费</div>
             </div>
             <a

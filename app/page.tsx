@@ -65,7 +65,7 @@ const featuredPlugins = allSkills.filter((skill) =>
 const codexDeepSeekProduct = {
   title: "Mac Codex 接入 DeepSeek 自助安装包",
   desc: "为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。适合想降低模型使用成本、又不想自己研究 provider 和 bridge 的用户。",
-  price: "人民币 98",
+  price: "¥98",
   href: "/products/codex-deepseek-mac-installer",
 };
 
