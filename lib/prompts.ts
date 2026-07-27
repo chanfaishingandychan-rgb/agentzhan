@@ -1,4 +1,5 @@
 import prompts from "@/content/prompts.json";
+import { buildIndustrySearchText, getIndustryBySlug, matchesIndustry } from "@/lib/industries";
 import { categories, difficultyOptions, modelOptions } from "@/lib/site";
 
 export type PromptItem = (typeof prompts)[number] & {
@@ -71,6 +72,19 @@ export function getCategoryBySlug(slug: string) {
 
 export function getPromptsByCategory(slug: string) {
   return (prompts as PromptItem[]).filter((item) => item.category.slug === slug);
+}
+
+export function getPromptsByIndustry(slug: string) {
+  const industry = getIndustryBySlug(slug);
+  if (!industry) return [];
+
+  return (prompts as PromptItem[]).filter((item) =>
+    matchesIndustry(industry, buildIndustrySearchText(item)),
+  );
+}
+
+export function getIndustryPromptCount(slug: string) {
+  return getPromptsByIndustry(slug).length;
 }
 
 export function getLatestPrompts(limit = 8) {

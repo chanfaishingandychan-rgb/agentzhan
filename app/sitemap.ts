@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { getAllCollections } from "@/lib/collections";
+import { industries } from "@/lib/industries";
 import { getAllPrompts } from "@/lib/prompts";
 import { allSkills } from "@/lib/skills";
 import { categories, siteConfig } from "@/lib/site";
@@ -18,6 +19,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: new Date().toISOString(),
     changeFrequency: "weekly" as const,
     priority: 0.7,
+  }));
+
+  const industryEntries = industries.map((industry) => ({
+    url: `${siteConfig.url}/industry/${industry.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "weekly" as const,
+    priority: 0.78,
   }));
 
   const collectionEntries = getAllCollections().map((collection) => ({
@@ -79,6 +87,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     ...skillEntries,
     ...collectionEntries,
+    ...industryEntries,
     ...categoryEntries,
     ...promptEntries,
   ];

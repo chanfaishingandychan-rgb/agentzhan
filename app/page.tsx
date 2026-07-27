@@ -7,8 +7,9 @@ import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
+import { industries } from "@/lib/industries";
 import { getLatestAiNewsForSite } from "@/lib/news";
-import { getHotTags, getPopularPrompts } from "@/lib/prompts";
+import { getHotTags, getIndustryPromptCount } from "@/lib/prompts";
 import { getLatestPromptsForSite } from "@/lib/prompts-server";
 import { allSkills } from "@/lib/skills";
 
@@ -177,11 +178,14 @@ const aiModels = [
 export const revalidate = 3600;
 
 export default async function HomePage() {
-  const popularPrompts = getPopularPrompts(8);
   const latestPrompts = await getLatestPromptsForSite(4);
   const hotTags = getHotTags(16);
   const topCollections = getAllCollections().slice(0, 5);
   const latestNews = await getLatestAiNewsForSite(4);
+  const industryCards = industries.map((industry) => ({
+    ...industry,
+    promptCount: getIndustryPromptCount(industry.slug),
+  }));
 
   return (
     <main>
@@ -506,10 +510,10 @@ export default async function HomePage() {
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <Link
-                  href="#popular"
+                  href="#industries"
                   className="inline-flex h-10 items-center rounded-full bg-violet-600 px-5 text-sm font-semibold text-white transition hover:bg-violet-700"
                 >
-                  查看热门提示词
+                  按行业找提示词
                 </Link>
                 <Link
                   href="/search"
@@ -523,15 +527,50 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="popular" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+      <section id="industries" className="mx-auto max-w-7xl scroll-mt-24 px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
         <SectionHeader
-          eyebrow="热门 Prompt"
-          title="大家都在用的提示词"
-          description="浏览最受欢迎的 Prompt，直接复制到 ChatGPT、Claude、DeepSeek 使用。"
+          eyebrow="行业 Prompt"
+          title="按行业找合适的提示词"
+          description="先选择你的行业，再进入对应页面查看写作、运营、客服、销售和办公场景的 Prompt。"
         />
-        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {popularPrompts.map((prompt) => (
-            <PromptCard key={prompt.slug} prompt={prompt} />
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+          {industryCards.map((industry) => (
+            <Link
+              key={industry.slug}
+              href={`/industry/${industry.slug}`}
+              className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
+            >
+              <div className={`absolute -right-10 -top-10 h-28 w-28 rounded-full bg-gradient-to-br ${industry.color} opacity-15 blur-2xl transition group-hover:opacity-25`} />
+              <div className="relative">
+                <div className="flex items-start justify-between gap-3">
+                  <div className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${industry.color} text-sm font-black text-white shadow-[0_12px_32px_rgba(15,23,42,0.16)]`}>
+                    {industry.shortName}
+                  </div>
+                  <div className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold text-slate-500">
+                    {industry.promptCount} 条
+                  </div>
+                </div>
+                <h3 className="mt-5 text-lg font-bold tracking-tight text-slate-950 group-hover:text-violet-700">
+                  {industry.name}
+                </h3>
+                <p className="mt-2 line-clamp-3 min-h-[4.5rem] text-sm leading-6 text-slate-500">
+                  {industry.description}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-1.5">
+                  {industry.keywords.slice(0, 3).map((keyword) => (
+                    <span key={keyword} className="rounded-full bg-slate-100 px-2 py-1 text-[11px] text-slate-500">
+                      {keyword}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-5 flex items-center justify-between border-t border-slate-100 pt-4">
+                  <span className="line-clamp-1 text-xs text-slate-400">{industry.audience}</span>
+                  <span className="shrink-0 text-sm font-semibold text-violet-600 transition group-hover:translate-x-0.5">
+                    进入 →
+                  </span>
+                </div>
+              </div>
+            </Link>
           ))}
         </div>
         <div className="mt-8 text-center">
@@ -539,7 +578,7 @@ export default async function HomePage() {
             href="/search"
             className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-violet-600 transition-all hover:border-violet-300 hover:bg-violet-50 hover:shadow-sm"
           >
-            查看全部 Prompt
+            搜索全部 Prompt
             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
