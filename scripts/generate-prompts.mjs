@@ -513,13 +513,107 @@ async function getPremiumEnterpriseOfficeItems() {
   }
 }
 
+function buildMarketingBrandPromptItem(item, index) {
+  const title = item.title.endsWith("提示词") ? item.title : `${item.title}提示词`;
+  const publishedAt = new Date(Date.UTC(2026, 6, 28, 0, 0, 0) - index * 86400000).toISOString();
+  const requiredInputsText = item.requiredInputs.join("、");
+  const outputFormatText = item.outputFormat.join("、");
+  const riskText = item.riskNotes.join("；");
+
+  return {
+    slug: `marketing-brand-${String(index + 1).padStart(2, "0")}`,
+    title,
+    summary: `${item.summary}，适合${item.targetUsers.join("、")}直接复制使用。`,
+    seoTitle: `${title} - 品牌营销高质量中文模板 | Agent站`,
+    seoDescription: `免费查看${title}，覆盖${item.scene}，包含完整提示词、输入信息、输出格式、使用案例和风险提醒，适合${item.model}与主流AI模型。`,
+    category: {
+      slug: "ai-marketing",
+      name: "AI营销",
+    },
+    tags: [...new Set([...item.tags, item.scene, "品牌营销Prompt", "中文提示词"])].slice(0, 6),
+    difficulty: item.difficulty,
+    model: item.model,
+    useScene: item.scene,
+    useCases: [
+      `适合${item.scene}`,
+      `尤其适合${item.targetUsers.join("、")}`,
+      `需要输入${requiredInputsText}时使用`,
+    ],
+    prompt: buildMarketingBrandPromptText(item),
+    instructions: [
+      `先准备这些信息：${requiredInputsText}。`,
+      "把真实品牌信息、市场数据、目标用户、资源和合规边界填入提示词，不要让 AI 自行猜测。",
+      `按输出格式检查结果是否包含：${outputFormatText}。`,
+    ],
+    example: item.exampleUseCase,
+    expectedResult: `预期效果：围绕${item.scene}快速得到可落地的品牌营销方案，减少从零策划和反复修改的成本。`,
+    faq: [
+      {
+        question: `这个${title}适合哪些人？`,
+        answer: `适合${item.targetUsers.join("、")}。如果你已经有品牌背景、市场数据和执行资源，可以直接套用。`,
+      },
+      {
+        question: "使用前需要准备什么？",
+        answer: `建议先准备：${requiredInputsText}。信息越真实，输出越接近可执行版本。`,
+      },
+      {
+        question: "发布或执行前要注意什么？",
+        answer: `需要人工复核：${riskText}。涉及品牌对外承诺、广告法、知识产权和用户数据时尤其要谨慎。`,
+      },
+    ],
+    bestPractices: [
+      item.qualityReason,
+      "让 AI 先做品牌洞察和目标拆解，再输出具体方案，避免只生成泛泛模板。",
+      "正式发布前结合品牌调性、广告法规、平台规则和法务边界做人工复核。",
+    ],
+    tier: "free",
+    popularity: 980 - index * 7,
+    publishedAt,
+  };
+}
+
+function buildMarketingBrandPromptText(item) {
+  return `你是一名资深品牌营销顾问，熟悉品牌定位、广告文案、活动策划、社交媒体传播、用户洞察和增长策略。
+
+任务：围绕"${item.scene}"，为我生成一份可直接执行的高质量品牌营销方案。
+
+请我先提供这些信息：
+${item.requiredInputs.map((input) => `- ${input}：`).join("\n")}
+
+生成要求：
+1. 先判断目标、用户、市场环境和关键限制，不要直接套模板。
+2. 方案必须适合${item.targetUsers.join("、")}使用，内容要具体、清晰、可执行、可衡量。
+3. 涉及品牌对外承诺、广告法规、知识产权、用户数据和竞品对比时，必须提醒合规和人工复核。
+4. 输出内容要能直接用于品牌工作的真实场景，包括决策、执行、沟通或复盘，不要写空话。
+5. 如果信息不足，请先列出需要补充的问题，再给一个可先用的基础版本。
+
+请按以下格式输出：
+${item.outputFormat.map((output, outputIndex) => `${outputIndex + 1}. ${output}`).join("\n")}
+
+风险提醒：${item.riskNotes.join("；")}`;
+}
+
+async function getPremiumMarketingBrandItems() {
+  const sourcePath = resolve(process.cwd(), "content", "marketing-brand-prompts.json");
+  try {
+    const source = JSON.parse(await readFile(sourcePath, "utf8"));
+    if (!Array.isArray(source)) return [];
+    return source.map(buildMarketingBrandPromptItem);
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
 const premiumEnterpriseOfficeItems = await getPremiumEnterpriseOfficeItems();
 const premiumEducationItems = await getPremiumEducationItems();
 const premiumEcommerceItems = await getPremiumEcommerceItems();
+const premiumMarketingBrandItems = await getPremiumMarketingBrandItems();
 const outputItems = [
   ...premiumEnterpriseOfficeItems,
   ...premiumEducationItems,
   ...premiumEcommerceItems,
+  ...premiumMarketingBrandItems,
   ...items,
 ];
 
