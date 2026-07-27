@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const categories = [
@@ -257,7 +257,81 @@ const items = categories.flatMap((category, categoryIndex) =>
   }),
 );
 
+function buildEcommercePromptItem(item, index) {
+  const title = item.title.endsWith("提示词") ? item.title : `${item.title}提示词`;
+  const publishedAt = new Date(Date.UTC(2026, 6, 27, 1, 0, 0) - index * 86400000).toISOString();
+  const requiredInputsText = item.requiredInputs.join("、");
+  const outputFormatText = item.outputFormat.join("、");
+  const riskText = item.riskNotes.join("；");
+
+  return {
+    slug: `ecommerce-retail-${String(index + 1).padStart(2, "0")}`,
+    title,
+    summary: `${item.summary}，适合${item.targetUsers.join("、")}直接复制使用。`,
+    seoTitle: `${title} - 电商运营高质量中文模板 | Agent站`,
+    seoDescription: `免费查看${title}，覆盖${item.scene}，包含完整提示词、输入信息、输出格式、使用案例和风险提醒，适合${item.model}与主流AI模型。`,
+    category: {
+      slug: "ai-ecommerce",
+      name: "AI电商",
+    },
+    tags: [...new Set([...item.tags, item.scene, "电商Prompt", "中文提示词"])].slice(0, 6),
+    difficulty: item.difficulty,
+    model: item.model,
+    useScene: item.scene,
+    useCases: [
+      `适合${item.scene}`,
+      `尤其适合${item.targetUsers.join("、")}`,
+      `需要输入${requiredInputsText}时使用`,
+    ],
+    prompt: item.prompt,
+    instructions: [
+      `先准备这些信息：${requiredInputsText}。`,
+      `把真实商品、店铺、价格、用户和平台规则填入提示词，不要让 AI 自行猜测。`,
+      `按输出格式检查结果是否包含：${outputFormatText}。`,
+    ],
+    example: item.exampleUseCase,
+    expectedResult: `预期效果：围绕${item.scene}快速得到可落地的电商运营方案，减少从零起稿和反复试错成本。`,
+    faq: [
+      {
+        question: `这个${title}适合哪些人？`,
+        answer: `适合${item.targetUsers.join("、")}。如果你已经有商品信息、平台和运营目标，可以直接套用。`,
+      },
+      {
+        question: "使用前需要准备什么？",
+        answer: `建议先准备：${requiredInputsText}。信息越真实，输出越接近可上线版本。`,
+      },
+      {
+        question: "上线前要注意什么？",
+        answer: `需要人工复核：${riskText}。涉及价格、功效、承诺和平台规则时尤其要谨慎。`,
+      },
+    ],
+    bestPractices: [
+      item.qualityReason,
+      "让 AI 先做分析再输出最终文案，避免直接生成泛泛内容。",
+      "发布前结合平台规则、商品真实参数和客服边界做人工复核。",
+    ],
+    tier: "free",
+    popularity: 980 - index * 7,
+    publishedAt,
+  };
+}
+
+async function getPremiumEcommerceItems() {
+  const sourcePath = resolve(process.cwd(), "content", "ecommerce-prompts.json");
+  try {
+    const source = JSON.parse(await readFile(sourcePath, "utf8"));
+    if (!Array.isArray(source)) return [];
+    return source.map(buildEcommercePromptItem);
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
+const premiumEcommerceItems = await getPremiumEcommerceItems();
+const outputItems = [...premiumEcommerceItems, ...items];
+
 const outputPath = resolve(process.cwd(), "content", "prompts.json");
 await mkdir(resolve(process.cwd(), "content"), { recursive: true });
-await writeFile(outputPath, `${JSON.stringify(items, null, 2)}\n`, "utf8");
-console.log(`Generated ${items.length} prompts at ${outputPath}`);
+await writeFile(outputPath, `${JSON.stringify(outputItems, null, 2)}\n`, "utf8");
+console.log(`Generated ${outputItems.length} prompts at ${outputPath}`);
