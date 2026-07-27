@@ -417,7 +417,7 @@ export default async function HomePage() {
                       {plugin.difficulty}
                     </span>
                     <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">
-                      变现潜力：{plugin.monetization}
+                      节省：{plugin.timeSaved}
                     </span>
                   </div>
                   <p className="mt-2 text-sm leading-7 text-slate-600">{plugin.outcome}</p>

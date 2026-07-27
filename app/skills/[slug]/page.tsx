@@ -97,8 +97,8 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
                 <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
                   {skill.difficulty}
                 </Badge>
-                <Badge variant={skill.monetization === "高" ? "premium" : "muted"}>
-                  变现潜力：{skill.monetization}
+                <Badge variant="muted">
+                  节省：{skill.timeSaved}
                 </Badge>
               </div>
 
@@ -173,17 +173,17 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               {skill.promptExample}
             </p>
             <p className="mt-4 text-sm leading-7 text-slate-400">
-              重点是把这个场景产品化：明确用户、输入资料、执行流程、审核节点和最后交付物。
+              重点是先从一个具体问题开始：准备好资料、说明目标，让 AI 按步骤帮你整理、生成或执行。
             </p>
           </article>
 
           <article className="rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 to-blue-50 p-6 sm:p-8">
-            <h2 className="text-2xl font-bold text-slate-950">如何用这个插件变现？</h2>
+            <h2 className="text-2xl font-bold text-slate-950">普通用户可以怎么用？</h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-3">
               {[
-                "做成付费插件方案",
-                "提供安装配置服务",
-                "为企业搭建自动化流程",
+                "把重复工作交给 AI",
+                "整理资料和生成草稿",
+                "连接工具完成具体任务",
               ].map((item) => (
                 <div key={item} className="rounded-2xl border border-white/70 bg-white/80 p-4 text-sm font-semibold text-slate-700 shadow-sm">
                   {item}
@@ -194,7 +194,7 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               href="#wechat"
               className="mt-6 inline-flex h-11 items-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
             >
-              微信咨询企业插件服务
+              微信咨询怎样开始使用
             </a>
           </article>
         </div>
@@ -205,7 +205,7 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
             <div className="mt-5 space-y-4 text-sm">
               <SummaryRow label="分支" value={skill.branch} />
               <SummaryRow label="难度" value={skill.difficulty} />
-              <SummaryRow label="变现" value={skill.monetization} />
+              <SummaryRow label="节省" value={skill.timeSaved} />
               <SummaryRow label="工具" value={skill.tools.join(" / ")} />
             </div>
             <Link

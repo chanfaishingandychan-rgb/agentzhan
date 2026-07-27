@@ -10,23 +10,25 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "AI插件库 - Agent站",
   description:
-    "Agent站 AI插件库，按办公、开发、营销、企业流程等场景整理 Agent 外挂程式、连接工具、使用方法和变现方向。",
+    "Agent站 AI插件库，按办公、开发、营销、企业流程等场景整理 Agent 外挂程式、连接工具、使用方法和落地应用。",
   alternates: {
     canonical: `${siteConfig.url}/skills`,
   },
   openGraph: {
     title: "AI插件库 - Agent站",
-    description: "查看可落地的 Agent 插件介绍、连接工具、适合场景和变现方向。",
+    description: "查看可落地的 Agent 插件介绍、连接工具、适合场景和使用方法。",
     url: `${siteConfig.url}/skills`,
     siteName: siteConfig.name,
     type: "website",
   },
 };
 
+const connectedToolCount = new Set(allSkills.flatMap((skill) => skill.tools)).size;
+
 const stats = [
   { label: "插件分类", value: `${skillBranches.length}` },
   { label: "可用插件", value: `${allSkills.length}+` },
-  { label: "高变现场景", value: `${allSkills.filter((skill) => skill.monetization === "高").length}` },
+  { label: "连接工具", value: `${connectedToolCount}+` },
 ];
 
 export default function SkillsPage() {
@@ -110,7 +112,7 @@ export default function SkillsPage() {
         <SectionHeader
           eyebrow="插件分类"
           title="先选一个插件方向，再连接到真实工具"
-          description="这些插件方向对应未来最容易变现的场景：办公自动化、开发部署、营销增长和企业流程。"
+          description="这些插件方向对应最常见的 AI 落地场景：办公自动化、开发部署、营销增长和企业流程。"
         />
         <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
           {skillBranches.map((branch) => (
@@ -169,8 +171,8 @@ export default function SkillsPage() {
                             <Badge variant={skill.difficulty === "入门" ? "success" : skill.difficulty === "进阶" ? "blue" : "premium"}>
                               {skill.difficulty}
                             </Badge>
-                            <Badge variant={skill.monetization === "高" ? "premium" : "muted"}>
-                              变现潜力：{skill.monetization}
+                            <Badge variant="muted">
+                              节省：{skill.timeSaved}
                             </Badge>
                           </div>
 
