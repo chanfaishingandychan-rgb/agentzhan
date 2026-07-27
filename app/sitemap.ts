@@ -71,6 +71,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.82,
     },
+    {
+      url: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
     ...skillEntries,
     ...collectionEntries,
     ...categoryEntries,

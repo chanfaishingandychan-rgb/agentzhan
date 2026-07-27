@@ -75,6 +75,37 @@ export default function SkillsPage() {
         </div>
       </section>
 
+      <section className="border-b border-slate-200 bg-white py-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <Link
+            href="/products/codex-deepseek-mac-installer"
+            className="group grid gap-6 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-blue-50 p-6 shadow-[0_18px_56px_rgba(124,58,237,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_24px_72px_rgba(79,70,229,0.16)] lg:grid-cols-[1fr_220px]"
+          >
+            <div>
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="premium">付费工具包</Badge>
+                <Badge variant="violet">Mac 专用</Badge>
+                <Badge variant="blue">Codex × DeepSeek</Badge>
+              </div>
+              <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
+                Mac Codex 接入 DeepSeek 自助安装包
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+                为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。想接入 Kimi、GLM、Claude、Gemini 或其他模型，也可以联系我们评估。
+              </p>
+            </div>
+            <div className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm">
+              <div className="text-xs font-semibold text-slate-500">首批试用价</div>
+              <div className="mt-2 text-4xl font-black text-slate-950">¥98</div>
+              <div className="mt-1 text-xs text-slate-500">人民币，一次性工具包</div>
+              <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
+                查看详情 →
+              </div>
+            </div>
+          </Link>
+        </div>
+      </section>
+
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <SectionHeader
           eyebrow="插件分类"

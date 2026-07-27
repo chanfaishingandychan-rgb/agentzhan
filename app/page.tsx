@@ -62,6 +62,13 @@ const featuredPlugins = allSkills.filter((skill) =>
   ["notion-agent-plugin", "gmail-agent-plugin", "github-agent-plugin", "supabase-database-plugin"].includes(skill.slug),
 );
 
+const codexDeepSeekProduct = {
+  title: "Mac Codex 接入 DeepSeek 自助安装包",
+  desc: "为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。适合想降低模型使用成本、又不想自己研究 provider 和 bridge 的用户。",
+  price: "人民币 98",
+  href: "/products/codex-deepseek-mac-installer",
+};
+
 const serviceScopes = [
   {
     title: "AI小白微信交流群",
@@ -359,6 +366,43 @@ export default async function HomePage() {
           </div>
 
           <div className="grid gap-4">
+            <Link
+              href={codexDeepSeekProduct.href}
+              className="group relative overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-blue-50 p-6 shadow-[0_18px_56px_rgba(124,58,237,0.14)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_24px_72px_rgba(79,70,229,0.18)]"
+            >
+              <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-[3rem] bg-gradient-to-br from-violet-500 to-blue-500 opacity-90" />
+              <div className="relative flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                <div className="max-w-2xl">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="inline-flex rounded-full bg-slate-950 px-3 py-1 text-xs font-semibold text-white">
+                      付费工具包
+                    </span>
+                    <span className="inline-flex rounded-full border border-violet-200 bg-white px-3 py-1 text-xs font-semibold text-violet-700">
+                      Mac 专用
+                    </span>
+                    <span className="inline-flex rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-700">
+                      Codex × DeepSeek
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
+                    {codexDeepSeekProduct.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-slate-600">{codexDeepSeekProduct.desc}</p>
+                  <p className="mt-3 text-sm leading-7 text-slate-500">
+                    想接入 Kimi、GLM、Claude、Gemini 或其他模型，也可以联系评估可行性与报价。
+                  </p>
+                </div>
+                <div className="relative shrink-0 rounded-2xl border border-white/70 bg-white/85 p-4 text-left shadow-sm sm:w-44">
+                  <div className="text-xs font-semibold text-slate-500">首批试用价</div>
+                  <div className="mt-2 text-3xl font-black text-slate-950">¥98</div>
+                  <div className="mt-1 text-xs text-slate-500">一次性工具包</div>
+                  <div className="mt-4 inline-flex text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
+                    查看详情 →
+                  </div>
+                </div>
+              </div>
+            </Link>
+
             {featuredPlugins.map((plugin) => (
               <Link
                 key={plugin.slug}
