@@ -605,15 +605,109 @@ async function getPremiumMarketingBrandItems() {
   }
 }
 
+function buildContentMediaPromptItem(item, index) {
+  const title = item.title.endsWith("提示词") ? item.title : `${item.title}提示词`;
+  const publishedAt = new Date(Date.UTC(2026, 6, 28, 1, 0, 0) - index * 86400000).toISOString();
+  const requiredInputsText = item.requiredInputs.join("、");
+  const outputFormatText = item.outputFormat.join("、");
+  const riskText = item.riskNotes.join("；");
+
+  return {
+    slug: `content-media-${String(index + 1).padStart(2, "0")}`,
+    title,
+    summary: `${item.summary}，适合${item.targetUsers.join("、")}直接复制使用。`,
+    seoTitle: `${title} - 自媒体内容高质量中文模板 | Agent站`,
+    seoDescription: `免费查看${title}，覆盖${item.scene}，包含完整提示词、输入信息、输出格式、使用案例和风险提醒，适合${item.model}与主流AI模型。`,
+    category: {
+      slug: "ai-writing",
+      name: "AI写作",
+    },
+    tags: [...new Set([...item.tags, item.scene, "自媒体Prompt", "中文提示词"])].slice(0, 6),
+    difficulty: item.difficulty,
+    model: item.model,
+    useScene: item.scene,
+    useCases: [
+      `适合${item.scene}`,
+      `尤其适合${item.targetUsers.join("、")}`,
+      `需要输入${requiredInputsText}时使用`,
+    ],
+    prompt: buildContentMediaPromptText(item),
+    instructions: [
+      `先准备这些信息：${requiredInputsText}。`,
+      "把真实账号数据、平台规则、内容目标和用户画像填入提示词，不要让 AI 自行猜测。",
+      `按输出格式检查结果是否包含：${outputFormatText}。`,
+    ],
+    example: item.exampleUseCase,
+    expectedResult: `预期效果：围绕${item.scene}快速得到可落地的自媒体内容方案，减少从零策划和反复修改的成本。`,
+    faq: [
+      {
+        question: `这个${title}适合哪些人？`,
+        answer: `适合${item.targetUsers.join("、")}。如果你已经有账号背景、内容数据和运营目标，可以直接套用。`,
+      },
+      {
+        question: "使用前需要准备什么？",
+        answer: `建议先准备：${requiredInputsText}。信息越真实，输出越接近可执行版本。`,
+      },
+      {
+        question: "发布或执行前要注意什么？",
+        answer: `需要人工复核：${riskText}。涉及平台规则、对外承诺、用户隐私和账号安全时尤其要谨慎。`,
+      },
+    ],
+    bestPractices: [
+      item.qualityReason,
+      "让 AI 先做账号分析和目标拆解，再输出具体内容，避免只生成泛泛模板。",
+      "正式发布前结合平台规则、内容调性、用户反馈和合规边界做人工复核。",
+    ],
+    tier: "free",
+    popularity: 975 - index * 7,
+    publishedAt,
+  };
+}
+
+function buildContentMediaPromptText(item) {
+  return `你是一名资深自媒体运营顾问，熟悉公众号、小红书、抖音、B站、快手、视频号等主流内容平台，擅长账号定位、内容策划、文案写作、涨粉策略和流量变现。
+
+任务：围绕"${item.scene}"，为我生成一份可直接执行的高质量自媒体内容方案。
+
+请我先提供这些信息：
+${item.requiredInputs.map((input) => `- ${input}：`).join("\n")}
+
+生成要求：
+1. 先判断平台特性、目标用户、内容方向和关键限制，不要直接套模板。
+2. 方案必须适合${item.targetUsers.join("、")}使用，内容要具体、清晰、可执行、可衡量。
+3. 涉及平台规则、对外承诺、用户隐私、品牌声誉和商业变现时，必须提醒合规和人工复核。
+4. 输出内容要能直接用于自媒体工作的真实场景，包括创作、发布、运营、复盘或变现，不要写空话。
+5. 如果信息不足，请先列出需要补充的问题，再给一个可先用的基础版本。
+
+请按以下格式输出：
+${item.outputFormat.map((output, outputIndex) => `${outputIndex + 1}. ${output}`).join("\n")}
+
+风险提醒：${item.riskNotes.join("；")}`;
+}
+
+async function getPremiumContentMediaItems() {
+  const sourcePath = resolve(process.cwd(), "content", "content-media-prompts.json");
+  try {
+    const source = JSON.parse(await readFile(sourcePath, "utf8"));
+    if (!Array.isArray(source)) return [];
+    return source.map(buildContentMediaPromptItem);
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
 const premiumEnterpriseOfficeItems = await getPremiumEnterpriseOfficeItems();
 const premiumEducationItems = await getPremiumEducationItems();
 const premiumEcommerceItems = await getPremiumEcommerceItems();
+const premiumContentMediaItems = await getPremiumContentMediaItems();
 const premiumMarketingBrandItems = await getPremiumMarketingBrandItems();
 const outputItems = [
   ...premiumEnterpriseOfficeItems,
   ...premiumEducationItems,
   ...premiumEcommerceItems,
   ...premiumMarketingBrandItems,
+  ...premiumContentMediaItems,
   ...items,
 ];
 
