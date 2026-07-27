@@ -328,8 +328,102 @@ async function getPremiumEcommerceItems() {
   }
 }
 
+function buildEducationPromptItem(item, index) {
+  const title = item.title.endsWith("提示词") ? item.title : `${item.title}提示词`;
+  const promptText = Array.isArray(item.prompt) ? item.prompt.join("\n") : (item.prompt ?? buildEducationPromptText(item));
+  const publishedAt = new Date(Date.UTC(2026, 6, 27, 2, 0, 0) - index * 86400000).toISOString();
+  const requiredInputsText = item.requiredInputs.join("、");
+  const outputFormatText = item.outputFormat.join("、");
+  const riskText = item.riskNotes.join("；");
+
+  return {
+    slug: `education-training-${String(index + 1).padStart(2, "0")}`,
+    title,
+    summary: `${item.summary}，适合${item.targetUsers.join("、")}直接复制使用。`,
+    seoTitle: `${title} - 教育培训高质量中文模板 | Agent站`,
+    seoDescription: `免费查看${title}，覆盖${item.scene}，包含完整提示词、输入信息、输出格式、使用案例和风险提醒，适合${item.model}与主流AI模型。`,
+    category: {
+      slug: "ai-learning",
+      name: "AI学习",
+    },
+    tags: [...new Set([...item.tags, item.scene, "教育培训Prompt", "中文提示词"])].slice(0, 6),
+    difficulty: item.difficulty,
+    model: item.model,
+    useScene: item.scene,
+    useCases: [
+      `适合${item.scene}`,
+      `尤其适合${item.targetUsers.join("、")}`,
+      `需要输入${requiredInputsText}时使用`,
+    ],
+    prompt: promptText,
+    instructions: [
+      `先准备这些信息：${requiredInputsText}。`,
+      "把真实课程、学员、教材、数据和交付边界填入提示词，不要让 AI 自行猜测。",
+      `按输出格式检查结果是否包含：${outputFormatText}。`,
+    ],
+    example: item.exampleUseCase,
+    expectedResult: `预期效果：围绕${item.scene}快速得到可落地的教育培训方案，减少从零起稿、备课和运营试错成本。`,
+    faq: [
+      {
+        question: `这个${title}适合哪些人？`,
+        answer: `适合${item.targetUsers.join("、")}。如果你已经有课程主题、学员情况和交付目标，可以直接套用。`,
+      },
+      {
+        question: "使用前需要准备什么？",
+        answer: `建议先准备：${requiredInputsText}。信息越真实，输出越接近可执行版本。`,
+      },
+      {
+        question: "上线或交付前要注意什么？",
+        answer: `需要人工复核：${riskText}。涉及未成年人、考试结果、隐私和招生承诺时尤其要谨慎。`,
+      },
+    ],
+    bestPractices: [
+      item.qualityReason,
+      "让 AI 先做学员画像和目标拆解，再输出具体内容，避免只生成泛泛模板。",
+      "正式交付前结合真实教材、课堂反馈、机构规则和合规边界做人工复核。",
+    ],
+    tier: "free",
+    popularity: 990 - index * 7,
+    publishedAt,
+  };
+}
+
+function buildEducationPromptText(item) {
+  return `你是一名资深教育培训顾问，熟悉课程设计、教学交付、学员运营、学习反馈和招生合规。
+
+任务：围绕“${item.scene}”，为我生成一份可直接执行的高质量方案。
+
+请我先提供这些信息：
+${item.requiredInputs.map((input) => `- ${input}：`).join("\n")}
+
+生成要求：
+1. 先判断目标、对象、现有基础和关键约束，不要直接套模板。
+2. 方案必须适合${item.targetUsers.join("、")}使用，内容要具体、可执行、可检查。
+3. 如果涉及学生、家长、未成年人、考试结果或课程招生，必须提醒合规和隐私边界。
+4. 输出内容要能直接用于备课、运营、沟通或复盘，避免空话和泛泛建议。
+5. 如果信息不足，请先列出需要补充的问题，再给一个可先用的基础版本。
+
+请按以下格式输出：
+${item.outputFormat.map((output, outputIndex) => `${outputIndex + 1}. ${output}`).join("\n")}
+
+风险提醒：${item.riskNotes.join("；")}`;
+}
+
+async function getPremiumEducationItems() {
+  const sourcePath = resolve(process.cwd(), "content", "education-prompts.json");
+  try {
+    const source = JSON.parse(await readFile(sourcePath, "utf8"));
+    if (!Array.isArray(source)) return [];
+    return source.map(buildEducationPromptItem);
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
+const premiumEducationItems = await getPremiumEducationItems();
 const premiumEcommerceItems = await getPremiumEcommerceItems();
-const outputItems = [...premiumEcommerceItems, ...items];
+const outputItems = [...premiumEducationItems, ...premiumEcommerceItems, ...items];
 
 const outputPath = resolve(process.cwd(), "content", "prompts.json");
 await mkdir(resolve(process.cwd(), "content"), { recursive: true });
