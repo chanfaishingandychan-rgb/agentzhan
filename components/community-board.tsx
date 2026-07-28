@@ -102,7 +102,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   }
 
   return (
-    <div className="mx-auto max-w-3xl pb-20 md:pb-0">
+    <div className="mx-auto w-full pb-20 md:pb-0">
       <section className="overflow-hidden border-y border-slate-200 bg-white md:rounded-2xl md:border md:shadow-sm">
         <div className="grid grid-cols-2 border-b border-slate-200 bg-white text-center text-base font-semibold text-slate-400">
           <button
@@ -152,7 +152,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
                 <button
                   type="button"
                   onClick={() => setOpenThreadId(opened ? "" : thread.id)}
-                  className="grid w-full grid-cols-[1fr_auto] gap-3 px-5 py-4 text-left transition hover:bg-yellow-50/40"
+                  className="grid w-full grid-cols-[1fr_auto] gap-3 px-5 py-4 text-left transition hover:bg-yellow-50/40 lg:px-8"
                 >
                   <div className="min-w-0">
                     <div className="flex min-w-0 items-center gap-2 text-sm">
@@ -163,7 +163,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
                       <span className="shrink-0 text-slate-400">{formatTime(thread.createdAt)}</span>
                       <span className="shrink-0 text-slate-400">👍 {getThreadScore(thread)}</span>
                     </div>
-                    <h3 className="mt-2 text-[17px] font-medium leading-7 text-slate-900">
+                    <h3 className="mt-2 text-[17px] font-medium leading-7 text-slate-900 lg:text-xl lg:leading-8">
                       {thread.question}
                     </h3>
                   </div>
@@ -180,12 +180,12 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
 
                 {opened ? (
                   <div className="border-t border-slate-100 bg-slate-50">
-                    <div className="grid grid-cols-[76px_1fr] gap-3 px-5 py-4">
+                    <div className="grid grid-cols-[76px_1fr] gap-3 px-5 py-4 lg:grid-cols-[120px_1fr] lg:px-8">
                       <div className="text-sm">
                         <div className="font-semibold text-sky-700">{thread.name}</div>
                         <div className="mt-1 text-xs text-slate-400">楼主</div>
                       </div>
-                      <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-800 shadow-sm">
+                      <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-800 shadow-sm lg:text-base lg:leading-8">
                         {thread.question}
                         <div className="mt-3 text-xs text-slate-400">{formatTime(thread.createdAt)}</div>
                       </div>
@@ -193,24 +193,24 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
 
                     {thread.replies.length > 0 ? (
                       thread.replies.map((reply, index) => (
-                        <div key={reply.id} className="grid grid-cols-[76px_1fr] gap-3 border-t border-slate-100 px-5 py-4">
+                        <div key={reply.id} className="grid grid-cols-[76px_1fr] gap-3 border-t border-slate-100 px-5 py-4 lg:grid-cols-[120px_1fr] lg:px-8">
                           <div className="text-sm">
                             <div className="font-semibold text-sky-700">{reply.name}</div>
                             <div className="mt-1 text-xs text-slate-400">#{index + 2}</div>
                           </div>
-                          <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-700 shadow-sm">
+                          <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-700 shadow-sm lg:text-base lg:leading-8">
                             {reply.reply}
                             <div className="mt-3 text-xs text-slate-400">{formatTime(reply.createdAt)}</div>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div className="border-t border-slate-100 px-5 py-4 text-sm text-slate-400">
+                      <div className="border-t border-slate-100 px-5 py-4 text-sm text-slate-400 lg:px-8">
                         暂时未有回应，可以做第一个回应的人。
                       </div>
                     )}
 
-                    <div className="border-t border-slate-100 px-5 py-4">
+                    <div className="border-t border-slate-100 px-5 py-4 lg:px-8">
                       <ReplyForm threadId={thread.id} onReply={addReply} />
                     </div>
                   </div>

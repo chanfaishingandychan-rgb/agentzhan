@@ -20,7 +20,7 @@ export default async function CommunityPage() {
   return (
     <main className="bg-[#f5f5f5]">
       <section className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-5 sm:px-6">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-5 sm:px-6 lg:px-8">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-950">AI討論區</h1>
             <p className="mt-1 text-sm text-slate-500">公开讨论模型、提示词、插件和工作流问题。</p>
@@ -34,7 +34,7 @@ export default async function CommunityPage() {
         </div>
       </section>
 
-      <section id="ask" className="mx-auto max-w-3xl scroll-mt-24 py-4 sm:px-4">
+      <section id="ask" className="mx-auto max-w-7xl scroll-mt-24 py-4 sm:px-4 lg:px-8">
         {storageMode === "fallback" ? (
           <div className="mb-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-900">
             数据库暂时未连接，页面先显示示例讨论；连接 Supabase 后会自动保存真实问题和回应。
