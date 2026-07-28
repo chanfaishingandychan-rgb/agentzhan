@@ -29,6 +29,17 @@ function getDeviceType(userAgent: string) {
   return "desktop";
 }
 
+function isMissingTableError(error: { code?: string; message?: string } | null | undefined) {
+  const message = error?.message?.toLowerCase() ?? "";
+  return (
+    error?.code === "42P01" ||
+    error?.code === "PGRST205" ||
+    message.includes("could not find the table") ||
+    message.includes("does not exist") ||
+    message.includes("schema cache")
+  );
+}
+
 export async function POST(request: NextRequest) {
   const client = createServiceClient();
   if (!client) {
@@ -49,8 +60,7 @@ export async function POST(request: NextRequest) {
 
   const search = sanitizeText(payload.search, 500);
   const userAgent = request.headers.get("user-agent")?.slice(0, 500) ?? "";
-
-  const { error } = await client.from("page_views").insert({
+  const event = {
     path,
     search,
     full_path: search ? `${path}?${search}` : path,
@@ -62,9 +72,22 @@ export async function POST(request: NextRequest) {
     device_type: getDeviceType(userAgent),
     is_bot: botPattern.test(userAgent),
     country: request.headers.get("x-vercel-ip-country")?.slice(0, 2) ?? null,
-  });
+  };
+
+  const { error } = await client.from("page_views").insert(event);
 
   if (error) {
+    if (isMissingTableError(error)) {
+      await client.from("ai_generation_logs").insert({
+        generated_count: 0,
+        published_count: 0,
+        draft_count: 0,
+        failed_count: 0,
+        summary: "traffic_page_view",
+        details: event,
+      });
+    }
+
     return new NextResponse(null, { status: 204 });
   }
 

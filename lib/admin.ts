@@ -94,6 +94,7 @@ export type TrafficRecentView = {
 
 export type TrafficDashboardStats = {
   status: "ready" | "not_configured" | "table_missing" | "error";
+  storageMode: "page_views" | "generation_logs" | "unavailable";
   todayViews: number;
   last24hViews: number;
   last7dViews: number;
@@ -291,6 +292,7 @@ export async function getSupabaseLogs(limit = 20): Promise<GenerationLog[] | nul
     const { data, error } = await client
       .from("ai_generation_logs")
       .select("*")
+      .neq("summary", "traffic_page_view")
       .order("run_time", { ascending: false })
       .limit(limit);
 
@@ -414,6 +416,7 @@ export async function getSupabaseLeadStats(): Promise<{
 function emptyTrafficStats(status: TrafficDashboardStats["status"]): TrafficDashboardStats {
   return {
     status,
+    storageMode: "unavailable",
     todayViews: 0,
     last24hViews: 0,
     last7dViews: 0,
@@ -425,6 +428,17 @@ function emptyTrafficStats(status: TrafficDashboardStats["status"]): TrafficDash
     recentViews: [],
     sampleLimited: false,
   };
+}
+
+function isMissingTableError(error: { code?: string; message?: string } | null | undefined) {
+  const message = error?.message?.toLowerCase() ?? "";
+  return (
+    error?.code === "42P01" ||
+    error?.code === "PGRST205" ||
+    message.includes("could not find the table") ||
+    message.includes("does not exist") ||
+    message.includes("schema cache")
+  );
 }
 
 function normalizeReferrer(referrer: unknown) {
@@ -474,6 +488,121 @@ function topMetricRows(counter: Map<string, number>, limit: number): TrafficMetr
     .slice(0, limit);
 }
 
+function buildTrafficStatsFromRows(
+  rows: SupabaseRow[],
+  options: {
+    count: number | null;
+    limit: number;
+    todayStart: string;
+    last24hStart: string;
+    storageMode: TrafficDashboardStats["storageMode"];
+  },
+): TrafficDashboardStats {
+  const pageMap = new Map<string, { title: string; views: number; visitors: Set<string> }>();
+  const referrerMap = new Map<string, number>();
+  const deviceMap = new Map<string, number>();
+  const countryMap = new Map<string, number>();
+  const visitors = new Set<string>();
+
+  rows.forEach((row) => {
+    const path = typeof row.path === "string" && row.path ? row.path : "/";
+    const title = typeof row.title === "string" && row.title ? row.title : path;
+    const visitor = typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`;
+    const page = pageMap.get(path) ?? { title, views: 0, visitors: new Set<string>() };
+
+    page.views += 1;
+    page.visitors.add(visitor);
+    pageMap.set(path, page);
+    visitors.add(visitor);
+
+    const referrer = normalizeReferrer(row.referrer);
+    referrerMap.set(referrer, (referrerMap.get(referrer) ?? 0) + 1);
+
+    const device = normalizeDevice(row.device_type);
+    deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
+
+    const country = normalizeCountry(row.country);
+    countryMap.set(country, (countryMap.get(country) ?? 0) + 1);
+  });
+
+  const topPages = Array.from(pageMap.entries())
+    .map(([path, row]) => ({
+      path,
+      title: row.title,
+      views: row.views,
+      visitors: row.visitors.size,
+    }))
+    .sort((a, b) => b.views - a.views)
+    .slice(0, 10);
+
+  const recentViews = rows.slice(0, 50).map((row) => ({
+    id: String(row.id),
+    path: typeof row.path === "string" && row.path ? row.path : "/",
+    title: typeof row.title === "string" && row.title ? row.title : row.path ?? "/",
+    referrer: normalizeReferrer(row.referrer),
+    deviceType: normalizeDevice(row.device_type),
+    country: normalizeCountry(row.country),
+    createdAt: row.created_at ?? "",
+  }));
+
+  return {
+    status: "ready",
+    storageMode: options.storageMode,
+    todayViews: rows.filter((row) => row.created_at >= options.todayStart).length,
+    last24hViews: rows.filter((row) => row.created_at >= options.last24hStart).length,
+    last7dViews: options.count ?? rows.length,
+    uniqueVisitors7d: visitors.size,
+    topPages,
+    referrers: topMetricRows(referrerMap, 8),
+    devices: topMetricRows(deviceMap, 5),
+    countries: topMetricRows(countryMap, 8),
+    recentViews,
+    sampleLimited: Boolean(options.count && options.count > options.limit),
+  };
+}
+
+async function getTrafficStatsFromGenerationLogs(
+  client: ReturnType<typeof createServiceClient>,
+  limit: number,
+  todayStart: string,
+  last24hStart: string,
+  last7dStart: string,
+): Promise<TrafficDashboardStats | null> {
+  if (!client) return null;
+
+  const { data, error, count } = await client
+    .from("ai_generation_logs")
+    .select("id,run_time,details", { count: "exact" })
+    .eq("summary", "traffic_page_view")
+    .gte("run_time", last7dStart)
+    .order("run_time", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return null;
+
+  const rows = data.map((row: SupabaseRow) => {
+    const details = row.details && typeof row.details === "object" && !Array.isArray(row.details) ? row.details : {};
+    return {
+      id: row.id,
+      path: details.path,
+      title: details.title,
+      referrer: details.referrer,
+      visitor_id: details.visitor_id,
+      device_type: details.device_type,
+      country: details.country,
+      created_at: row.run_time,
+    };
+  });
+
+  return buildTrafficStatsFromRows(rows, {
+    count,
+    limit,
+    todayStart,
+    last24hStart,
+    storageMode: "generation_logs",
+  });
+}
+
 export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDashboardStats> {
   const client = createServiceClient();
   if (!client) return emptyTrafficStats("not_configured");
@@ -492,7 +621,9 @@ export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDash
       .limit(limit);
 
     if (error || !data) {
-      if (error?.code === "42P01") return emptyTrafficStats("table_missing");
+      const fallback = await getTrafficStatsFromGenerationLogs(client, limit, todayStart, last24hStart, last7dStart);
+      if (fallback) return fallback;
+      if (isMissingTableError(error)) return emptyTrafficStats("table_missing");
       return emptyTrafficStats("error");
     }
 
@@ -501,67 +632,22 @@ export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDash
       client.from("page_views").select("*", { count: "exact", head: true }).gte("created_at", last24hStart),
     ]);
 
-    const pageMap = new Map<string, { title: string; views: number; visitors: Set<string> }>();
-    const referrerMap = new Map<string, number>();
-    const deviceMap = new Map<string, number>();
-    const countryMap = new Map<string, number>();
-    const visitors = new Set<string>();
-
-    data.forEach((row: SupabaseRow) => {
-      const path = typeof row.path === "string" && row.path ? row.path : "/";
-      const title = typeof row.title === "string" && row.title ? row.title : path;
-      const visitor = typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`;
-      const page = pageMap.get(path) ?? { title, views: 0, visitors: new Set<string>() };
-
-      page.views += 1;
-      page.visitors.add(visitor);
-      pageMap.set(path, page);
-      visitors.add(visitor);
-
-      const referrer = normalizeReferrer(row.referrer);
-      referrerMap.set(referrer, (referrerMap.get(referrer) ?? 0) + 1);
-
-      const device = normalizeDevice(row.device_type);
-      deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
-
-      const country = normalizeCountry(row.country);
-      countryMap.set(country, (countryMap.get(country) ?? 0) + 1);
+    const stats = buildTrafficStatsFromRows(data, {
+      count,
+      limit,
+      todayStart,
+      last24hStart,
+      storageMode: "page_views",
     });
 
-    const topPages = Array.from(pageMap.entries())
-      .map(([path, row]) => ({
-        path,
-        title: row.title,
-        views: row.views,
-        visitors: row.visitors.size,
-      }))
-      .sort((a, b) => b.views - a.views)
-      .slice(0, 10);
-
-    const recentViews = data.slice(0, 50).map((row: SupabaseRow) => ({
-      id: String(row.id),
-      path: typeof row.path === "string" && row.path ? row.path : "/",
-      title: typeof row.title === "string" && row.title ? row.title : row.path ?? "/",
-      referrer: normalizeReferrer(row.referrer),
-      deviceType: normalizeDevice(row.device_type),
-      country: normalizeCountry(row.country),
-      createdAt: row.created_at ?? "",
-    }));
-
     return {
-      status: "ready",
-      todayViews: todayResult.count ?? data.filter((row: SupabaseRow) => row.created_at >= todayStart).length,
-      last24hViews: last24hResult.count ?? data.filter((row: SupabaseRow) => row.created_at >= last24hStart).length,
-      last7dViews: count ?? data.length,
-      uniqueVisitors7d: visitors.size,
-      topPages,
-      referrers: topMetricRows(referrerMap, 8),
-      devices: topMetricRows(deviceMap, 5),
-      countries: topMetricRows(countryMap, 8),
-      recentViews,
-      sampleLimited: Boolean(count && count > limit),
+      ...stats,
+      todayViews: todayResult.count ?? stats.todayViews,
+      last24hViews: last24hResult.count ?? stats.last24hViews,
     };
   } catch {
+    const fallback = await getTrafficStatsFromGenerationLogs(client, limit, todayStart, last24hStart, last7dStart);
+    if (fallback) return fallback;
     return emptyTrafficStats("error");
   }
 }

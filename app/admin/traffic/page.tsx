@@ -82,6 +82,12 @@ export default async function AdminTrafficPage() {
         </div>
       )}
 
+      {isReady && stats.storageMode === "generation_logs" && (
+        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-sm leading-6 text-blue-800">
+          当前使用兼容记录模式保存流量。之后建立 page_views 表后，会自动切换到专用流量表。
+        </div>
+      )}
+
       {isReady && stats.last7dViews === 0 ? (
         <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-white py-16 text-center">
           <p className="text-sm text-slate-500">暂无流量记录</p>
