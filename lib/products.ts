@@ -27,7 +27,7 @@ export const codexDeepSeekProduct: DigitalProduct = {
   priceLabel: "¥98",
   priceAmount: 98,
   currency: "CNY",
-  paymentQrImage: process.env.NEXT_PUBLIC_PAYMENT_QR_IMAGE || "/payment-qr.png",
+  paymentQrImage: process.env.NEXT_PUBLIC_PAYMENT_QR_IMAGE || "/payment-qr-scan.png",
   downloadName: "agentzhan-codex-deepseek-mac-installer.zip",
   supportLabel: "微信客服",
   supportHref: "/consulting#wechat-consulting",
