@@ -4,6 +4,7 @@ import { XMLParser } from "fast-xml-parser";
 
 export type AiNewsItem = {
   slug: string;
+  rawTitle?: string;
   title: string;
   source: string;
   sourceUrl: string;
@@ -28,6 +29,7 @@ export type AiNewsArticle = {
 
 type SupabaseAiNewsRow = {
   slug: string;
+  raw_title?: string | null;
   title: string;
   source: string;
   source_url: string;
@@ -57,6 +59,8 @@ type LocalizedFeedCopy = {
   title: string;
   summary: string;
 };
+
+const aiNewsSelectFields = "slug,raw_title,title,source,source_url,published_at,category,summary,takeaway,tags";
 
 const officialFeedSources: FeedSource[] = [
   {
@@ -271,7 +275,7 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
     try {
       const { data, error } = await client
         .from("ai_news")
-        .select("slug,title,source,source_url,published_at,category,summary,takeaway,tags")
+        .select(aiNewsSelectFields)
         .order("published_at", { ascending: false })
         .limit(limit);
 
@@ -293,16 +297,48 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
 }
 
 export async function getAiNewsArticleForSite(slug: string): Promise<AiNewsArticle | null> {
+  const supabaseItem = await getSupabaseAiNewsItemByAnySlug(slug);
+  if (supabaseItem) return buildAiNewsArticle(supabaseItem);
+
   const news = await getLatestAiNewsForSite(50);
-  const item = news.find((entry) => entry.slug === slug) ?? aiNewsItems.find((entry) => entry.slug === slug);
+  const item = news.find((entry) => newsSlugMatches(entry, slug)) ?? aiNewsItems.find((entry) => newsSlugMatches(entry, slug));
   if (!item) return null;
 
   return buildAiNewsArticle(item);
 }
 
+async function getSupabaseAiNewsItemByAnySlug(slug: string): Promise<AiNewsItem | null> {
+  const client = createServiceClient();
+  if (!client) return null;
+
+  try {
+    const { data, error } = await client
+      .from("ai_news")
+      .select(aiNewsSelectFields)
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (!error && data) return toAiNewsItem(data as SupabaseAiNewsRow);
+
+    const { data: rows, error: rowsError } = await client
+      .from("ai_news")
+      .select(aiNewsSelectFields)
+      .order("published_at", { ascending: false })
+      .limit(100);
+
+    if (rowsError || !rows) return null;
+    return (rows as SupabaseAiNewsRow[])
+      .map(toAiNewsItem)
+      .find((item) => newsSlugMatches(item, slug)) ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function toAiNewsItem(item: SupabaseAiNewsRow): AiNewsItem {
   return {
     slug: item.slug,
+    rawTitle: item.raw_title ?? undefined,
     title: item.title,
     source: item.source,
     sourceUrl: item.source_url,
@@ -448,7 +484,8 @@ function toFallbackAiNewsItem(item: FeedCandidate): AiNewsItem {
   const title = localizeTitle(item);
 
   return {
-    slug: `news-${item.publishedAt.replaceAll("-", "")}-${slugify(item.title).slice(0, 80)}`,
+    slug: buildNewsSlug(item.publishedAt, item.title),
+    rawTitle: item.title,
     title,
     source: item.source,
     sourceUrl: item.sourceUrl,
@@ -638,6 +675,16 @@ function mergeAiNewsItems(items: AiNewsItem[]) {
     result.push(item);
   }
   return result.sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
+}
+
+function newsSlugMatches(item: AiNewsItem, slug: string) {
+  if (item.slug === slug) return true;
+  if (item.rawTitle && buildNewsSlug(item.publishedAt, item.rawTitle) === slug) return true;
+  return buildNewsSlug(item.publishedAt, item.title.replace(`${item.source}：`, "")) === slug;
+}
+
+function buildNewsSlug(publishedAt: string, title: string) {
+  return `news-${publishedAt.replaceAll("-", "")}-${slugify(title).slice(0, 80)}`;
 }
 
 function inferCategory(title: string, description: string, fallback: AiNewsItem["category"]): AiNewsItem["category"] {

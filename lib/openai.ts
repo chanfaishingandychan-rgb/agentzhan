@@ -273,7 +273,7 @@ function parseSummarizedNewsJSON(raw: string, candidates: AiNewsCandidate[]): Su
     const item = parsed[index] ?? {};
     const category = isNewsCategory(item.category) ? item.category : candidate.category;
     return {
-      slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(String(item.title ?? candidate.title)).slice(0, 80)}`,
+      slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(candidate.title).slice(0, 80)}`,
       title: String(item.title ?? candidate.title).slice(0, 120),
       rawTitle: candidate.title,
       source: candidate.source,
