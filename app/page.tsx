@@ -213,10 +213,10 @@ export default async function HomePage() {
               Agent站整理 AI 模型、插件、工具和工作流，也提供模型使用咨询、插件安装和企业 AI 落地建议。
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+            <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
               <Link
                 href="/skills"
-                className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-7 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white px-7 text-sm font-semibold text-slate-950 transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-100"
               >
                 查看插件库
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
@@ -225,13 +225,13 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/consulting#wechat-consulting"
-                className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
               >
                 微信咨询 AI 服务
               </Link>
               <Link
                 href="/community"
-                className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+                className="inline-flex h-14 items-center justify-center rounded-full bg-violet-600 px-8 text-base font-bold text-white shadow-[0_12px_36px_rgba(124,58,237,0.38)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500 hover:shadow-[0_16px_44px_rgba(124,58,237,0.48)] sm:col-span-2"
               >
                 进入 AI討論區
               </Link>
