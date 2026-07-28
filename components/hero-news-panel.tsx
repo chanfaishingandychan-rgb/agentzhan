@@ -65,7 +65,7 @@ export function HeroNewsPanel({ items }: HeroNewsPanelProps) {
             {items.slice(0, 3).map((item, index) => (
               <Link
                 key={item.slug}
-                href="/news"
+                href={`/news/${item.slug}`}
                 className={`group grid grid-cols-[2.5rem_1fr_auto] items-center gap-3 rounded-2xl border px-3 py-3.5 transition-all duration-200 hover:-translate-y-0.5 sm:px-4 ${newsRowStyles[index].row}`}
               >
                 <span className={`flex h-9 w-9 items-center justify-center rounded-xl border text-xs font-bold transition group-hover:text-white ${newsRowStyles[index].number}`}>

@@ -14,6 +14,18 @@ export type AiNewsItem = {
   tags: string[];
 };
 
+export type AiNewsArticle = {
+  item: AiNewsItem;
+  deck: string;
+  sections: Array<{
+    title: string;
+    paragraphs: string[];
+  }>;
+  actionItems: string[];
+  watchPoints: string[];
+  relatedQueries: string[];
+};
+
 type SupabaseAiNewsRow = {
   slug: string;
   title: string;
@@ -280,6 +292,14 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
   return getLatestAiNews(limit);
 }
 
+export async function getAiNewsArticleForSite(slug: string): Promise<AiNewsArticle | null> {
+  const news = await getLatestAiNewsForSite(50);
+  const item = news.find((entry) => entry.slug === slug) ?? aiNewsItems.find((entry) => entry.slug === slug);
+  if (!item) return null;
+
+  return buildAiNewsArticle(item);
+}
+
 function toAiNewsItem(item: SupabaseAiNewsRow): AiNewsItem {
   return {
     slug: item.slug,
@@ -291,6 +311,69 @@ function toAiNewsItem(item: SupabaseAiNewsRow): AiNewsItem {
     summary: item.summary,
     takeaway: item.takeaway,
     tags: item.tags ?? [],
+  };
+}
+
+function buildAiNewsArticle(item: AiNewsItem): AiNewsArticle {
+  const plainTitle = item.title.replace(`${item.source}：`, "");
+  const audience = getArticleAudience(item.category);
+  const workflow = getArticleWorkflow(item.category);
+  const risk = getArticleRisk(item.category);
+
+  return {
+    item,
+    deck: `${item.source} 在 ${item.publishedAt} 发布相关动态。Agent站将它整理成中文长文解读，方便你快速判断这条消息和自己的工作、网站或团队是否有关。`,
+    sections: [
+      {
+        title: "发生了什么",
+        paragraphs: [
+          item.summary,
+          `这条消息的核心不是单纯多了一个新闻标题，而是 ${item.source} 在「${plainTitle}」中释放了一个方向信号：AI 产品和模型正在更具体地进入真实任务、组织流程和专业场景。`,
+        ],
+      },
+      {
+        title: "为什么值得关注",
+        paragraphs: [
+          item.takeaway,
+          `对${audience}来说，这类更新通常会影响三个判断：现在能不能用、适合放在哪个流程、是否需要重新设计 Prompt、插件或内部规范。`,
+        ],
+      },
+      {
+        title: "可以怎么用",
+        paragraphs: [
+          `如果你只是普通用户，可以先把它当成一个能力变化信号：重新测试自己高频使用的写作、搜索、编程、整理资料或自动化任务，比较更新前后的效率和稳定性。`,
+          `如果你是站长、内容创作者或小团队，可以把这条动态拆成选题、工具评测、教程、Prompt 模板或内部 SOP。重点不是追热点，而是把新闻变成可复用的工作流。`,
+          workflow,
+        ],
+      },
+      {
+        title: "Agent站判断",
+        paragraphs: [
+          `这条更新属于「${item.category}」。短期看，它适合作为观察 AI 产品方向的材料；中期看，它可能影响内容生产、客户沟通、内部知识管理或企业自动化的落地方式。`,
+          `更实际的做法是先选一个小场景试用，例如一份报告、一条客服流程、一个搜索任务或一个内容选题，再决定是否扩大到团队流程。`,
+        ],
+      },
+      {
+        title: "需要留意的边界",
+        paragraphs: [
+          risk,
+          `本站页面是中文解读，不是官方原文的逐字翻译。涉及具体功能、地区开放范围、价格、权限或合规要求时，仍要以官方来源为准。`,
+        ],
+      },
+    ],
+    actionItems: [
+      "打开官方来源，确认功能是否已经向你的账号或地区开放。",
+      "用 1 个真实工作任务测试效果，不要只看发布标题判断价值。",
+      "把可复用步骤整理成 Prompt、检查清单或 SOP，方便下次继续使用。",
+      "如果涉及客户资料、健康、财务、企业数据或代码仓库，先确认权限和人工复核流程。",
+    ],
+    watchPoints: [
+      `${item.source} 后续是否继续发布同方向更新`,
+      "同类模型或产品是否跟进",
+      "这项能力是否进入 API、企业版或插件生态",
+      "真实使用成本、速度、稳定性和权限边界",
+    ],
+    relatedQueries: [...new Set([item.source, item.category, ...item.tags])].slice(0, 6),
   };
 }
 
@@ -311,7 +394,8 @@ async function getLatestOfficialAiNews(limit: number): Promise<AiNewsItem[]> {
 
   if (selected.length === 0) return [];
 
-  const summarizedItems = await summarizeOfficialAiNews(selected);
+  const unknownCandidates = selected.filter((candidate) => !localizedFeedCopy[getLookupKey(candidate.title)]);
+  const summarizedItems = unknownCandidates.length > 0 ? await summarizeOfficialAiNews(unknownCandidates) : new Map<string, AiNewsItem>();
 
   return selected.map((candidate) => {
     if (localizedFeedCopy[getLookupKey(candidate.title)]) return toFallbackAiNewsItem(candidate);
@@ -447,6 +531,46 @@ function getFallbackTakeaway(item: FeedCandidate) {
     return "行业应用类案例适合拆成具体工作流，评估它能否用于获客、内容、客服、研发或内部提效。";
   }
   return "产品功能更新要关注能否直接减少重复操作，或为现有 Prompt、插件和自动化流程带来新的入口。";
+}
+
+function getArticleAudience(category: AiNewsItem["category"]) {
+  if (category === "模型更新") return "经常写作、编程、做资料分析或搭建自动化的人";
+  if (category === "产品功能") return "已经在用 AI 工具处理日常任务的用户";
+  if (category === "Agent趋势") return "想把 AI 从聊天工具升级成执行助手的团队";
+  if (category === "行业应用") return "站长、内容团队、小企业和正在找 AI 落地场景的人";
+  return "企业、开发者、管理者和需要处理敏感数据的团队";
+}
+
+function getArticleWorkflow(category: AiNewsItem["category"]) {
+  if (category === "模型更新") {
+    return "建议重点测试长文本理解、复杂指令跟随、多步骤推理和输出稳定性。旧 Prompt 不一定失效，但很可能有优化空间，特别是角色设定、输入资料结构和输出格式。";
+  }
+  if (category === "产品功能") {
+    return "建议从最重复的任务开始试用，例如整理资料、生成草稿、更新表格、处理客户问题或做会议后续。能否节省时间，比功能名字本身更重要。";
+  }
+  if (category === "Agent趋势") {
+    return "建议把任务拆成输入、判断、执行、复核四步，再决定哪些步骤交给 Agent，哪些步骤必须人工确认。这样比一次性让 AI 接管整条流程更稳。";
+  }
+  if (category === "行业应用") {
+    return "建议观察它能否转化为具体业务场景，例如获客、客服、内容生产、研发提效、培训或数据分析。能落到一个岗位或一个流程，才有真正价值。";
+  }
+  return "建议先列出数据来源、访问权限、输出用途和复核责任。安全与合规类更新不能只看能力提升，还要看出错后的责任边界。";
+}
+
+function getArticleRisk(category: AiNewsItem["category"]) {
+  if (category === "模型更新") {
+    return "模型能力提升不等于所有任务都可以自动化。涉及事实、代码、医疗、金融或法律判断时，仍需要来源核对和人工复核。";
+  }
+  if (category === "产品功能") {
+    return "产品功能可能存在地区、账号、套餐或灰度限制。上线到正式工作流前，应先确认可用范围、数据权限和导出能力。";
+  }
+  if (category === "Agent趋势") {
+    return "Agent 能执行任务，也可能放大错误操作。凡是涉及发邮件、改数据、删文件、付款、发布内容的步骤，都应保留确认机制。";
+  }
+  if (category === "行业应用") {
+    return "行业案例通常展示成功面，不代表每个团队都能直接复制。要结合自己的客群、数据质量、团队能力和预算重新评估。";
+  }
+  return "安全与合规信息需要格外谨慎。不要把官方新闻当成完整合规建议，真正上线前仍要结合内部政策、当地法规和专业意见。";
 }
 
 function buildTags(item: FeedCandidate) {

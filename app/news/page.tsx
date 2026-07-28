@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { getLatestAiNewsForSite } from "@/lib/news";
 import { siteConfig } from "@/lib/site";
@@ -95,7 +96,9 @@ export default async function NewsPage() {
                     <span className="text-xs font-medium text-slate-400">来源：{item.source}</span>
                   </div>
                   <h3 className="mt-3 text-xl font-bold tracking-tight text-slate-950">
-                    {item.title}
+                    <Link href={`/news/${item.slug}`} className="transition hover:text-violet-600">
+                      {item.title}
+                    </Link>
                   </h3>
                   <p className="mt-3 text-sm leading-7 text-slate-600">{item.summary}</p>
                   <div className="mt-4 rounded-2xl border border-violet-100 bg-violet-50/70 p-4">
@@ -110,14 +113,22 @@ export default async function NewsPage() {
                         </span>
                       ))}
                     </div>
-                    <a
-                      href={item.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm font-semibold text-violet-600 transition-all group-hover:translate-x-0.5"
-                    >
-                      查看官方来源 →
-                    </a>
+                    <div className="flex flex-wrap items-center gap-3">
+                      <Link
+                        href={`/news/${item.slug}`}
+                        className="text-sm font-semibold text-violet-600 transition-all group-hover:translate-x-0.5"
+                      >
+                        阅读中文解读 →
+                      </Link>
+                      <a
+                        href={item.sourceUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm font-semibold text-slate-400 transition hover:text-slate-600"
+                      >
+                        官方原文
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

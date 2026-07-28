@@ -2,11 +2,12 @@ import type { MetadataRoute } from "next";
 
 import { getAllCollections } from "@/lib/collections";
 import { industries } from "@/lib/industries";
+import { getLatestAiNewsForSite } from "@/lib/news";
 import { getAllPrompts } from "@/lib/prompts";
 import { allSkills } from "@/lib/skills";
 import { categories, siteConfig } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const promptEntries = getAllPrompts().map((prompt) => ({
     url: `${siteConfig.url}/prompt/${prompt.slug}`,
     lastModified: prompt.publishedAt,
@@ -41,6 +42,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "weekly" as const,
     priority: 0.8,
   }));
+
+  const newsEntries = await getLatestAiNewsForSitemap();
 
   return [
     {
@@ -86,9 +89,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.86,
     },
     ...skillEntries,
+    ...newsEntries,
     ...collectionEntries,
     ...industryEntries,
     ...categoryEntries,
     ...promptEntries,
   ];
+}
+
+async function getLatestAiNewsForSitemap() {
+  try {
+    const news = await getLatestAiNewsForSite(20);
+    return news.map((item) => ({
+      url: `${siteConfig.url}/news/${item.slug}`,
+      lastModified: item.publishedAt,
+      changeFrequency: "daily" as const,
+      priority: 0.7,
+    }));
+  } catch {
+    return [];
+  }
 }
