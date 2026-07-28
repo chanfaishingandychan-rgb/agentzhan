@@ -43,8 +43,8 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
     <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-slate-950">扫码购买</h2>
-          <div className="mt-1 text-sm text-slate-500">付款后找客服要下载码</div>
+          <h2 className="text-lg font-bold text-slate-950">购买流程</h2>
+          <div className="mt-1 text-sm text-slate-500">先加客服微信，确认后再付款</div>
         </div>
         <div className="text-right">
           <div className="text-xs font-semibold text-violet-700">首批试用价</div>
@@ -75,28 +75,21 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             1
           </span>
-          <span>扫码付款 {product.priceLabel}</span>
+          <span>先加客服微信，确认你的 Mac 和 Codex 情况</span>
         </div>
         <div className="flex gap-3 text-sm leading-6 text-slate-700">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             2
           </span>
-          <span>付款后点下方按钮找客服，发送付款截图要下载码</span>
+          <span>确认无误后，扫码付款 {product.priceLabel}</span>
         </div>
         <div className="flex gap-3 text-sm leading-6 text-slate-700">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             3
           </span>
-          <span>拿到下载码后，在本页输入即可下载 ZIP</span>
+          <span>客服确认收款后发送下载码，在本页输入即可下载 ZIP</span>
         </div>
       </div>
-
-      <a
-        href={product.supportHref}
-        className={buttonStyles({ variant: "outline", size: "lg", className: "mt-5 w-full rounded-full" })}
-      >
-        付款后找客服要码
-      </a>
 
       {unlockEnabled ? (
         <div className="mt-6 border-t border-slate-200 pt-5">
