@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { buttonStyles } from "@/components/ui/button";
 import type { DigitalProduct } from "@/lib/products";
@@ -12,59 +12,9 @@ type ProductPurchaseBoxProps = {
   downloadHref: string;
 };
 
-function createOrderCode(productSlug: string) {
-  const date = new Date();
-  const ymd = [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("");
-  const random = Math.random().toString(36).slice(2, 7).toUpperCase();
-  return `AZ-${productSlug.toUpperCase()}-${ymd}-${random}`;
-}
-
 export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadHref }: ProductPurchaseBoxProps) {
-  const [orderCode, setOrderCode] = useState("");
   const [unlockCode, setUnlockCode] = useState("");
-  const [payerName, setPayerName] = useState("");
-  const [paymentRef, setPaymentRef] = useState("");
-  const [copied, setCopied] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
   const [qrFailed, setQrFailed] = useState(false);
-
-  useEffect(() => {
-    const storageKey = `agentzhan-order-${product.slug}`;
-    const stored = window.localStorage.getItem(storageKey);
-    if (stored) {
-      setOrderCode(stored);
-      return;
-    }
-
-    const nextCode = createOrderCode(product.slug);
-    window.localStorage.setItem(storageKey, nextCode);
-    setOrderCode(nextCode);
-  }, [product.slug]);
-
-  const verifyText = [
-    `我已购买：${product.title}`,
-    `金额：${product.priceLabel}`,
-    `付款备注码：${orderCode || "页面生成中"}`,
-    payerName ? `付款人：${payerName}` : "",
-    paymentRef ? `交易号 / 截图说明：${paymentRef}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  async function copyVerifyText() {
-    if (!verifyText) return;
-    try {
-      await navigator.clipboard.writeText(verifyText);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      setCopied(false);
-    }
-  }
 
   function goToUnlock() {
     const code = unlockCode.trim();
@@ -94,7 +44,7 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-bold text-slate-950">扫码购买</h2>
-          <div className="mt-1 text-sm text-slate-500">付款核对后解锁 ZIP</div>
+          <div className="mt-1 text-sm text-slate-500">付款后找客服要下载码</div>
         </div>
         <div className="text-right">
           <div className="text-xs font-semibold text-violet-700">首批试用价</div>
@@ -120,45 +70,33 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
         )}
       </div>
 
-      <div className="mt-5 rounded-2xl border border-violet-100 bg-violet-50 p-4">
-        <div className="text-xs font-semibold text-violet-700">付款备注码</div>
-        <div className="mt-2 break-all rounded-xl bg-white px-3 py-2 font-mono text-sm font-semibold text-slate-950">
-          {orderCode || "正在生成..."}
+      <div className="mt-5 grid gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-4">
+        <div className="flex gap-3 text-sm leading-6 text-slate-700">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
+            1
+          </span>
+          <span>扫码付款 {product.priceLabel}</span>
         </div>
-        <p className="mt-2 text-xs leading-5 text-slate-500">
-          付款时尽量填写这串备注码；如果平台不能备注，付款后把备注码和交易截图一起发给{product.supportLabel}。
-        </p>
+        <div className="flex gap-3 text-sm leading-6 text-slate-700">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
+            2
+          </span>
+          <span>付款后点下方按钮找客服，发送付款截图要下载码</span>
+        </div>
+        <div className="flex gap-3 text-sm leading-6 text-slate-700">
+          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
+            3
+          </span>
+          <span>拿到下载码后，在本页输入即可下载 ZIP</span>
+        </div>
       </div>
 
-      <div className="mt-5 space-y-3">
-        <input
-          value={payerName}
-          onChange={(event) => setPayerName(event.target.value)}
-          className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-          placeholder="付款人昵称 / 姓名"
-        />
-        <input
-          value={paymentRef}
-          onChange={(event) => setPaymentRef(event.target.value)}
-          className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3 text-sm outline-none transition focus:border-violet-300 focus:ring-4 focus:ring-violet-100"
-          placeholder="交易号 / 支付截图说明"
-        />
-        <button
-          type="button"
-          className={buttonStyles({ variant: "outline", size: "lg", className: "w-full rounded-full" })}
-          onClick={() => {
-            setSubmitted(true);
-            void copyVerifyText();
-          }}
-        >
-          {copied ? "核对信息已复制" : "复制付款核对信息"}
-        </button>
-        {submitted && (
-          <p className="text-xs leading-6 text-slate-500">
-            把核对信息发送给{product.supportLabel}。核对后会收到下载码，回到本页输入即可显示压缩包。
-          </p>
-        )}
-      </div>
+      <a
+        href={product.supportHref}
+        className={buttonStyles({ variant: "outline", size: "lg", className: "mt-5 w-full rounded-full" })}
+      >
+        付款后找客服要码
+      </a>
 
       {unlockEnabled ? (
         <div className="mt-6 border-t border-slate-200 pt-5">
@@ -185,16 +123,9 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
         </div>
       ) : (
         <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-xs leading-6 text-amber-900">
-          自动下载码尚未配置。当前可先扫码付款并发送核对信息，核对后通过微信交付 ZIP。
+          自动下载码尚未配置。当前可先扫码付款，再找客服要下载码。
         </div>
       )}
-
-      <a
-        href={product.supportHref}
-        className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
-      >
-        打开{product.supportLabel}
-      </a>
     </div>
   );
 }

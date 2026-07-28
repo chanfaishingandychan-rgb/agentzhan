@@ -133,7 +133,7 @@ export default async function CodexDeepSeekProductPage({ searchParams }: CodexDe
               <SummaryLine label="交付" value="ZIP 安装包" />
               <SummaryLine label="系统" value="macOS" />
               <SummaryLine label="模型" value="DeepSeek Flash / Pro" />
-              <SummaryLine label="购买" value="扫码付款后核对" />
+              <SummaryLine label="购买" value="付款后找客服要码" />
             </div>
             <a
               href="#buy"
