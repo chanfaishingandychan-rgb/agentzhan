@@ -58,6 +58,8 @@ const fallbackThreads: CommunityThread[] = [
   },
 ];
 
+const hiddenCommunityThreadIds = new Set(["2"]);
+
 type CommunityLogRow = {
   id: number | string;
   summary?: string | null;
@@ -152,6 +154,7 @@ export async function getCommunityThreads(limit = 30): Promise<{
   }
 
   const threads = Array.from(threadMap.values())
+    .filter((thread) => !hiddenCommunityThreadIds.has(thread.id))
     .map((thread) => ({
       ...thread,
       replies: thread.replies.sort(
