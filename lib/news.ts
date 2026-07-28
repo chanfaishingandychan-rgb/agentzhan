@@ -313,7 +313,10 @@ async function getLatestOfficialAiNews(limit: number): Promise<AiNewsItem[]> {
 
   const summarizedItems = await summarizeOfficialAiNews(selected);
 
-  return selected.map((candidate) => summarizedItems.get(candidate.sourceUrl) ?? toFallbackAiNewsItem(candidate));
+  return selected.map((candidate) => {
+    if (localizedFeedCopy[getLookupKey(candidate.title)]) return toFallbackAiNewsItem(candidate);
+    return summarizedItems.get(candidate.sourceUrl) ?? toFallbackAiNewsItem(candidate);
+  });
 }
 
 async function fetchFeedCandidates(source: FeedSource): Promise<FeedCandidate[]> {
