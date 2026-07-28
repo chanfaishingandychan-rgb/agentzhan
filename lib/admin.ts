@@ -572,7 +572,7 @@ async function getTrafficStatsFromGenerationLogs(
 
   const { data, error, count } = await client
     .from("ai_generation_logs")
-    .select("id,run_time,details", { count: "exact" })
+    .select("id,run_time,error_message", { count: "exact" })
     .eq("summary", "traffic_page_view")
     .gte("run_time", last7dStart)
     .order("run_time", { ascending: false })
@@ -581,7 +581,18 @@ async function getTrafficStatsFromGenerationLogs(
   if (error || !data) return null;
 
   const rows = data.map((row: SupabaseRow) => {
-    const details = row.details && typeof row.details === "object" && !Array.isArray(row.details) ? row.details : {};
+    let details: SupabaseRow = {};
+    if (typeof row.error_message === "string") {
+      try {
+        const parsed = JSON.parse(row.error_message);
+        if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+          details = parsed;
+        }
+      } catch {
+        details = {};
+      }
+    }
+
     return {
       id: row.id,
       path: details.path,

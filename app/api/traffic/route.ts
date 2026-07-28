@@ -77,15 +77,19 @@ export async function POST(request: NextRequest) {
   const { error } = await client.from("page_views").insert(event);
 
   if (error) {
-    if (isMissingTableError(error)) {
-      await client.from("ai_generation_logs").insert({
-        generated_count: 0,
-        published_count: 0,
-        draft_count: 0,
-        failed_count: 0,
-        summary: "traffic_page_view",
-        details: event,
-      });
+    const fallback = {
+      generated_count: 0,
+      published_count: 0,
+      draft_count: 0,
+      failed_count: 0,
+      summary: "traffic_page_view",
+      error_message: JSON.stringify(event),
+    };
+    const withDetails = { ...fallback, details: event };
+    const fallbackResult = await client.from("ai_generation_logs").insert(withDetails);
+
+    if (fallbackResult.error && (isMissingTableError(fallbackResult.error) || fallbackResult.error.code === "PGRST204")) {
+      await client.from("ai_generation_logs").insert(fallback);
     }
 
     return new NextResponse(null, { status: 204 });
