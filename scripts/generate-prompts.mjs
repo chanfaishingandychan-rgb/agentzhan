@@ -789,18 +789,112 @@ async function getPremiumSalesCrmItems() {
   }
 }
 
+function buildCustomerServiceAfterSalesPromptItem(item, index) {
+  const title = item.title.endsWith("提示词") ? item.title : `${item.title}提示词`;
+  const publishedAt = new Date(Date.UTC(2026, 6, 28, 3, 0, 0) - index * 86400000).toISOString();
+  const requiredInputsText = item.requiredInputs.join("、");
+  const outputFormatText = item.outputFormat.join("、");
+  const riskText = item.riskNotes.join("；");
+
+  return {
+    slug: `customer-service-after-sales-${String(index + 1).padStart(2, "0")}`,
+    title,
+    summary: `${item.summary}，适合${item.targetUsers.join("、")}直接复制使用。`,
+    seoTitle: `${title} - 客服售后高质量中文模板 | Agent站`,
+    seoDescription: `免费查看${title}，覆盖${item.scene}，包含完整提示词、输入信息、输出格式、使用案例和风险提醒，适合${item.model}与主流AI模型。`,
+    category: {
+      slug: "ai-customer-service",
+      name: "AI客服",
+    },
+    tags: [...new Set([...item.tags, item.scene, "客服售后Prompt", "中文提示词"])].slice(0, 6),
+    difficulty: item.difficulty,
+    model: item.model,
+    useScene: item.scene,
+    useCases: [
+      `适合${item.scene}`,
+      `尤其适合${item.targetUsers.join("、")}`,
+      `需要输入${requiredInputsText}时使用`,
+    ],
+    prompt: buildCustomerServiceAfterSalesPromptText(item),
+    instructions: [
+      `先准备这些信息：${requiredInputsText}。`,
+      "把真实客户原话、订单状态、服务规则、可授权方案和风险边界填入提示词，不要让 AI 自行猜测。",
+      `按输出格式检查结果是否包含：${outputFormatText}。`,
+    ],
+    example: item.exampleUseCase,
+    expectedResult: `预期效果：围绕${item.scene}快速得到可落地的客服售后方案，减少重复解释、投诉升级和服务返工成本。`,
+    faq: [
+      {
+        question: `这个${title}适合哪些人？`,
+        answer: `适合${item.targetUsers.join("、")}。如果你已经有客户原话、订单信息和处理规则，可以直接套用。`,
+      },
+      {
+        question: "使用前需要准备什么？",
+        answer: `建议先准备：${requiredInputsText}。信息越真实，输出越接近可直接发送给客户的版本。`,
+      },
+      {
+        question: "正式回复客户前要注意什么？",
+        answer: `需要人工复核：${riskText}。涉及退款、付款、隐私、投诉、合同和技术安全时尤其要谨慎。`,
+      },
+    ],
+    bestPractices: [
+      item.qualityReason,
+      "让 AI 先判断客户情绪、问题类型和处理权限，再输出正式回复或 SOP。",
+      "正式发送前结合订单事实、平台规则、售后政策和客户隐私要求做人工复核。",
+    ],
+    tier: "free",
+    popularity: 965 - index * 7,
+    publishedAt,
+  };
+}
+
+function buildCustomerServiceAfterSalesPromptText(item) {
+  return `你是一名资深客服售后顾问，熟悉售前答疑、售后处理、投诉安抚、退款规则、客服质检、知识库、AI客服机器人和服务自动化。
+
+任务：围绕"${item.scene}"，为我生成一份可直接执行的高质量客服售后方案。
+
+请我先提供这些信息：
+${item.requiredInputs.map((input) => `- ${input}：`).join("\n")}
+
+生成要求：
+1. 先判断客户情绪、问题类型、订单状态、处理权限和风险等级，不要直接套模板。
+2. 方案必须适合${item.targetUsers.join("、")}使用，内容要具体、礼貌、清楚、可执行、可复盘。
+3. 涉及退款、付款核对、隐私资料、平台投诉、合同条款、技术安全和公开回应时，必须提醒合规和人工复核。
+4. 输出内容要能直接用于真实客服工作，包括回复客户、整理工单、升级处理、沉淀知识库或优化服务流程，不要写空话。
+5. 如果信息不足，请先列出需要补充的问题，再给一个可先用的基础版本。
+
+请按以下格式输出：
+${item.outputFormat.map((output, outputIndex) => `${outputIndex + 1}. ${output}`).join("\n")}
+
+风险提醒：${item.riskNotes.join("；")}`;
+}
+
+async function getPremiumCustomerServiceAfterSalesItems() {
+  const sourcePath = resolve(process.cwd(), "content", "customer-service-after-sales-prompts.json");
+  try {
+    const source = JSON.parse(await readFile(sourcePath, "utf8"));
+    if (!Array.isArray(source)) return [];
+    return source.map(buildCustomerServiceAfterSalesPromptItem);
+  } catch (error) {
+    if (error?.code === "ENOENT") return [];
+    throw error;
+  }
+}
+
 const premiumEnterpriseOfficeItems = await getPremiumEnterpriseOfficeItems();
 const premiumEducationItems = await getPremiumEducationItems();
 const premiumEcommerceItems = await getPremiumEcommerceItems();
 const premiumContentMediaItems = await getPremiumContentMediaItems();
 const premiumMarketingBrandItems = await getPremiumMarketingBrandItems();
 const premiumSalesCrmItems = await getPremiumSalesCrmItems();
+const premiumCustomerServiceAfterSalesItems = await getPremiumCustomerServiceAfterSalesItems();
 const outputItems = [
   ...premiumEnterpriseOfficeItems,
   ...premiumEducationItems,
   ...premiumEcommerceItems,
   ...premiumMarketingBrandItems,
   ...premiumSalesCrmItems,
+  ...premiumCustomerServiceAfterSalesItems,
   ...premiumContentMediaItems,
   ...items,
 ];
