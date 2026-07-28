@@ -70,6 +70,42 @@ export type LeadRow = {
   createdAt: string;
 };
 
+export type TrafficMetricRow = {
+  label: string;
+  value: number;
+};
+
+export type TrafficPageRow = {
+  path: string;
+  title: string;
+  views: number;
+  visitors: number;
+};
+
+export type TrafficRecentView = {
+  id: string;
+  path: string;
+  title: string;
+  referrer: string;
+  deviceType: string;
+  country: string;
+  createdAt: string;
+};
+
+export type TrafficDashboardStats = {
+  status: "ready" | "not_configured" | "table_missing" | "error";
+  todayViews: number;
+  last24hViews: number;
+  last7dViews: number;
+  uniqueVisitors7d: number;
+  topPages: TrafficPageRow[];
+  referrers: TrafficMetricRow[];
+  devices: TrafficMetricRow[];
+  countries: TrafficMetricRow[];
+  recentViews: TrafficRecentView[];
+  sampleLimited: boolean;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type SupabaseRow = Record<string, any>;
 
@@ -149,6 +185,11 @@ function getHongKongDateKey(value: Date) {
     month: "2-digit",
     day: "2-digit",
   }).format(value);
+}
+
+function getHongKongDayStartIso(value: Date) {
+  const [year, month, day] = getHongKongDateKey(value).split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, -8, 0, 0, 0)).toISOString();
 }
 
 export function inferCronTaskFromLog(log: GenerationLog): CronTaskKey | null {
@@ -367,6 +408,161 @@ export async function getSupabaseLeadStats(): Promise<{
     };
   } catch {
     return null;
+  }
+}
+
+function emptyTrafficStats(status: TrafficDashboardStats["status"]): TrafficDashboardStats {
+  return {
+    status,
+    todayViews: 0,
+    last24hViews: 0,
+    last7dViews: 0,
+    uniqueVisitors7d: 0,
+    topPages: [],
+    referrers: [],
+    devices: [],
+    countries: [],
+    recentViews: [],
+    sampleLimited: false,
+  };
+}
+
+function normalizeReferrer(referrer: unknown) {
+  if (typeof referrer !== "string" || !referrer.trim()) return "直接访问";
+
+  try {
+    const url = new URL(referrer);
+    const siteHost = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://agentzhan.com").hostname;
+    const host = url.hostname.replace(/^www\./, "");
+    if (host === siteHost.replace(/^www\./, "")) return "站内跳转";
+    if (host.includes("baidu.")) return "百度";
+    if (host.includes("google.")) return "Google";
+    if (host.includes("bing.")) return "Bing";
+    if (host.includes("xiaohongshu.")) return "小红书";
+    if (host.includes("douyin.")) return "抖音";
+    if (host.includes("weixin.") || host.includes("wechat.")) return "微信";
+    return host;
+  } catch {
+    return "直接访问";
+  }
+}
+
+function normalizeDevice(deviceType: unknown) {
+  switch (deviceType) {
+    case "mobile":
+      return "手机";
+    case "tablet":
+      return "平板";
+    case "bot":
+      return "爬虫/工具";
+    case "desktop":
+      return "电脑";
+    default:
+      return "未知";
+  }
+}
+
+function normalizeCountry(country: unknown) {
+  if (typeof country !== "string" || !country.trim()) return "未知地区";
+  return country.toUpperCase();
+}
+
+function topMetricRows(counter: Map<string, number>, limit: number): TrafficMetricRow[] {
+  return Array.from(counter.entries())
+    .map(([label, value]) => ({ label, value }))
+    .sort((a, b) => b.value - a.value)
+    .slice(0, limit);
+}
+
+export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDashboardStats> {
+  const client = createServiceClient();
+  if (!client) return emptyTrafficStats("not_configured");
+
+  const now = new Date();
+  const todayStart = getHongKongDayStartIso(now);
+  const last24hStart = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString();
+  const last7dStart = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+  try {
+    const { data, error, count } = await client
+      .from("page_views")
+      .select("id,path,title,referrer,visitor_id,device_type,country,created_at", { count: "exact" })
+      .gte("created_at", last7dStart)
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error || !data) {
+      if (error?.code === "42P01") return emptyTrafficStats("table_missing");
+      return emptyTrafficStats("error");
+    }
+
+    const [todayResult, last24hResult] = await Promise.all([
+      client.from("page_views").select("*", { count: "exact", head: true }).gte("created_at", todayStart),
+      client.from("page_views").select("*", { count: "exact", head: true }).gte("created_at", last24hStart),
+    ]);
+
+    const pageMap = new Map<string, { title: string; views: number; visitors: Set<string> }>();
+    const referrerMap = new Map<string, number>();
+    const deviceMap = new Map<string, number>();
+    const countryMap = new Map<string, number>();
+    const visitors = new Set<string>();
+
+    data.forEach((row: SupabaseRow) => {
+      const path = typeof row.path === "string" && row.path ? row.path : "/";
+      const title = typeof row.title === "string" && row.title ? row.title : path;
+      const visitor = typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`;
+      const page = pageMap.get(path) ?? { title, views: 0, visitors: new Set<string>() };
+
+      page.views += 1;
+      page.visitors.add(visitor);
+      pageMap.set(path, page);
+      visitors.add(visitor);
+
+      const referrer = normalizeReferrer(row.referrer);
+      referrerMap.set(referrer, (referrerMap.get(referrer) ?? 0) + 1);
+
+      const device = normalizeDevice(row.device_type);
+      deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
+
+      const country = normalizeCountry(row.country);
+      countryMap.set(country, (countryMap.get(country) ?? 0) + 1);
+    });
+
+    const topPages = Array.from(pageMap.entries())
+      .map(([path, row]) => ({
+        path,
+        title: row.title,
+        views: row.views,
+        visitors: row.visitors.size,
+      }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 10);
+
+    const recentViews = data.slice(0, 50).map((row: SupabaseRow) => ({
+      id: String(row.id),
+      path: typeof row.path === "string" && row.path ? row.path : "/",
+      title: typeof row.title === "string" && row.title ? row.title : row.path ?? "/",
+      referrer: normalizeReferrer(row.referrer),
+      deviceType: normalizeDevice(row.device_type),
+      country: normalizeCountry(row.country),
+      createdAt: row.created_at ?? "",
+    }));
+
+    return {
+      status: "ready",
+      todayViews: todayResult.count ?? data.filter((row: SupabaseRow) => row.created_at >= todayStart).length,
+      last24hViews: last24hResult.count ?? data.filter((row: SupabaseRow) => row.created_at >= last24hStart).length,
+      last7dViews: count ?? data.length,
+      uniqueVisitors7d: visitors.size,
+      topPages,
+      referrers: topMetricRows(referrerMap, 8),
+      devices: topMetricRows(deviceMap, 5),
+      countries: topMetricRows(countryMap, 8),
+      recentViews,
+      sampleLimited: Boolean(count && count > limit),
+    };
+  } catch {
+    return emptyTrafficStats("error");
   }
 }
 

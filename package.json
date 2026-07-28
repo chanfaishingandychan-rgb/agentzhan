@@ -4,7 +4,7 @@
   "description": "面向中国大陆市场的中文 AI 提示词库与 AI 工作流平台 MVP。",
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/generate-prompts.mjs && next build",
+    "build": "node scripts/generate-prompts.mjs && next build --webpack",
     "start": "next start",
     "lint": "eslint .",
     "generate:content": "node scripts/generate-prompts.mjs"
@@ -32,6 +32,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.110.8",
+    "@vercel/analytics": "^2.0.1",
     "fast-xml-parser": "^5.10.1",
     "next": "^16.2.9",
     "openai": "^6.49.0",

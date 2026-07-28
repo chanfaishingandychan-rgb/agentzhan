@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 import "./globals.css";
 
 import { SiteShell } from "@/components/site-shell";
+import { TrafficTracker } from "@/components/traffic-tracker";
+import { VercelAnalytics } from "@/components/vercel-analytics";
 import { buildOrganizationSchema, buildWebsiteSchema } from "@/lib/schema";
 import { siteConfig } from "@/lib/site";
 
@@ -60,6 +63,10 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
         <SiteShell>{children}</SiteShell>
+        <Suspense fallback={null}>
+          <TrafficTracker />
+        </Suspense>
+        <VercelAnalytics />
       </body>
     </html>
   );

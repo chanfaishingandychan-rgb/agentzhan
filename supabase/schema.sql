@@ -96,6 +96,31 @@ CREATE INDEX IF NOT EXISTS idx_leads_created ON leads(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_leads_pack ON leads(interested_pack);
 CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status);
 
+-- 6. page_views
+CREATE TABLE IF NOT EXISTS page_views (
+  id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  path        TEXT NOT NULL,
+  search      TEXT,
+  full_path   TEXT NOT NULL,
+  title       TEXT,
+  referrer    TEXT,
+  visitor_id  TEXT,
+  session_id  TEXT,
+  user_agent  TEXT,
+  device_type TEXT NOT NULL DEFAULT 'unknown',
+  is_bot      BOOLEAN NOT NULL DEFAULT false,
+  country     TEXT,
+  created_at  TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+ALTER TABLE page_views ENABLE ROW LEVEL SECURITY;
+
+CREATE INDEX IF NOT EXISTS idx_page_views_created ON page_views(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_page_views_path ON page_views(path);
+CREATE INDEX IF NOT EXISTS idx_page_views_visitor ON page_views(visitor_id);
+CREATE INDEX IF NOT EXISTS idx_page_views_device ON page_views(device_type);
+CREATE INDEX IF NOT EXISTS idx_page_views_country ON page_views(country);
+
 -- 輔助：自動更新 updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$
