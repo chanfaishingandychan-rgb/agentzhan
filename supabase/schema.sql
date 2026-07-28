@@ -121,6 +121,29 @@ CREATE INDEX IF NOT EXISTS idx_page_views_visitor ON page_views(visitor_id);
 CREATE INDEX IF NOT EXISTS idx_page_views_device ON page_views(device_type);
 CREATE INDEX IF NOT EXISTS idx_page_views_country ON page_views(country);
 
+-- API 權限：server-side Supabase service role 需要讀寫站內資料表。
+GRANT USAGE ON SCHEMA public TO service_role;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE
+  public.categories,
+  public.prompts,
+  public.ai_generation_logs,
+  public.prompt_quality_scores,
+  public.leads,
+  public.page_views
+TO service_role;
+
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO service_role;
+GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA public TO service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO service_role;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE, SELECT ON SEQUENCES TO service_role;
+
+NOTIFY pgrst, 'reload schema';
+
 -- 輔助：自動更新 updated_at
 CREATE OR REPLACE FUNCTION update_updated_at_column()
 RETURNS TRIGGER AS $$

@@ -35,7 +35,7 @@ export default async function AdminTrafficPage() {
     stats.status === "not_configured"
       ? "Supabase 尚未配置，暂时不能保存流量。请先补齐 Vercel 环境变量。"
       : stats.status === "table_missing"
-        ? "流量资料表尚未建立。请在 Supabase SQL Editor 执行 supabase/schema.sql 中的 page_views 段落。"
+        ? "流量资料表或数据库权限尚未建立。请在 Supabase SQL Editor 执行 supabase/repair-production.sql。"
         : stats.status === "error"
           ? "暂时无法读取流量资料，稍后再刷新查看。"
           : "";

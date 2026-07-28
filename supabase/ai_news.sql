@@ -15,3 +15,7 @@ create table if not exists public.ai_news (
 
 create index if not exists ai_news_published_at_idx on public.ai_news (published_at desc);
 create index if not exists ai_news_category_idx on public.ai_news (category);
+
+grant usage on schema public to service_role;
+grant select, insert, update, delete on public.ai_news to service_role;
+notify pgrst, 'reload schema';
