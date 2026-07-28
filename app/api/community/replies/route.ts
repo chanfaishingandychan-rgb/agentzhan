@@ -1,26 +1,19 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-import { getCommunityThreads, toCommunityThread } from "@/lib/community";
+import { toCommunityReply } from "@/lib/community";
 import { createServiceClient } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
-
-const allowedTopics = new Set(["模型选择", "提示词", "插件安装", "工作流", "网站运营", "AI工具", "其他问题"]);
 
 function sanitizeText(value: unknown, maxLength: number) {
   if (typeof value !== "string") return "";
   return value.replace(/\s+/g, " ").trim().slice(0, maxLength);
 }
 
-export async function GET() {
-  const data = await getCommunityThreads(30);
-  return NextResponse.json(data);
-}
-
 export async function POST(request: NextRequest) {
   const client = createServiceClient();
   if (!client) {
-    return NextResponse.json({ error: "留言暂时无法保存，请稍后再试。" }, { status: 503 });
+    return NextResponse.json({ error: "回应暂时无法保存，请稍后再试。" }, { status: 503 });
   }
 
   let payload: Record<string, unknown>;
@@ -33,13 +26,16 @@ export async function POST(request: NextRequest) {
   const honeypot = sanitizeText(payload.website, 120);
   if (honeypot) return NextResponse.json({ ok: true });
 
+  const threadId = sanitizeText(payload.threadId, 80);
   const name = sanitizeText(payload.name, 24) || "匿名用户";
-  const topicInput = sanitizeText(payload.topic, 24);
-  const topic = allowedTopics.has(topicInput) ? topicInput : "其他问题";
-  const question = sanitizeText(payload.question, 500);
+  const reply = sanitizeText(payload.reply, 500);
 
-  if (question.length < 6) {
-    return NextResponse.json({ error: "问题太短，请写清楚一点。" }, { status: 400 });
+  if (!threadId) {
+    return NextResponse.json({ error: "找不到要回应的问题。" }, { status: 400 });
+  }
+
+  if (reply.length < 2) {
+    return NextResponse.json({ error: "回应太短，请写清楚一点。" }, { status: 400 });
   }
 
   const userAgent = request.headers.get("user-agent")?.slice(0, 500) ?? null;
@@ -52,11 +48,11 @@ export async function POST(request: NextRequest) {
       published_count: 0,
       draft_count: 0,
       failed_count: 0,
-      summary: "community_question",
+      summary: "community_reply",
       details: {
+        threadId,
         name,
-        topic,
-        question,
+        reply,
         country,
         userAgent,
       },
@@ -64,14 +60,14 @@ export async function POST(request: NextRequest) {
     .select("id, summary, run_time, created_at, details")
     .single();
 
-  const thread = data ? toCommunityThread(data) : null;
+  const savedReply = data ? toCommunityReply(data) : null;
 
-  if (error || !thread) {
+  if (error || !savedReply) {
     return NextResponse.json({ error: "保存失败，请稍后再试。" }, { status: 500 });
   }
 
   return NextResponse.json({
     ok: true,
-    thread,
+    reply: savedReply,
   });
 }
