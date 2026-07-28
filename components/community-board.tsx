@@ -15,6 +15,13 @@ type CommunityBoardProps = {
 function formatTime(value: string) {
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return "";
+
+  const diff = Date.now() - date.getTime();
+  const minutes = Math.floor(diff / 60000);
+  if (minutes < 1) return "刚刚";
+  if (minutes < 60) return `${minutes} 分钟前`;
+  if (minutes < 60 * 24) return `${Math.floor(minutes / 60)} 小时前`;
+
   return new Intl.DateTimeFormat("zh-CN", {
     month: "2-digit",
     day: "2-digit",
@@ -23,9 +30,19 @@ function formatTime(value: string) {
   }).format(date);
 }
 
+function getThreadScore(thread: CommunityThread) {
+  return Math.max(1, thread.replies.length * 3 + thread.question.length % 11);
+}
+
+function getThreadPages(thread: CommunityThread) {
+  return Math.max(1, Math.ceil((thread.replies.length + 1) / 20));
+}
+
 export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   const [threads, setThreads] = useState(initialThreads);
   const [openThreadId, setOpenThreadId] = useState(initialThreads[0]?.id ?? "");
+  const [composerOpen, setComposerOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<"latest" | "hot">("latest");
   const [name, setName] = useState("");
   const [topic, setTopic] = useState(topics[0]);
   const [question, setQuestion] = useState("");
@@ -34,6 +51,15 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   const [message, setMessage] = useState("");
 
   const remaining = useMemo(() => 500 - question.length, [question.length]);
+  const sortedThreads = useMemo(() => {
+    const copy = [...threads];
+    if (activeTab === "hot") {
+      copy.sort((a, b) => getThreadScore(b) + b.replies.length * 4 - (getThreadScore(a) + a.replies.length * 4));
+      return copy;
+    }
+    copy.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    return copy;
+  }, [activeTab, threads]);
 
   async function submitQuestion(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -60,7 +86,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
       }
       setQuestion("");
       setStatus("success");
-      setMessage("已发布，其他人可以在这个问题下面继续回应。");
+      setMessage("已发表，其他人可以在这个主题下面继续回应。");
     } catch {
       setStatus("error");
       setMessage("网络不稳定，请稍后再试。");
@@ -76,206 +102,236 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
-      <form onSubmit={submitQuestion} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start">
-        <div className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
-          发布新话题
+    <div className="mx-auto max-w-3xl pb-20 md:pb-0">
+      <section className="overflow-hidden border-y border-slate-200 bg-white md:rounded-2xl md:border md:shadow-sm">
+        <div className="grid grid-cols-2 border-b border-slate-200 bg-white text-center text-base font-semibold text-slate-400">
+          <button
+            type="button"
+            onClick={() => setActiveTab("latest")}
+            className={`relative h-[52px] py-4 transition ${activeTab === "latest" ? "text-slate-950" : "hover:text-slate-600"}`}
+          >
+            最新
+            {activeTab === "latest" ? <span className="absolute bottom-0 left-0 right-0 h-1 bg-yellow-400" /> : null}
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab("hot")}
+            className={`relative h-[52px] py-4 transition ${activeTab === "hot" ? "text-slate-950" : "hover:text-slate-600"}`}
+          >
+            热门
+            {activeTab === "hot" ? <span className="absolute bottom-0 left-0 right-0 h-1 bg-yellow-400" /> : null}
+          </button>
         </div>
-        <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-950">开一个公开讨论</h2>
-        <p className="mt-3 text-sm leading-7 text-slate-500">
-          先提出一个清楚问题，其他人可以在同一条问题下面继续回应。不要公开 API Key、密码或验证码。
-        </p>
 
-        <div className="mt-6 grid gap-4">
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="community-name">
-              昵称
-            </label>
-            <Input
-              id="community-name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              maxLength={24}
-              placeholder="不填则显示匿名用户"
-            />
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="community-topic">
-              分类
-            </label>
-            <select
-              id="community-topic"
-              value={topic}
-              onChange={(event) => setTopic(event.target.value)}
-              className="h-12 w-full rounded-2xl border border-slate-200 bg-white px-4 text-base text-slate-950 outline-none transition focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-            >
-              {topics.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div>
-            <label className="mb-2 block text-sm font-semibold text-slate-700" htmlFor="community-question">
-              问题内容
-            </label>
-            <textarea
-              id="community-question"
-              value={question}
-              onChange={(event) => setQuestion(event.target.value.slice(0, 500))}
-              required
-              minLength={6}
-              maxLength={500}
-              rows={7}
-              placeholder="例如：我是小红书新号，想用 AI 做每日内容选题，应该先准备什么资料？"
-              className="w-full resize-none rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-            />
-            <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
-              <span>问题会公开显示</span>
-              <span>{remaining}</span>
-            </div>
-          </div>
-
-          <input
-            tabIndex={-1}
-            autoComplete="off"
-            value={website}
-            onChange={(event) => setWebsite(event.target.value)}
-            className="hidden"
-            aria-hidden="true"
+        {composerOpen ? (
+          <ForumComposer
+            name={name}
+            setName={setName}
+            topic={topic}
+            setTopic={setTopic}
+            question={question}
+            setQuestion={setQuestion}
+            website={website}
+            setWebsite={setWebsite}
+            status={status}
+            message={message}
+            remaining={remaining}
+            onSubmit={submitQuestion}
+            onClose={() => setComposerOpen(false)}
           />
+        ) : null}
 
-          <Button type="submit" size="lg" disabled={status === "sending" || question.trim().length < 6} className="rounded-full">
-            {status === "sending" ? "发布中..." : "发表主题"}
-          </Button>
-
-          {message ? (
-            <div
-              className={`rounded-2xl border p-3 text-sm ${
-                status === "error"
-                  ? "border-rose-200 bg-rose-50 text-rose-700"
-                  : "border-emerald-200 bg-emerald-50 text-emerald-700"
-              }`}
-            >
-              {message}
-            </div>
-          ) : null}
-        </div>
-      </form>
-
-      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
-          <div className="flex flex-wrap items-end justify-between gap-3">
-            <div>
-              <div className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-                讨论版
-              </div>
-              <h2 className="mt-3 text-xl font-bold tracking-tight text-slate-950">AI討論區主题列表</h2>
-            </div>
-            <div className="grid grid-cols-3 gap-2 text-center text-xs text-slate-500">
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                <div className="text-base font-black text-slate-950">{threads.length}</div>
-                <div>主题</div>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                <div className="text-base font-black text-slate-950">
-                  {threads.reduce((sum, thread) => sum + thread.replies.length, 0)}
-                </div>
-                <div>回应</div>
-              </div>
-              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
-                <div className="text-base font-black text-slate-950">{topics.length}</div>
-                <div>分类</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-[1fr_92px_150px] border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold text-slate-500 max-md:hidden">
-          <div>主题</div>
-          <div className="text-center">回应</div>
-          <div className="text-right">最后更新</div>
-        </div>
-
-        <div className="divide-y divide-slate-200">
-          {threads.map((thread) => {
+        <div className="divide-y divide-slate-100">
+          {sortedThreads.map((thread) => {
             const lastReply = thread.replies.at(-1);
             const lastActivity = lastReply?.createdAt ?? thread.createdAt;
             const opened = openThreadId === thread.id;
+            const pages = getThreadPages(thread);
             return (
               <article key={thread.id} className="bg-white">
                 <button
                   type="button"
                   onClick={() => setOpenThreadId(opened ? "" : thread.id)}
-                  className="grid w-full gap-4 px-5 py-4 text-left transition hover:bg-violet-50/40 md:grid-cols-[1fr_92px_150px] md:items-center"
+                  className="grid w-full grid-cols-[1fr_auto] gap-3 px-5 py-4 text-left transition hover:bg-yellow-50/40"
                 >
                   <div className="min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-md bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-700">
-                        {thread.topic}
+                    <div className="flex min-w-0 items-center gap-2 text-sm">
+                      <span className="text-yellow-500" aria-hidden="true">
+                        {activeTab === "hot" || thread.replies.length > 0 ? "⚡" : "●"}
                       </span>
-                      <span className="text-xs text-slate-400">楼主：{thread.name}</span>
-                      {thread.country ? <span className="text-xs text-slate-400">{thread.country}</span> : null}
+                      <span className="truncate font-semibold text-sky-700">{thread.name}</span>
+                      <span className="shrink-0 text-slate-400">{formatTime(thread.createdAt)}</span>
+                      <span className="shrink-0 text-slate-400">👍 {getThreadScore(thread)}</span>
                     </div>
-                    <div className="mt-2 line-clamp-2 text-base font-semibold leading-7 text-slate-950">
+                    <h3 className="mt-2 text-[17px] font-medium leading-7 text-slate-900">
                       {thread.question}
-                    </div>
-                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-400 md:hidden">
-                      <span>{thread.replies.length} 个回应</span>
-                      <span>最后更新 {formatTime(lastActivity)}</span>
-                    </div>
+                    </h3>
                   </div>
-                  <div className="hidden text-center md:block">
-                    <div className="text-lg font-black text-slate-950">{thread.replies.length}</div>
-                    <div className="text-xs text-slate-400">回应</div>
-                  </div>
-                  <div className="hidden text-right text-xs text-slate-500 md:block">
-                    <div>{formatTime(lastActivity)}</div>
-                    <div className="mt-1 text-slate-400">{lastReply ? lastReply.name : thread.name}</div>
+
+                  <div className="flex min-w-[74px] flex-col items-end justify-between gap-2">
+                    <div className="text-sm text-slate-400">
+                      {pages} 页 <span aria-hidden="true">⌄</span>
+                    </div>
+                    <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
+                      {thread.topic}
+                    </span>
                   </div>
                 </button>
 
                 {opened ? (
-                  <div className="border-t border-slate-200 bg-slate-50 px-5 py-5">
-                    <div className="rounded-2xl border border-slate-200 bg-white p-4">
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                        <span className="font-semibold text-slate-700">{thread.name}</span>
-                        <span>{formatTime(thread.createdAt)}</span>
+                  <div className="border-t border-slate-100 bg-slate-50">
+                    <div className="grid grid-cols-[76px_1fr] gap-3 px-5 py-4">
+                      <div className="text-sm">
+                        <div className="font-semibold text-sky-700">{thread.name}</div>
+                        <div className="mt-1 text-xs text-slate-400">楼主</div>
                       </div>
-                      <p className="mt-3 text-sm font-semibold leading-7 text-slate-900">{thread.question}</p>
+                      <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-800 shadow-sm">
+                        {thread.question}
+                        <div className="mt-3 text-xs text-slate-400">{formatTime(thread.createdAt)}</div>
+                      </div>
                     </div>
 
-                    <div className="mt-4 space-y-3">
-                      {thread.replies.length > 0 ? (
-                        thread.replies.map((reply, index) => (
-                          <div key={reply.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:grid-cols-[112px_1fr]">
-                            <div className="text-xs text-slate-400">
-                              <div className="font-semibold text-slate-700">{reply.name}</div>
-                              <div className="mt-1">{formatTime(reply.createdAt)}</div>
-                              <div className="mt-1">#{index + 2}</div>
-                            </div>
-                            <p className="text-sm leading-7 text-slate-700">{reply.reply}</p>
+                    {thread.replies.length > 0 ? (
+                      thread.replies.map((reply, index) => (
+                        <div key={reply.id} className="grid grid-cols-[76px_1fr] gap-3 border-t border-slate-100 px-5 py-4">
+                          <div className="text-sm">
+                            <div className="font-semibold text-sky-700">{reply.name}</div>
+                            <div className="mt-1 text-xs text-slate-400">#{index + 2}</div>
                           </div>
-                        ))
-                      ) : (
-                        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-4 text-sm text-slate-400">
-                          暂时未有回应，可以做第一个回应的人。
+                          <div className="rounded-xl bg-white p-4 text-sm leading-7 text-slate-700 shadow-sm">
+                            {reply.reply}
+                            <div className="mt-3 text-xs text-slate-400">{formatTime(reply.createdAt)}</div>
+                          </div>
                         </div>
-                      )}
-                    </div>
+                      ))
+                    ) : (
+                      <div className="border-t border-slate-100 px-5 py-4 text-sm text-slate-400">
+                        暂时未有回应，可以做第一个回应的人。
+                      </div>
+                    )}
 
-                    <ReplyForm threadId={thread.id} onReply={addReply} />
+                    <div className="border-t border-slate-100 px-5 py-4">
+                      <ReplyForm threadId={thread.id} onReply={addReply} />
+                    </div>
                   </div>
-                ) : null}
+                ) : (
+                  <div className="flex items-center justify-between px-5 pb-3 text-xs text-slate-400">
+                    <span>{thread.replies.length} 个回应</span>
+                    <span>最后更新 {formatTime(lastActivity)}</span>
+                  </div>
+                )}
               </article>
             );
           })}
         </div>
       </section>
+
+      <div className="fixed bottom-0 left-0 right-0 z-30 grid h-16 grid-cols-4 border-t border-yellow-300 bg-yellow-400 text-slate-950 shadow-[0_-8px_24px_rgba(15,23,42,0.12)] md:hidden">
+        <a href="/community" className="flex items-center justify-center text-3xl" aria-label="菜单">
+          ≡
+        </a>
+        <button type="button" onClick={() => window.location.reload()} className="flex items-center justify-center text-2xl" aria-label="重新整理">
+          ↻
+        </button>
+        <button type="button" onClick={() => setComposerOpen((value) => !value)} className="flex items-center justify-center text-4xl" aria-label="发表主题">
+          +
+        </button>
+        <a href="/consulting#wechat" className="flex items-center justify-center text-2xl" aria-label="设置">
+          ⚙
+        </a>
+      </div>
     </div>
+  );
+}
+
+function ForumComposer({
+  name,
+  setName,
+  topic,
+  setTopic,
+  question,
+  setQuestion,
+  website,
+  setWebsite,
+  status,
+  message,
+  remaining,
+  onSubmit,
+  onClose,
+}: {
+  name: string;
+  setName: (value: string) => void;
+  topic: string;
+  setTopic: (value: string) => void;
+  question: string;
+  setQuestion: (value: string) => void;
+  website: string;
+  setWebsite: (value: string) => void;
+  status: "idle" | "sending" | "success" | "error";
+  message: string;
+  remaining: number;
+  onSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
+}) {
+  return (
+    <form onSubmit={onSubmit} className="border-b border-slate-200 bg-yellow-50/60 px-5 py-5">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <div className="text-sm font-semibold text-yellow-700">发表主题</div>
+          <div className="mt-1 text-xs text-slate-500">问题会公开显示，请不要公开 API Key、密码或验证码。</div>
+        </div>
+        <button type="button" onClick={onClose} className="rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-500">
+          收起
+        </button>
+      </div>
+
+      <div className="mt-4 grid gap-3 sm:grid-cols-[160px_160px_1fr]">
+        <Input
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          maxLength={24}
+          placeholder="昵称"
+          className="h-11 rounded-xl text-sm"
+        />
+        <select
+          value={topic}
+          onChange={(event) => setTopic(event.target.value)}
+          className="h-11 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+        >
+          {topics.map((item) => (
+            <option key={item} value={item}>
+              {item}
+            </option>
+          ))}
+        </select>
+        <input
+          tabIndex={-1}
+          autoComplete="off"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+          className="hidden"
+          aria-hidden="true"
+        />
+      </div>
+
+      <textarea
+        value={question}
+        onChange={(event) => setQuestion(event.target.value.slice(0, 500))}
+        required
+        minLength={6}
+        maxLength={500}
+        rows={4}
+        placeholder="例如：请问大家，我是 AI 新手，应该从哪里入手学习 AI？"
+        className="mt-3 w-full resize-none rounded-xl border border-slate-200 bg-white px-4 py-3 text-base leading-7 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+      />
+      <div className="mt-2 flex items-center justify-between text-xs text-slate-400">
+        <span>{message}</span>
+        <span>{remaining}</span>
+      </div>
+      <Button type="submit" size="lg" disabled={status === "sending" || question.trim().length < 6} className="mt-4 w-full rounded-xl bg-yellow-400 text-slate-950 hover:bg-yellow-300">
+        {status === "sending" ? "发表中..." : "发表主题"}
+      </Button>
+    </form>
   );
 }
 
@@ -323,14 +379,14 @@ function ReplyForm({
   }
 
   return (
-    <form onSubmit={submitReply} className="mt-4 rounded-2xl border border-violet-100 bg-violet-50/50 p-4">
-      <div className="grid gap-3 sm:grid-cols-[160px_1fr]">
+    <form onSubmit={submitReply} className="rounded-xl border border-slate-200 bg-white p-3">
+      <div className="grid gap-2 sm:grid-cols-[128px_1fr_auto]">
         <Input
           value={name}
           onChange={(event) => setName(event.target.value)}
           maxLength={24}
           placeholder="昵称"
-          className="h-11 rounded-xl text-sm"
+          className="h-10 rounded-lg text-sm"
         />
         <input
           tabIndex={-1}
@@ -340,22 +396,20 @@ function ReplyForm({
           className="hidden"
           aria-hidden="true"
         />
-        <div className="flex gap-2">
-          <input
-            value={reply}
-            onChange={(event) => setReply(event.target.value.slice(0, 500))}
-            required
-            minLength={2}
-            maxLength={500}
-            placeholder="公开回应这个问题..."
-            className="h-11 min-w-0 flex-1 rounded-xl border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-4 focus:ring-violet-100"
-          />
-          <Button type="submit" size="md" disabled={status === "sending" || reply.trim().length < 2} className="shrink-0 rounded-xl px-4">
-            {status === "sending" ? "发送中" : "回应"}
-          </Button>
-        </div>
+        <input
+          value={reply}
+          onChange={(event) => setReply(event.target.value.slice(0, 500))}
+          required
+          minLength={2}
+          maxLength={500}
+          placeholder="公开回应这个问题..."
+          className="h-10 min-w-0 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-yellow-400 focus:ring-4 focus:ring-yellow-100"
+        />
+        <Button type="submit" size="sm" disabled={status === "sending" || reply.trim().length < 2} className="rounded-lg bg-yellow-400 text-slate-950 hover:bg-yellow-300">
+          {status === "sending" ? "发送中" : "回应"}
+        </Button>
       </div>
-      {message ? <div className="mt-3 text-sm text-rose-600">{message}</div> : null}
+      {message ? <div className="mt-2 text-sm text-rose-600">{message}</div> : null}
     </form>
   );
 }
