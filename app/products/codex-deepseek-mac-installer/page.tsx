@@ -5,7 +5,6 @@ import { ProductPurchaseBox } from "@/components/product-purchase-box";
 import {
   codexDeepSeekProduct,
   getCodexDeepSeekCanonicalUrl,
-  getCodexDeepSeekDownloadToken,
   isCodexDeepSeekUnlockCodeValid,
 } from "@/lib/products";
 import { siteConfig } from "@/lib/site";
@@ -57,9 +56,8 @@ export default async function CodexDeepSeekProductPage({ searchParams }: CodexDe
   const sp = await searchParams;
   const unlock = typeof sp.unlock === "string" ? sp.unlock.trim() : undefined;
   const unlocked = isCodexDeepSeekUnlockCodeValid(unlock);
-  const downloadToken = getCodexDeepSeekDownloadToken();
-  const downloadHref = unlocked
-    ? `${codexDeepSeekProduct.apiPath}?token=${encodeURIComponent(downloadToken)}`
+  const downloadHref = unlocked && unlock
+    ? `${codexDeepSeekProduct.apiPath}?token=${encodeURIComponent(unlock)}`
     : "";
 
   const jsonLd = {
@@ -202,7 +200,7 @@ export default async function CodexDeepSeekProductPage({ searchParams }: CodexDe
           <ProductPurchaseBox
             product={codexDeepSeekProduct}
             unlocked={unlocked}
-            unlockEnabled={Boolean(downloadToken)}
+            unlockEnabled
             downloadHref={downloadHref}
           />
           <p className="mt-3 text-xs leading-6 text-slate-500">

@@ -2,7 +2,7 @@ import { deflateRawSync } from "node:zlib";
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { codexDeepSeekProduct, getCodexDeepSeekDownloadToken } from "@/lib/products";
+import { codexDeepSeekProduct, isCodexDeepSeekUnlockCodeValid } from "@/lib/products";
 
 export const runtime = "nodejs";
 
@@ -177,9 +177,8 @@ function buildProductZip() {
 
 export async function GET(request: NextRequest) {
   const token = request.nextUrl.searchParams.get("token")?.trim() || "";
-  const expectedToken = getCodexDeepSeekDownloadToken();
 
-  if (!expectedToken || token !== expectedToken) {
+  if (!isCodexDeepSeekUnlockCodeValid(token)) {
     return NextResponse.json({ error: "Download locked" }, { status: 401 });
   }
 

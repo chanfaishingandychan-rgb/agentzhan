@@ -37,11 +37,32 @@ export function getCodexDeepSeekCanonicalUrl() {
   return `${siteConfig.url}${codexDeepSeekProduct.path}`;
 }
 
+const fallbackCodexDeepSeekDownloadTokens = [
+  "AGENT98-K7M4Q2",
+  "DEEPSEEK-3X8N6P",
+  "CODEX-AI-92V7H",
+  "ZHAN-5QK8R1",
+  "MAC-DS-7P4X9N",
+];
+
+export function getCodexDeepSeekDownloadTokens() {
+  const configuredTokens = [
+    process.env.CODEX_DEEPSEEK_DOWNLOAD_TOKEN,
+    process.env.CODEX_DEEPSEEK_DOWNLOAD_TOKENS,
+  ]
+    .filter(Boolean)
+    .flatMap((value) => value!.split(","))
+    .map((value) => value.trim())
+    .filter(Boolean);
+
+  return Array.from(new Set([...fallbackCodexDeepSeekDownloadTokens, ...configuredTokens]));
+}
+
 export function getCodexDeepSeekDownloadToken() {
-  return process.env.CODEX_DEEPSEEK_DOWNLOAD_TOKEN?.trim() || "";
+  return getCodexDeepSeekDownloadTokens()[0] || "";
 }
 
 export function isCodexDeepSeekUnlockCodeValid(code: string | undefined) {
-  const token = getCodexDeepSeekDownloadToken();
-  return Boolean(token && code && code === token);
+  const normalizedCode = code?.trim();
+  return Boolean(normalizedCode && getCodexDeepSeekDownloadTokens().includes(normalizedCode));
 }

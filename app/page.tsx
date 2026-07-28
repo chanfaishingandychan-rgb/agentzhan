@@ -229,6 +229,12 @@ export default async function HomePage() {
               >
                 微信咨询 AI 服务
               </Link>
+              <Link
+                href="/community"
+                className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+              >
+                进入 AI交流區
+              </Link>
             </div>
 
           </div>
@@ -718,6 +724,12 @@ export default async function HomePage() {
               className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
             >
               加入 AI小白交流群
+            </Link>
+            <Link
+              href="/community"
+              className="inline-flex h-12 items-center rounded-full border border-white/20 bg-white/5 px-8 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+            >
+              进入 AI交流區
             </Link>
             <Link
               href="/search"

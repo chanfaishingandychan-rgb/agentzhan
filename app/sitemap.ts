@@ -83,6 +83,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.82,
     },
     {
+      url: `${siteConfig.url}/community`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "daily",
+      priority: 0.82,
+    },
+    {
       url: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
       lastModified: new Date().toISOString(),
       changeFrequency: "monthly",
