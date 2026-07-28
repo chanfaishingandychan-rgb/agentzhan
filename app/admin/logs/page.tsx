@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   getCronTaskStatuses,
   getMockGenerationLogs,
@@ -29,13 +30,23 @@ function formatHongKongTime(value: string) {
   }).format(date);
 }
 
-export default async function AdminLogsPage() {
+export default async function AdminLogsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{
+    newsUpdate?: string;
+    fetched?: string;
+    inserted?: string;
+    failed?: string;
+  }>;
+}) {
+  const updateResult = await searchParams;
   let logs = getMockGenerationLogs();
   let connected = false;
 
   if (isSupabaseConfigured()) {
     const realLogs = await getSupabaseLogs(20);
-    if (realLogs && realLogs.length > 0) {
+    if (realLogs) {
       logs = realLogs;
       connected = true;
     }
@@ -48,16 +59,37 @@ export default async function AdminLogsPage() {
       <Link href="/admin" className="text-sm font-semibold text-violet-600">
         返回后台
       </Link>
-      <div className="mt-5">
-        <Badge variant="blue">Cron Logs</Badge>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">自动任务日志</h1>
-        <p className="mt-3 text-sm leading-7 text-slate-500">
-          Prompt 自动生成和 AI 资讯更新都会在每天 03:00 香港时间触发。
-          {connected
-            ? " 以下资料来自 Supabase ai_generation_logs 资料表。"
-            : " 目前显示静态 fallback 资料，设置 Supabase 后会自动读取真实日志。"}
-        </p>
+      <div className="mt-5 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <Badge variant="blue">Cron Logs</Badge>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">自动任务日志</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
+            Prompt 自动生成和 AI 资讯更新都会在每天 03:00 香港时间触发。
+            {connected
+              ? " 以下资料来自 Supabase ai_generation_logs 资料表。"
+              : " 目前显示静态 fallback 资料，设置 Supabase 后会自动读取真实日志。"}
+          </p>
+        </div>
+        <form action="/api/admin/news/update" method="post">
+          <Button type="submit" variant="outline" size="sm">
+            立即更新 AI 资讯
+          </Button>
+        </form>
       </div>
+
+      {updateResult.newsUpdate && (
+        <div
+          className={`mt-6 rounded-2xl border p-4 text-sm leading-6 ${
+            updateResult.newsUpdate === "ok"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : "border-amber-200 bg-amber-50 text-amber-800"
+          }`}
+        >
+          {updateResult.newsUpdate === "ok"
+            ? `AI 资讯已手动更新：抓取 ${updateResult.fetched ?? 0} 条，新增 ${updateResult.inserted ?? 0} 条。`
+            : `AI 资讯更新未完成：抓取 ${updateResult.fetched ?? 0} 条，失败 ${updateResult.failed ?? 0} 项。请查看下方最新日志。`}
+        </div>
+      )}
 
       <section className="mt-8 grid gap-4 sm:grid-cols-2">
         {taskStatuses.map((task) => (
