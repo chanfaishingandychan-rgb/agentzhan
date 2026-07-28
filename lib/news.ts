@@ -1,4 +1,5 @@
 import { createServiceClient } from "@/lib/supabase/server";
+import { XMLParser } from "fast-xml-parser";
 
 export type AiNewsItem = {
   slug: string;
@@ -23,6 +24,40 @@ type SupabaseAiNewsRow = {
   takeaway: string;
   tags: string[] | null;
 };
+
+type FeedSource = {
+  source: string;
+  feedUrl: string;
+  fallbackCategory: AiNewsItem["category"];
+};
+
+type FeedCandidate = {
+  title: string;
+  source: string;
+  sourceUrl: string;
+  publishedAt: string;
+  category: AiNewsItem["category"];
+  description: string;
+};
+
+const officialFeedSources: FeedSource[] = [
+  {
+    source: "OpenAI",
+    feedUrl: "https://openai.com/news/rss.xml",
+    fallbackCategory: "产品功能",
+  },
+  {
+    source: "Google DeepMind",
+    feedUrl: "https://deepmind.google/blog/rss.xml",
+    fallbackCategory: "模型更新",
+  },
+];
+
+const xmlParser = new XMLParser({
+  ignoreAttributes: false,
+  removeNSPrefix: true,
+  trimValues: true,
+});
 
 export const aiNewsItems: AiNewsItem[] = [
   {
@@ -100,32 +135,224 @@ export function getLatestAiNews(limit = aiNewsItems.length) {
 }
 
 export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promise<AiNewsItem[]> {
+  const items: AiNewsItem[] = [];
   const client = createServiceClient();
-  if (!client) return getLatestAiNews(limit);
 
-  try {
-    const { data, error } = await client
-      .from("ai_news")
-      .select("slug,title,source,source_url,published_at,category,summary,takeaway,tags")
-      .order("published_at", { ascending: false })
-      .limit(limit);
+  if (client) {
+    try {
+      const { data, error } = await client
+        .from("ai_news")
+        .select("slug,title,source,source_url,published_at,category,summary,takeaway,tags")
+        .order("published_at", { ascending: false })
+        .limit(limit);
 
-    if (error || !data || data.length === 0) {
-      return getLatestAiNews(limit);
+      if (!error && data && data.length > 0) {
+        items.push(...(data as SupabaseAiNewsRow[]).map(toAiNewsItem));
+      }
+    } catch {
+      // Fall through to live official feeds and static fallback.
     }
-
-    return (data as SupabaseAiNewsRow[]).map((item) => ({
-      slug: item.slug,
-      title: item.title,
-      source: item.source,
-      sourceUrl: item.source_url,
-      publishedAt: item.published_at,
-      category: item.category,
-      summary: item.summary,
-      takeaway: item.takeaway,
-      tags: item.tags ?? [],
-    }));
-  } catch {
-    return getLatestAiNews(limit);
   }
+
+  const liveFeedItems = await getLatestOfficialAiNews(limit);
+  items.push(...liveFeedItems);
+
+  const merged = mergeAiNewsItems(items).slice(0, limit);
+  if (merged.length > 0) return merged;
+
+  return getLatestAiNews(limit);
+}
+
+function toAiNewsItem(item: SupabaseAiNewsRow): AiNewsItem {
+  return {
+    slug: item.slug,
+    title: item.title,
+    source: item.source,
+    sourceUrl: item.source_url,
+    publishedAt: item.published_at,
+    category: item.category,
+    summary: item.summary,
+    takeaway: item.takeaway,
+    tags: item.tags ?? [],
+  };
+}
+
+async function getLatestOfficialAiNews(limit: number): Promise<AiNewsItem[]> {
+  const candidates: FeedCandidate[] = [];
+
+  for (const source of officialFeedSources) {
+    try {
+      candidates.push(...(await fetchFeedCandidates(source)));
+    } catch {
+      // A failed feed should not block the page or hide other sources.
+    }
+  }
+
+  return dedupeCandidates(candidates)
+    .sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt))
+    .slice(0, Math.max(limit, 8))
+    .map(toFallbackAiNewsItem);
+}
+
+async function fetchFeedCandidates(source: FeedSource): Promise<FeedCandidate[]> {
+  const response = await fetch(source.feedUrl, {
+    headers: {
+      accept: "application/rss+xml, application/xml, text/xml",
+      "user-agent": "AgentZhanBot/1.0 (+https://agentzhan.com/news)",
+    },
+    next: { revalidate: 3600 },
+  });
+
+  if (!response.ok) {
+    throw new Error(`feed request failed with ${response.status}`);
+  }
+
+  const xml = await response.text();
+  const parsed = xmlParser.parse(xml);
+  const channel = parsed?.rss?.channel ?? parsed?.feed;
+  const rawItems = toArray<Record<string, unknown>>(channel?.item ?? channel?.entry).slice(0, 12);
+
+  return rawItems
+    .map((item) => normalizeFeedItem(item, source))
+    .filter((item): item is FeedCandidate => Boolean(item));
+}
+
+function normalizeFeedItem(item: Record<string, unknown>, source: FeedSource): FeedCandidate | null {
+  const title = getText(item.title);
+  const sourceUrl = getLink(item);
+  const publishedAt = normalizeDate(getText(item.pubDate) || getText(item.published) || getText(item.updated));
+  const description = stripHtml(getText(item.description) || getText(item.summary) || getText(item.encoded));
+
+  if (!title || !sourceUrl || !publishedAt) return null;
+
+  return {
+    title,
+    source: source.source,
+    sourceUrl,
+    publishedAt,
+    category: inferCategory(title, description, source.fallbackCategory),
+    description,
+  };
+}
+
+function toFallbackAiNewsItem(item: FeedCandidate): AiNewsItem {
+  return {
+    slug: `news-${item.publishedAt.replaceAll("-", "")}-${slugify(item.title).slice(0, 80)}`,
+    title: `${item.source}：${item.title}`,
+    source: item.source,
+    sourceUrl: item.sourceUrl,
+    publishedAt: item.publishedAt,
+    category: item.category,
+    summary: item.description
+      ? `官方发布「${item.title}」。${item.description}`
+      : `官方发布「${item.title}」，建议关注它对模型能力、产品功能和实际工作流的影响。`,
+    takeaway: getFallbackTakeaway(item),
+    tags: buildTags(item),
+  };
+}
+
+function getFallbackTakeaway(item: FeedCandidate) {
+  if (item.category === "模型更新") {
+    return "模型更新会直接影响写作、编程、搜索和自动化任务的效果，建议结合自己的高频场景重新测试提示词。";
+  }
+  if (item.category === "Agent趋势") {
+    return "Agent 和连接器类更新说明 AI 正在从聊天工具走向可执行工作流，适合关注插件、权限和数据源整合。";
+  }
+  if (item.category === "安全与合规") {
+    return "安全与合规动态适合企业和团队重点关注，上线 AI 工作流前需要明确数据、权限和人工复核边界。";
+  }
+  if (item.category === "行业应用") {
+    return "行业应用类案例适合拆成具体工作流，评估它能否用于获客、内容、客服、研发或内部提效。";
+  }
+  return "产品功能更新要关注能否直接减少重复操作，或为现有 Prompt、插件和自动化流程带来新的入口。";
+}
+
+function buildTags(item: FeedCandidate) {
+  const text = `${item.title} ${item.description}`;
+  const tags = [item.source];
+  for (const tag of ["GPT", "ChatGPT", "Gemini", "Agent", "模型", "安全", "API", "企业", "研究"]) {
+    if (text.toLowerCase().includes(tag.toLowerCase())) tags.push(tag);
+  }
+  return [...new Set(tags)].slice(0, 4);
+}
+
+function mergeAiNewsItems(items: AiNewsItem[]) {
+  const seen = new Set<string>();
+  const result: AiNewsItem[] = [];
+  for (const item of items) {
+    const key = item.sourceUrl || item.slug;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(item);
+  }
+  return result.sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
+}
+
+function inferCategory(title: string, description: string, fallback: AiNewsItem["category"]): AiNewsItem["category"] {
+  const text = `${title} ${description}`.toLowerCase();
+  if (/safety|security|policy|privacy|risk|biosecurity|合规|安全/.test(text)) return "安全与合规";
+  if (/agent|connector|tool|workflow|plugin|插件|工作流/.test(text)) return "Agent趋势";
+  if (/model|gpt|claude|gemini|deepseek|flash|omni|模型/.test(text)) return "模型更新";
+  if (/business|enterprise|industry|customer|science|education|企业|行业|应用/.test(text)) return "行业应用";
+  return fallback;
+}
+
+function dedupeCandidates(items: FeedCandidate[]) {
+  const seen = new Set<string>();
+  const result: FeedCandidate[] = [];
+  for (const item of items) {
+    const key = item.sourceUrl || `${item.source}:${item.title}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    result.push(item);
+  }
+  return result;
+}
+
+function getText(value: unknown): string {
+  if (typeof value === "string") return value.trim();
+  if (typeof value === "number") return String(value);
+  if (value && typeof value === "object" && "#text" in value) {
+    return String((value as Record<string, unknown>)["#text"] ?? "").trim();
+  }
+  return "";
+}
+
+function getLink(item: Record<string, unknown>): string {
+  const link = item.link;
+  if (typeof link === "string") return link;
+  if (Array.isArray(link)) {
+    const href = link
+      .map((entry) => (typeof entry === "object" && entry ? String((entry as Record<string, unknown>)["@_href"] ?? "") : ""))
+      .find(Boolean);
+    return href ?? "";
+  }
+  if (link && typeof link === "object") {
+    return String((link as Record<string, unknown>)["@_href"] ?? "");
+  }
+  return "";
+}
+
+function normalizeDate(value: string) {
+  const date = value ? new Date(value) : new Date();
+  if (Number.isNaN(+date)) return new Date().toISOString().slice(0, 10);
+  return date.toISOString().slice(0, 10);
+}
+
+function slugify(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/&/g, " and ")
+    .replace(/[^a-z0-9\u4e00-\u9fa5]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 100);
+}
+
+function stripHtml(value: string) {
+  return value.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim().slice(0, 500);
+}
+
+function toArray<T>(value: T | T[] | undefined): T[] {
+  if (!value) return [];
+  return Array.isArray(value) ? value : [value];
 }
