@@ -1,19 +1,25 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { ProductPurchaseBox } from "@/components/product-purchase-box";
+import {
+  codexDeepSeekProduct,
+  getCodexDeepSeekCanonicalUrl,
+  getCodexDeepSeekDownloadToken,
+  isCodexDeepSeekUnlockCodeValid,
+} from "@/lib/products";
 import { siteConfig } from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Mac Codex 接入 DeepSeek 自助安装包 - Agent站",
-  description:
-    "Mac Codex 接入 DeepSeek 自助安装包，首批试用价 ¥98，支持 DeepSeek Flash / Pro 独立入口，保留原本 GPT 设置。",
+  title: `${codexDeepSeekProduct.title} - Agent站`,
+  description: codexDeepSeekProduct.description,
   alternates: {
-    canonical: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
+    canonical: getCodexDeepSeekCanonicalUrl(),
   },
   openGraph: {
-    title: "Mac Codex 接入 DeepSeek 自助安装包 - Agent站",
-    description: "适合 Mac Codex 用户接入 DeepSeek Flash / Pro。需要自备 DeepSeek API Key，不包含 API 用量费用。",
-    url: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
+    title: `${codexDeepSeekProduct.title} - Agent站`,
+    description: codexDeepSeekProduct.description,
+    url: getCodexDeepSeekCanonicalUrl(),
     siteName: siteConfig.name,
     type: "website",
   },
@@ -43,23 +49,34 @@ const noticeItems = [
   "不要把 API Key、密码或验证码发给我们",
 ];
 
-export default function CodexDeepSeekProductPage() {
+type CodexDeepSeekProductPageProps = {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+};
+
+export default async function CodexDeepSeekProductPage({ searchParams }: CodexDeepSeekProductPageProps) {
+  const sp = await searchParams;
+  const unlock = typeof sp.unlock === "string" ? sp.unlock.trim() : undefined;
+  const unlocked = isCodexDeepSeekUnlockCodeValid(unlock);
+  const downloadToken = getCodexDeepSeekDownloadToken();
+  const downloadHref = unlocked
+    ? `${codexDeepSeekProduct.apiPath}?token=${encodeURIComponent(downloadToken)}`
+    : "";
+
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Product",
-    name: "Mac Codex 接入 DeepSeek 自助安装包",
-    description:
-      "为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。首批试用价 ¥98。",
+    name: codexDeepSeekProduct.title,
+    description: codexDeepSeekProduct.description,
     brand: {
       "@type": "Brand",
       name: "Agent站",
     },
     offers: {
       "@type": "Offer",
-      priceCurrency: "CNY",
-      price: "98",
+      priceCurrency: codexDeepSeekProduct.currency,
+      price: String(codexDeepSeekProduct.priceAmount),
       availability: "https://schema.org/InStock",
-      url: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
+      url: getCodexDeepSeekCanonicalUrl(),
     },
   };
 
@@ -87,7 +104,7 @@ export default function CodexDeepSeekProductPage() {
               <span className="rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-blue-100">Codex × DeepSeek</span>
             </div>
             <h1 className="mt-5 max-w-4xl text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              Mac Codex 接入 DeepSeek 自助安装包
+              {codexDeepSeekProduct.title}
             </h1>
             <p className="mt-5 max-w-3xl text-base leading-8 text-slate-300 sm:text-lg">
               为 Mac 上的 Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。适合想降低模型使用成本，又不想自己研究 provider、bridge 和配置文件的用户。
@@ -97,7 +114,7 @@ export default function CodexDeepSeekProductPage() {
                 href="#buy"
                 className="inline-flex h-11 items-center rounded-full bg-white px-6 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5"
               >
-                查看购买方式
+                扫码购买
               </a>
               <a
                 href="#other-models"
@@ -110,19 +127,19 @@ export default function CodexDeepSeekProductPage() {
 
           <aside className="rounded-3xl border border-white/10 bg-white/[0.06] p-6 text-white shadow-[0_24px_80px_rgba(0,0,0,0.24)] backdrop-blur">
             <div className="text-sm text-slate-300">首批试用价</div>
-            <div className="mt-2 text-5xl font-black tracking-tight">¥98</div>
+            <div className="mt-2 text-5xl font-black tracking-tight">{codexDeepSeekProduct.priceLabel}</div>
             <div className="mt-2 text-sm text-slate-300">一次性自助安装包</div>
             <div className="mt-6 space-y-3 text-sm text-slate-200">
               <SummaryLine label="交付" value="ZIP 安装包" />
               <SummaryLine label="系统" value="macOS" />
               <SummaryLine label="模型" value="DeepSeek Flash / Pro" />
-              <SummaryLine label="购买" value="微信咨询后发送" />
+              <SummaryLine label="购买" value="扫码付款后核对" />
             </div>
             <a
               href="#buy"
               className="mt-7 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-blue-600 text-sm font-semibold text-white transition hover:-translate-y-0.5"
             >
-              微信咨询购买
+              扫码付款购买
             </a>
           </aside>
         </div>
@@ -182,29 +199,15 @@ export default function CodexDeepSeekProductPage() {
         </div>
 
         <aside id="buy" className="scroll-mt-24 lg:sticky lg:top-24 lg:self-start">
-          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-lg font-bold text-slate-950">购买方式</h2>
-            <p className="mt-3 text-sm leading-7 text-slate-600">
-              目前先用微信咨询购买。确认你使用 Mac、Codex 可正常启动，并已有 DeepSeek API 帐户后，再发送 ZIP 安装包。
-            </p>
-            <div className="mt-5 rounded-2xl border border-violet-100 bg-violet-50 p-4">
-              <div className="text-xs font-semibold text-violet-700">首批试用价</div>
-              <div className="mt-1 text-3xl font-black text-slate-950">¥98</div>
-              <div className="mt-1 text-xs leading-5 text-slate-500">不含 DeepSeek API 用量费</div>
-            </div>
-            <a
-              href="/consulting#wechat-consulting"
-              className="mt-5 inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-r from-violet-600 to-blue-600 text-sm font-semibold text-white transition hover:-translate-y-0.5"
-            >
-              扫微信咨询购买
-            </a>
-            <Link
-              href="/skills"
-              className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-700"
-            >
-              返回插件库
-            </Link>
-          </div>
+          <ProductPurchaseBox
+            product={codexDeepSeekProduct}
+            unlocked={unlocked}
+            unlockEnabled={Boolean(downloadToken)}
+            downloadHref={downloadHref}
+          />
+          <p className="mt-3 text-xs leading-6 text-slate-500">
+            不含 DeepSeek API 用量费。付款前请确认你使用 macOS，并已准备自己的 DeepSeek API Key。
+          </p>
         </aside>
       </section>
     </main>
