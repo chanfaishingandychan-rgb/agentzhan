@@ -25,6 +25,7 @@ function formatTime(value: string) {
 
 export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   const [threads, setThreads] = useState(initialThreads);
+  const [openThreadId, setOpenThreadId] = useState(initialThreads[0]?.id ?? "");
   const [name, setName] = useState("");
   const [topic, setTopic] = useState(topics[0]);
   const [question, setQuestion] = useState("");
@@ -55,6 +56,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
 
       if (data.thread) {
         setThreads((current) => [data.thread, ...current].slice(0, 30));
+        setOpenThreadId(data.thread.id);
       }
       setQuestion("");
       setStatus("success");
@@ -74,8 +76,8 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
   }
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr]">
-      <form onSubmit={submitQuestion} className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start">
+    <div className="grid gap-8 lg:grid-cols-[360px_1fr]">
+      <form onSubmit={submitQuestion} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:sticky lg:top-24 lg:self-start">
         <div className="inline-flex rounded-full bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
           发布新话题
         </div>
@@ -147,7 +149,7 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
           />
 
           <Button type="submit" size="lg" disabled={status === "sending" || question.trim().length < 6} className="rounded-full">
-            {status === "sending" ? "发布中..." : "发布讨论"}
+            {status === "sending" ? "发布中..." : "发表主题"}
           </Button>
 
           {message ? (
@@ -164,59 +166,113 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
         </div>
       </form>
 
-      <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <div className="flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <div className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-              公开讨论
+      <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div className="border-b border-slate-200 bg-slate-50 px-5 py-4">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <div className="inline-flex rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                讨论版
+              </div>
+              <h2 className="mt-3 text-xl font-bold tracking-tight text-slate-950">AI討論區主题列表</h2>
             </div>
-            <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-950">大家正在讨论什么</h2>
+            <div className="grid grid-cols-3 gap-2 text-center text-xs text-slate-500">
+              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="text-base font-black text-slate-950">{threads.length}</div>
+                <div>主题</div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="text-base font-black text-slate-950">
+                  {threads.reduce((sum, thread) => sum + thread.replies.length, 0)}
+                </div>
+                <div>回应</div>
+              </div>
+              <div className="rounded-xl border border-slate-200 bg-white px-3 py-2">
+                <div className="text-base font-black text-slate-950">{topics.length}</div>
+                <div>分类</div>
+              </div>
+            </div>
           </div>
-          <div className="text-sm text-slate-400">问题和回应公开显示</div>
         </div>
 
-        <div className="mt-6 space-y-5">
-          {threads.map((thread) => (
-            <article key={thread.id} className="overflow-hidden rounded-3xl border border-slate-200 bg-slate-50/70">
-              <div className="p-5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 shadow-sm">
-                    {thread.topic}
-                  </span>
-                  <span className="text-xs text-slate-400">{formatTime(thread.createdAt)}</span>
-                  {thread.country ? <span className="text-xs text-slate-400">{thread.country}</span> : null}
-                </div>
-                <p className="mt-3 text-base font-semibold leading-8 text-slate-950">{thread.question}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-slate-500">
-                  <span>楼主：{thread.name}</span>
-                  <span>{thread.replies.length} 个回应</span>
-                </div>
-              </div>
+        <div className="grid grid-cols-[1fr_92px_150px] border-b border-slate-200 bg-slate-100 px-5 py-3 text-xs font-semibold text-slate-500 max-md:hidden">
+          <div>主题</div>
+          <div className="text-center">回应</div>
+          <div className="text-right">最后更新</div>
+        </div>
 
-              <div className="border-t border-slate-200 bg-white p-5">
-                <div className="space-y-3">
-                  {thread.replies.length > 0 ? (
-                    thread.replies.map((reply) => (
-                      <div key={reply.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                          <span className="font-semibold text-slate-600">{reply.name}</span>
-                          <span>{formatTime(reply.createdAt)}</span>
-                          {reply.country ? <span>{reply.country}</span> : null}
-                        </div>
-                        <p className="mt-2 text-sm leading-7 text-slate-700">{reply.reply}</p>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-400">
-                      暂时未有回应，可以做第一个回应的人。
+        <div className="divide-y divide-slate-200">
+          {threads.map((thread) => {
+            const lastReply = thread.replies.at(-1);
+            const lastActivity = lastReply?.createdAt ?? thread.createdAt;
+            const opened = openThreadId === thread.id;
+            return (
+              <article key={thread.id} className="bg-white">
+                <button
+                  type="button"
+                  onClick={() => setOpenThreadId(opened ? "" : thread.id)}
+                  className="grid w-full gap-4 px-5 py-4 text-left transition hover:bg-violet-50/40 md:grid-cols-[1fr_92px_150px] md:items-center"
+                >
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="rounded-md bg-violet-50 px-2 py-1 text-xs font-semibold text-violet-700">
+                        {thread.topic}
+                      </span>
+                      <span className="text-xs text-slate-400">楼主：{thread.name}</span>
+                      {thread.country ? <span className="text-xs text-slate-400">{thread.country}</span> : null}
                     </div>
-                  )}
-                </div>
+                    <div className="mt-2 line-clamp-2 text-base font-semibold leading-7 text-slate-950">
+                      {thread.question}
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-400 md:hidden">
+                      <span>{thread.replies.length} 个回应</span>
+                      <span>最后更新 {formatTime(lastActivity)}</span>
+                    </div>
+                  </div>
+                  <div className="hidden text-center md:block">
+                    <div className="text-lg font-black text-slate-950">{thread.replies.length}</div>
+                    <div className="text-xs text-slate-400">回应</div>
+                  </div>
+                  <div className="hidden text-right text-xs text-slate-500 md:block">
+                    <div>{formatTime(lastActivity)}</div>
+                    <div className="mt-1 text-slate-400">{lastReply ? lastReply.name : thread.name}</div>
+                  </div>
+                </button>
 
-                <ReplyForm threadId={thread.id} onReply={addReply} />
-              </div>
-            </article>
-          ))}
+                {opened ? (
+                  <div className="border-t border-slate-200 bg-slate-50 px-5 py-5">
+                    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                        <span className="font-semibold text-slate-700">{thread.name}</span>
+                        <span>{formatTime(thread.createdAt)}</span>
+                      </div>
+                      <p className="mt-3 text-sm font-semibold leading-7 text-slate-900">{thread.question}</p>
+                    </div>
+
+                    <div className="mt-4 space-y-3">
+                      {thread.replies.length > 0 ? (
+                        thread.replies.map((reply, index) => (
+                          <div key={reply.id} className="grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 sm:grid-cols-[112px_1fr]">
+                            <div className="text-xs text-slate-400">
+                              <div className="font-semibold text-slate-700">{reply.name}</div>
+                              <div className="mt-1">{formatTime(reply.createdAt)}</div>
+                              <div className="mt-1">#{index + 2}</div>
+                            </div>
+                            <p className="text-sm leading-7 text-slate-700">{reply.reply}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="rounded-2xl border border-dashed border-slate-200 bg-white p-4 text-sm text-slate-400">
+                          暂时未有回应，可以做第一个回应的人。
+                        </div>
+                      )}
+                    </div>
+
+                    <ReplyForm threadId={thread.id} onReply={addReply} />
+                  </div>
+                ) : null}
+              </article>
+            );
+          })}
         </div>
       </section>
     </div>
