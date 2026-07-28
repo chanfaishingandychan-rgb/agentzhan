@@ -297,11 +297,14 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
 }
 
 export async function getAiNewsArticleForSite(slug: string): Promise<AiNewsArticle | null> {
-  const supabaseItem = await getSupabaseAiNewsItemByAnySlug(slug);
+  const normalizedSlug = normalizeNewsSlug(slug);
+  const supabaseItem = await getSupabaseAiNewsItemByAnySlug(normalizedSlug);
   if (supabaseItem) return buildAiNewsArticle(supabaseItem);
 
   const news = await getLatestAiNewsForSite(50);
-  const item = news.find((entry) => newsSlugMatches(entry, slug)) ?? aiNewsItems.find((entry) => newsSlugMatches(entry, slug));
+  const item =
+    news.find((entry) => newsSlugMatches(entry, normalizedSlug)) ??
+    aiNewsItems.find((entry) => newsSlugMatches(entry, normalizedSlug));
   if (!item) return null;
 
   return buildAiNewsArticle(item);
@@ -685,6 +688,14 @@ function newsSlugMatches(item: AiNewsItem, slug: string) {
 
 function buildNewsSlug(publishedAt: string, title: string) {
   return `news-${publishedAt.replaceAll("-", "")}-${slugify(title).slice(0, 80)}`;
+}
+
+function normalizeNewsSlug(slug: string) {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug;
+  }
 }
 
 function inferCategory(title: string, description: string, fallback: AiNewsItem["category"]): AiNewsItem["category"] {
