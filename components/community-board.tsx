@@ -123,6 +123,22 @@ export function CommunityBoard({ initialThreads }: CommunityBoardProps) {
           </button>
         </div>
 
+        {!composerOpen ? (
+          <div className="flex items-center justify-between gap-3 border-b border-yellow-200 bg-yellow-50 px-5 py-3 lg:px-8">
+            <div className="min-w-0">
+              <div className="text-sm font-semibold text-slate-950">想开一个新讨论？</div>
+              <div className="mt-0.5 text-xs text-slate-500">不是回应旧问题，而是发布一个新的问题主题。</div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setComposerOpen(true)}
+              className="shrink-0 rounded-full bg-yellow-400 px-4 py-2 text-sm font-bold text-slate-950 shadow-sm transition hover:bg-yellow-300"
+            >
+              + 发新问题
+            </button>
+          </div>
+        ) : null}
+
         {composerOpen ? (
           <ForumComposer
             name={name}
