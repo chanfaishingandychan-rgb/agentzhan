@@ -48,8 +48,8 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
   if (!article) notFound();
 
   const related = getLatestAiNews(8).filter((item) => item.slug !== article.item.slug).slice(0, 3);
-  const summarySection = article.sections.find((section) => section.title === "Agent站判断");
-  const readingSections = article.sections.filter((section) => section.title !== "Agent站判断");
+  const originalSection = article.sections.find((section) => section.title === "中文原文");
+  const summarySection = article.sections.find((section) => section.title === "Agent站总结");
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -125,40 +125,18 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
       <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="rounded-[2rem] border border-slate-200 bg-white px-5 py-8 shadow-sm sm:px-8 lg:px-10">
           <div className="border-b border-slate-100 pb-8">
+            <div className="mb-4 text-sm font-semibold text-violet-600">中文原文翻译</div>
             <p className="text-lg leading-9 text-slate-700">{article.item.summary}</p>
           </div>
 
-          <div className="space-y-11 py-10">
-            {readingSections.map((section) => (
-              <section key={section.title}>
-                <h2 className="text-2xl font-bold tracking-tight text-slate-950">{section.title}</h2>
-                <div className="mt-5 space-y-5">
-                  {section.paragraphs.map((paragraph) => (
-                    <p key={paragraph} className="text-[17px] leading-9 text-slate-700">
-                      {paragraph}
-                    </p>
-                  ))}
-                </div>
-              </section>
-            ))}
-
-            <section>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-950">接下来可以怎么做</h2>
-              <ol className="mt-5 list-decimal space-y-3 pl-5 text-[17px] leading-9 text-slate-700">
-                {article.actionItems.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ol>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-bold tracking-tight text-slate-950">后续还要观察什么</h2>
-              <ul className="mt-5 list-disc space-y-3 pl-5 text-[17px] leading-9 text-slate-700">
-                {article.watchPoints.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
-              </ul>
-            </section>
+          <div className="py-10">
+            <div className="space-y-6">
+              {originalSection?.paragraphs.map((paragraph) => (
+                <p key={paragraph} className="text-[17px] leading-9 text-slate-700">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
           </div>
 
           <section className="border-t border-slate-100 pt-8">
