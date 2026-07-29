@@ -147,7 +147,6 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
                   {paragraph}
                 </p>
               ))}
-              <p className="text-[17px] leading-9 text-slate-700">{article.item.takeaway}</p>
             </div>
           </section>
         </div>
