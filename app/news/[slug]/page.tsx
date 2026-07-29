@@ -48,6 +48,8 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
   if (!article) notFound();
 
   const related = getLatestAiNews(8).filter((item) => item.slug !== article.item.slug).slice(0, 3);
+  const summarySection = article.sections.find((section) => section.title === "Agent站判断");
+  const readingSections = article.sections.filter((section) => section.title !== "Agent站判断");
 
   const articleSchema = {
     "@context": "https://schema.org",
@@ -120,85 +122,89 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
         </div>
       </section>
 
-      <article className="mx-auto grid max-w-5xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[minmax(0,1fr)_18rem] lg:px-8 lg:py-14">
-        <div className="space-y-8">
-          <section className="rounded-3xl border border-violet-100 bg-violet-50/70 p-6">
-            <div className="text-sm font-bold text-violet-800">一句话看懂</div>
-            <p className="mt-2 text-base leading-8 text-violet-950/80">{article.item.summary}</p>
-          </section>
+      <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="rounded-[2rem] border border-slate-200 bg-white px-5 py-8 shadow-sm sm:px-8 lg:px-10">
+          <div className="border-b border-slate-100 pb-8">
+            <p className="text-lg leading-9 text-slate-700">{article.item.summary}</p>
+          </div>
 
-          {article.sections.map((section) => (
-            <section key={section.title} className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-              <h2 className="text-xl font-bold tracking-tight text-slate-950">{section.title}</h2>
-              <div className="mt-4 space-y-4">
-                {section.paragraphs.map((paragraph) => (
-                  <p key={paragraph} className="text-sm leading-8 text-slate-600">
-                    {paragraph}
-                  </p>
-                ))}
-              </div>
-            </section>
-          ))}
-
-          <section className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
-            <h2 className="text-xl font-bold tracking-tight text-slate-950">下一步可以做什么</h2>
-            <div className="mt-5 grid gap-3">
-              {article.actionItems.map((item, index) => (
-                <div key={item} className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                  <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
-                    {index + 1}
-                  </span>
-                  <p className="text-sm leading-7 text-slate-600">{item}</p>
+          <div className="space-y-11 py-10">
+            {readingSections.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-2xl font-bold tracking-tight text-slate-950">{section.title}</h2>
+                <div className="mt-5 space-y-5">
+                  {section.paragraphs.map((paragraph) => (
+                    <p key={paragraph} className="text-[17px] leading-9 text-slate-700">
+                      {paragraph}
+                    </p>
+                  ))}
                 </div>
+              </section>
+            ))}
+
+            <section>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-950">接下来可以怎么做</h2>
+              <ol className="mt-5 list-decimal space-y-3 pl-5 text-[17px] leading-9 text-slate-700">
+                {article.actionItems.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ol>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold tracking-tight text-slate-950">后续还要观察什么</h2>
+              <ul className="mt-5 list-disc space-y-3 pl-5 text-[17px] leading-9 text-slate-700">
+                {article.watchPoints.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+          </div>
+
+          <section className="border-t border-slate-100 pt-8">
+            <h2 className="text-2xl font-bold tracking-tight text-slate-950">Agent站总结</h2>
+            <div className="mt-5 space-y-5">
+              {summarySection?.paragraphs.map((paragraph) => (
+                <p key={paragraph} className="text-[17px] leading-9 text-slate-700">
+                  {paragraph}
+                </p>
               ))}
+              <p className="text-[17px] leading-9 text-slate-700">{article.item.takeaway}</p>
             </div>
           </section>
         </div>
 
-        <aside className="space-y-5 lg:sticky lg:top-24 lg:self-start">
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-bold text-slate-950">观察重点</h2>
-            <ul className="mt-4 space-y-3">
-              {article.watchPoints.map((item) => (
-                <li key={item} className="text-sm leading-6 text-slate-600">
-                  <span className="mr-2 text-violet-600">•</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </section>
+        <div className="mt-8 flex flex-wrap gap-2">
+          {article.relatedQueries.map((query) => (
+            <Link
+              key={query}
+              href={`/search?q=${encodeURIComponent(query)}`}
+              className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
+            >
+              #{query}
+            </Link>
+          ))}
+        </div>
 
-          <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-            <h2 className="text-sm font-bold text-slate-950">相关搜索</h2>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {article.relatedQueries.map((query) => (
+        {related.length > 0 && (
+          <section className="mt-12 border-t border-slate-200 pt-8">
+            <h2 className="text-xl font-bold tracking-tight text-slate-950">继续阅读</h2>
+            <div className="mt-5 grid gap-4">
+              {related.map((item) => (
                 <Link
-                  key={query}
-                  href={`/search?q=${encodeURIComponent(query)}`}
-                  className="rounded-full border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-500 transition hover:border-violet-200 hover:bg-violet-50 hover:text-violet-600"
+                  key={item.slug}
+                  href={`/news/${item.slug}`}
+                  className="block rounded-2xl border border-slate-200 bg-white p-5 transition hover:border-violet-200 hover:bg-violet-50/50"
                 >
-                  #{query}
+                  <div className="text-xs font-medium text-slate-400">{item.publishedAt} · {item.source}</div>
+                  <div className="mt-1 text-base font-semibold leading-7 text-slate-900 transition hover:text-violet-600">
+                    {item.title}
+                  </div>
                 </Link>
               ))}
             </div>
           </section>
-
-          {related.length > 0 && (
-            <section className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-              <h2 className="text-sm font-bold text-slate-950">更多快讯</h2>
-              <div className="mt-4 space-y-4">
-                {related.map((item) => (
-                  <Link key={item.slug} href={`/news/${item.slug}`} className="block border-t border-slate-100 pt-4 first:border-t-0 first:pt-0">
-                    <div className="text-xs font-medium text-slate-400">{item.publishedAt}</div>
-                    <div className="mt-1 line-clamp-2 text-sm font-semibold leading-6 text-slate-800 transition hover:text-violet-600">
-                      {item.title}
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </section>
-          )}
-        </aside>
+        )}
       </article>
     </main>
   );

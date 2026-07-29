@@ -95,6 +95,10 @@ const localizedFeedCopy: Record<string, LocalizedFeedCopy> = {
     title: "ChatGPT 推出健康相关功能",
     summary: "ChatGPT 健康功能可让符合条件的美国用户安全连接医疗记录和 Apple Health，用于获得更个性化的健康洞察。",
   },
+  "health in chatgpt": {
+    title: "ChatGPT 健康功能更新",
+    summary: "OpenAI 介绍 ChatGPT 健康相关能力更新，强调在医疗和个人健康场景中需要更清楚的安全边界、资料来源和使用限制。",
+  },
   "building ai infrastructure with the effingham county community": {
     title: "OpenAI 与 Effingham County 社区共建 AI 基础设施",
     summary: "OpenAI 公布 Project Camellia，计划在美国乔治亚州 Effingham County 建设 AI 基础设施，并承诺兼顾能源、社区投入、就业和 Codex 使用机会。",
@@ -199,11 +203,77 @@ const localizedFeedCopy: Record<string, LocalizedFeedCopy> = {
 
 export const aiNewsItems: AiNewsItem[] = [
   {
+    slug: "deepseek-v4-model-switch-july-24",
+    title: "DeepSeek 7 月 24 日完成 V4 模型入口切换",
+    source: "DeepSeek",
+    sourceUrl: "https://api-docs.deepseek.com/zh-cn/updates/",
+    publishedAt: "2026-07-24",
+    category: "产品功能",
+    summary: "DeepSeek 官方更新日志显示，V4-Pro 和 V4-Flash 已成为 API 入口；旧的 deepseek-chat 与 deepseek-reasoner 在 2026 年 7 月 24 日停止使用。",
+    takeaway: "如果你的网站、插件或 Codex 接入还在用旧模型名，需要尽快检查模型参数和调用成本，避免接口切换影响服务。",
+    tags: ["DeepSeek", "中国AI", "API", "模型切换"],
+  },
+  {
+    slug: "china-ai-models-waic-2026",
+    title: "WAIC 2026 后，中国大模型从 DeepSeek 走向群星竞争",
+    source: "中国新闻网",
+    sourceUrl: "https://www.chinanews.com.cn/cj/2026/07-20/10663137.shtml",
+    publishedAt: "2026-07-20",
+    category: "行业应用",
+    summary: "中国新闻网报道，2026 世界人工智能大会期间，阿里千问、百度、腾讯、MiniMax、阶跃星辰等企业集中展示 AI 新品，中国开源大模型全球累计下载量已突破 100 亿次。",
+    takeaway: "中国 AI 不再只看单一爆款模型，而是进入模型、应用、开源生态和行业落地同时竞争的阶段，普通用户可以更主动比较国产工具的实际效果。",
+    tags: ["中国AI", "WAIC", "开源模型", "行业趋势"],
+  },
+  {
+    slug: "kimi-k3-release",
+    title: "Kimi K3 发布，月之暗面把中国开源模型推向 2.8T",
+    source: "月之暗面",
+    sourceUrl: "https://www.moonshot.cn/",
+    publishedAt: "2026-07-16",
+    category: "模型更新",
+    summary: "月之暗面官网显示，Kimi K3 于 2026 年 7 月 16 日发布，定位为新一代旗舰模型，具备 2.8 万亿参数、原生多模态和百万 token 上下文。",
+    takeaway: "这说明中国模型不只是便宜替代，而是在开源权重、长上下文和 Agent 编程场景上主动冲击全球开发者生态。",
+    tags: ["Kimi", "月之暗面", "中国AI", "开源模型"],
+  },
+  {
+    slug: "kimi-k3-api-platform",
+    title: "Kimi API 平台上线 K3，主打 1M 上下文和软件工程任务",
+    source: "Kimi",
+    sourceUrl: "https://platform.moonshot.cn/",
+    publishedAt: "2026-07-16",
+    category: "Agent趋势",
+    summary: "Kimi API 平台将 K3 列为最新模型，强调 1M tokens 上下文，面向软件工程、知识工作和深度推理，并公布缓存命中、输入和输出价格。",
+    takeaway: "对站长和开发者来说，K3 值得观察 API 成本、长文处理、代码 Agent 和多工具调用场景。",
+    tags: ["Kimi", "API", "中国AI", "长上下文"],
+  },
+  {
+    slug: "tencent-hunyuan-3-yuanbao-agent",
+    title: "腾讯发布混元 3 正式版，元宝接入并上线免费 Agent 功能",
+    source: "财新",
+    sourceUrl: "https://companies.caixin.com/m/2026-07-06/102461428.html",
+    publishedAt: "2026-07-06",
+    category: "Agent趋势",
+    summary: "财新报道，腾讯在 7 月 6 日发布混元 3 正式版，较预览版继续提升后训练、数据质量和 Agent 能力，并由元宝接入相关能力。",
+    takeaway: "这类更新说明国内 AI 助手正在从聊天入口走向可执行 Agent，电商、客服、搜索和办公流程都会更容易接入。",
+    tags: ["腾讯", "混元", "元宝", "中国AI"],
+  },
+  {
+    slug: "minimax-music-3-release",
+    title: "MiniMax Music-3.0 发布，AI 内容生成继续细分到音乐场景",
+    source: "MiniMax",
+    sourceUrl: "https://platform.minimax.io/docs/release-notes/models",
+    publishedAt: "2026-07-16",
+    category: "产品功能",
+    summary: "MiniMax 模型发布记录显示，Music-3.0 于 2026 年 7 月 16 日上线，展示国内 AI 公司在文本、代码之外继续扩展音频和内容生成能力。",
+    takeaway: "AI 工具的竞争不只在大语言模型。短视频、直播、内容号和品牌营销也会越来越需要图像、音乐、视频等多模态能力。",
+    tags: ["MiniMax", "中国AI", "音乐生成", "多模态"],
+  },
+  {
     slug: "baidu-ernie-5-1-release",
     title: "百度文心 5.1 发布，强化 Agent、推理和创作能力",
     source: "百度文心",
     sourceUrl: "https://yiyan.baidu.com/blog/zh/posts/ernie-5.1-0508-release/",
-    publishedAt: "2026-05-08",
+    publishedAt: "2026-05-09",
     category: "模型更新",
     summary: "百度文心 5.1 正式上线，官方重点强调通过强化学习和智能体后训练，提升 Agent、推理、创作等能力。",
     takeaway: "国内模型正在强化中文创作、办公和智能体能力。普通用户可以重点观察它在中文资料整理、内容生成和国产办公场景中的表现。",
@@ -289,9 +359,8 @@ export const aiNewsItems: AiNewsItem[] = [
 ];
 
 export function getLatestAiNews(limit = aiNewsItems.length) {
-  return [...aiNewsItems]
-    .sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt))
-    .slice(0, limit);
+  const sorted = [...aiNewsItems].sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
+  return balanceChinaInternationalNews(sorted, limit).slice(0, limit);
 }
 
 export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promise<AiNewsItem[]> {
@@ -318,7 +387,7 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
   items.push(...liveFeedItems);
   items.push(...getLatestAiNews(Math.max(limit, aiNewsItems.length)));
 
-  const merged = ensureChinaAiNewsMix(mergeAiNewsItems(items)).slice(0, limit);
+  const merged = balanceChinaInternationalNews(mergeAiNewsItems(items), limit).slice(0, limit);
   if (merged.length > 0) return merged;
 
   return getLatestAiNews(limit);
@@ -722,18 +791,44 @@ function mergeAiNewsItems(items: AiNewsItem[]) {
   return result.sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
 }
 
-function ensureChinaAiNewsMix(items: AiNewsItem[]) {
+function balanceChinaInternationalNews(items: AiNewsItem[], limit: number) {
   if (items.length === 0) return items;
-  if (items.slice(0, 4).some(isChinaAiNews)) return items;
 
-  const firstChinaItem = items.find(isChinaAiNews);
-  if (!firstChinaItem) return items;
+  const chinaItems = items.filter(isChinaAiNews);
+  const internationalItems = items.filter((item) => !isChinaAiNews(item));
+  if (chinaItems.length === 0 || internationalItems.length === 0) return items;
 
-  return [items[0], firstChinaItem, ...items.slice(1).filter((item) => item.slug !== firstChinaItem.slug)];
+  const targetChina = Math.ceil(limit / 2);
+  const targetInternational = Math.floor(limit / 2);
+  const result: AiNewsItem[] = [];
+  let chinaIndex = 0;
+  let internationalIndex = 0;
+  let useChina =
+    +new Date(chinaItems[0]?.publishedAt ?? 0) >= +new Date(internationalItems[0]?.publishedAt ?? 0);
+
+  while (result.length < limit && (chinaIndex < chinaItems.length || internationalIndex < internationalItems.length)) {
+    if (useChina && chinaIndex < chinaItems.length && chinaIndex < targetChina) {
+      result.push(chinaItems[chinaIndex++]);
+    } else if (!useChina && internationalIndex < internationalItems.length && internationalIndex < targetInternational) {
+      result.push(internationalItems[internationalIndex++]);
+    } else if (chinaIndex < chinaItems.length && chinaIndex < targetChina) {
+      result.push(chinaItems[chinaIndex++]);
+    } else if (internationalIndex < internationalItems.length && internationalIndex < targetInternational) {
+      result.push(internationalItems[internationalIndex++]);
+    } else if (chinaIndex < chinaItems.length) {
+      result.push(chinaItems[chinaIndex++]);
+    } else if (internationalIndex < internationalItems.length) {
+      result.push(internationalItems[internationalIndex++]);
+    }
+
+    useChina = !useChina;
+  }
+
+  return result;
 }
 
 function isChinaAiNews(item: AiNewsItem) {
-  return /DeepSeek|通义|通義|千问|千問|百度|文心|智谱|智譜|Kimi|月之暗面|豆包|字节|字節|MiniMax|中国AI|中國AI/i.test(
+  return /DeepSeek|通义|通義|千问|千問|百度|文心|智谱|智譜|Kimi|月之暗面|豆包|字节|字節|MiniMax|中国AI|中國AI|腾讯|騰訊|混元|元宝|元寶|阿里|阶跃|階躍/i.test(
     `${item.source} ${item.title} ${item.tags.join(" ")}`,
   );
 }

@@ -52,7 +52,7 @@ export function HeroNewsPanel({ items }: HeroNewsPanelProps) {
               </span>
               <div>
                 <div className="text-sm font-bold text-white">每日 AI 快訊</div>
-                <div className="mt-0.5 text-[11px] text-slate-400">国内外动态，一起看懂</div>
+                <div className="mt-0.5 text-[11px] text-slate-400">大陆 / 国外动态，一起看懂</div>
               </div>
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/15 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-300">
@@ -95,7 +95,7 @@ export function HeroNewsPanel({ items }: HeroNewsPanelProps) {
           <div className="flex flex-col gap-3 border-t border-white/10 bg-white/[0.025] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
               <div className="text-xs font-semibold text-slate-200">3 分钟掌握今天的 AI 变化</div>
-              <div className="mt-1 text-[11px] text-slate-500">中国 AI、模型、插件与行业应用</div>
+              <div className="mt-1 text-[11px] text-slate-500">大陆 AI、海外模型、插件与行业应用</div>
             </div>
             <Link
               href="/news"
