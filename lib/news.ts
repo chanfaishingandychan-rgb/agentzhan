@@ -329,10 +329,11 @@ export async function getAiNewsArticleForSite(slug: string): Promise<AiNewsArtic
   const supabaseItem = await getSupabaseAiNewsItemByAnySlug(normalizedSlug);
   if (supabaseItem) return buildAiNewsArticle(supabaseItem);
 
+  const staticItem = aiNewsItems.find((entry) => newsSlugMatches(entry, normalizedSlug));
+  if (staticItem) return buildAiNewsArticle(staticItem);
+
   const news = await getLatestAiNewsForSite(50);
-  const item =
-    news.find((entry) => newsSlugMatches(entry, normalizedSlug)) ??
-    aiNewsItems.find((entry) => newsSlugMatches(entry, normalizedSlug));
+  const item = news.find((entry) => newsSlugMatches(entry, normalizedSlug));
   if (!item) return null;
 
   return buildAiNewsArticle(item);
@@ -489,6 +490,7 @@ async function fetchFeedCandidates(source: FeedSource): Promise<FeedCandidate[]>
       "user-agent": "AgentZhanBot/1.0 (+https://agentzhan.com/news)",
     },
     next: { revalidate: 3600 },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!response.ok) {

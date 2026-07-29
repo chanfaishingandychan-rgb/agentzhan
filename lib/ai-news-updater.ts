@@ -190,6 +190,7 @@ async function fetchFeedCandidates(source: FeedSource): Promise<FeedCandidate[]>
       "user-agent": "AgentZhanBot/1.0 (+https://agentzhan.com/news)",
     },
     next: { revalidate: 0 },
+    signal: AbortSignal.timeout(8000),
   });
 
   if (!response.ok) {

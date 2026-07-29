@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getAiNewsArticleForSite, getLatestAiNewsForSite, type AiNewsItem } from "@/lib/news";
+import { getAiNewsArticleForSite, getLatestAiNews, type AiNewsItem } from "@/lib/news";
 import { siteConfig } from "@/lib/site";
 
 type NewsArticlePageProps = {
@@ -47,7 +47,7 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
   const article = await getAiNewsArticleForSite(slug);
   if (!article) notFound();
 
-  const related = (await getLatestAiNewsForSite(8)).filter((item) => item.slug !== article.item.slug).slice(0, 3);
+  const related = getLatestAiNews(8).filter((item) => item.slug !== article.item.slug).slice(0, 3);
 
   const articleSchema = {
     "@context": "https://schema.org",
