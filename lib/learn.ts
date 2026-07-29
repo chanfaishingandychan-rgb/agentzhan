@@ -151,7 +151,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["一开始就要求 AI 写爆款，结果文案很油", "没有告诉 AI 目标读者", "结尾只放网址，没有先提供价值"],
     homework: "用 AI 改好一篇小红书文案，发到讨论区，看看大家会不会想点进去读。",
-    color: "from-pink-500 to-orange-500",
+    color: "from-rose-500 to-violet-600",
   },
   {
     day: 3,
@@ -211,7 +211,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["只复制链接，不给 AI 文章内容", "没有说明用途", "看到不懂的词不追问"],
     homework: "找一篇 AI 文章，让 AI 整理成 5 个重点，并发到讨论区。",
-    color: "from-blue-500 to-cyan-500",
+    color: "from-rose-500 to-violet-600",
   },
   {
     day: 4,
@@ -271,7 +271,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["列太多任务，完全不考虑时间", "没有告诉 AI 自己今天状态", "计划太大，没有拆成下一步"],
     homework: "用 AI 做一个今天计划，晚上回来让 AI 帮你复盘。",
-    color: "from-emerald-500 to-teal-500",
+    color: "from-rose-500 to-violet-600",
   },
   {
     day: 5,
@@ -331,7 +331,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["不删除隐私资料就贴给 AI", "直接发送 AI 承诺的内容", "语气太官方，不像自己说话"],
     homework: "找一段你最近难回复的消息，让 AI 生成 3 个版本。",
-    color: "from-amber-500 to-orange-500",
+    color: "from-rose-500 to-violet-600",
   },
   {
     day: 6,
@@ -391,7 +391,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["一个视频讲太多内容", "只有脚本没有画面建议", "结尾只导流，没有互动"],
     homework: "用 AI 写一个 30 秒脚本，先不拍也可以，发到讨论区让大家帮你改开头。",
-    color: "from-red-500 to-pink-600",
+    color: "from-rose-500 to-violet-600",
   },
   {
     day: 7,
@@ -451,7 +451,7 @@ export const learnTasks: LearnTask[] = [
     ],
     mistakes: ["目标太大，想一次学完所有工具", "每天安排太多，三天就放弃", "一开始就学 API 和复杂自动化"],
     homework: "生成你的 30 天 AI 学习路线，并发到 AI讨论区。",
-    color: "from-violet-600 to-blue-600",
+    color: "from-rose-500 to-violet-600",
   },
 ];
 

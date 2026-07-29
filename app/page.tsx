@@ -250,7 +250,9 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <section id="learn" className="border-b border-slate-200 bg-white py-16 lg:py-24">
+      <section id="learn" className="relative overflow-hidden border-b border-rose-100 bg-gradient-to-br from-white via-rose-50/40 to-violet-50/50 py-16 lg:py-24">
+        <div className="pointer-events-none absolute -right-24 top-16 h-72 w-72 rounded-full bg-rose-200/50 blur-3xl" />
+        <div className="pointer-events-none absolute -left-24 bottom-10 h-72 w-72 rounded-full bg-violet-200/50 blur-3xl" />
         <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
           <div className="flex flex-col justify-center">
             <div className="mb-4 inline-flex w-fit rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
@@ -277,7 +279,7 @@ export default async function HomePage() {
             <div className="mt-7 flex flex-wrap gap-3">
               <Link
                 href="/learn/day-1"
-                className="inline-flex h-12 items-center rounded-full bg-slate-950 px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+                className="inline-flex h-12 items-center rounded-full bg-gradient-to-r from-rose-500 to-violet-600 px-7 text-sm font-bold text-white shadow-[0_12px_36px_rgba(225,29,72,0.25)] transition hover:-translate-y-0.5"
               >
                 由第 1 天开始
               </Link>
@@ -298,7 +300,8 @@ export default async function HomePage() {
                 className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
               >
                 <div className={`h-2 bg-gradient-to-r ${task.color}`} />
-                <div className="p-5">
+                <div className="relative p-5">
+                  <div className="pointer-events-none absolute right-4 top-4 h-16 w-16 rounded-full bg-gradient-to-br from-rose-100 to-violet-100 opacity-80 blur-xl" />
                   <div className="flex items-center justify-between">
                     <span className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${task.color} text-xs font-black text-white shadow-lg`}>
                       D{task.day}

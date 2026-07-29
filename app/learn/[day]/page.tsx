@@ -10,6 +10,8 @@ type LearnTaskPageProps = {
   params: Promise<{ day: string }>;
 };
 
+const learnGradient = "from-rose-500 to-violet-600";
+
 export function generateStaticParams() {
   return learnTasks.map((task) => ({ day: task.slug }));
 }
@@ -38,11 +40,18 @@ export async function generateMetadata({ params }: LearnTaskPageProps): Promise<
 function PhoneMockup({ step, index, color }: { step: LearnStep; index: number; color: string }) {
   return (
     <div className="relative mx-auto w-full max-w-[20rem]">
-      <div className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-br from-slate-200 via-white to-violet-200 blur-xl" />
+      <div className="absolute -inset-3 rounded-[2.5rem] bg-gradient-to-br from-rose-200 via-white to-violet-200 blur-xl" />
       <div className="relative rounded-[2.2rem] border border-slate-200 bg-slate-950 p-2 shadow-[0_22px_70px_rgba(15,23,42,0.22)]">
-        <div className="rounded-[1.75rem] bg-white p-4">
-          <div className="mx-auto mb-3 h-1.5 w-16 rounded-full bg-slate-200" />
-          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div className="rounded-[1.75rem] bg-gradient-to-b from-white via-rose-50/40 to-violet-50/50 p-4">
+          <div className="mb-3 flex items-center justify-between">
+            <div className="h-1.5 w-14 rounded-full bg-slate-200" />
+            <div className="flex gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-rose-300" />
+              <span className="h-2 w-2 rounded-full bg-violet-300" />
+              <span className="h-2 w-2 rounded-full bg-cyan-300" />
+            </div>
+          </div>
+          <div className="flex items-center justify-between rounded-2xl border border-white bg-white/90 p-3 shadow-sm">
             <div>
               <div className="text-[11px] font-semibold text-slate-400">STEP {index + 1}</div>
               <div className="mt-0.5 text-sm font-bold text-slate-950">{step.visualTitle}</div>
@@ -55,17 +64,23 @@ function PhoneMockup({ step, index, color }: { step: LearnStep; index: number; c
             {step.visualLines.map((line, lineIndex) => (
               <div
                 key={line}
-                className={`rounded-2xl px-3 py-2 text-sm leading-6 ${
+                className={`flex items-start gap-2 rounded-2xl px-3 py-2 text-sm leading-6 shadow-sm ${
                   lineIndex === step.visualLines.length - 1
-                    ? "bg-violet-50 text-violet-950"
-                    : "bg-slate-100 text-slate-700"
+                    ? "ml-4 bg-gradient-to-r from-rose-500 to-violet-600 text-white"
+                    : "mr-4 border border-white bg-white text-slate-700"
                 }`}
               >
+                <span
+                  className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${
+                    lineIndex === step.visualLines.length - 1 ? "bg-white/80" : "bg-violet-300"
+                  }`}
+                />
                 {line}
               </div>
             ))}
           </div>
-          <div className="mt-4 rounded-2xl border border-amber-100 bg-amber-50 px-3 py-2 text-xs leading-5 text-amber-900">
+          <div className="mt-4 rounded-2xl border border-rose-100 bg-white/90 px-3 py-2 text-xs leading-5 text-slate-600 shadow-sm">
+            <span className="font-bold text-violet-700">提示：</span>
             {step.tip}
           </div>
         </div>
@@ -86,7 +101,8 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
     <main className="bg-[#fafafa]">
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="absolute inset-0 bg-grid opacity-[0.45]" />
-        <div className={`pointer-events-none absolute -right-28 -top-32 h-96 w-96 rounded-full bg-gradient-to-br ${task.color} opacity-20 blur-3xl`} />
+        <div className={`pointer-events-none absolute -right-28 -top-32 h-96 w-96 rounded-full bg-gradient-to-br ${learnGradient} opacity-20 blur-3xl`} />
+        <div className="pointer-events-none absolute -bottom-40 -left-28 h-80 w-80 rounded-full bg-cyan-100/70 blur-3xl" />
         <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
           <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <Link href="/" className="text-violet-600 transition hover:text-violet-700">首页</Link>
@@ -97,7 +113,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`rounded-full bg-gradient-to-r ${task.color} px-3 py-1 text-xs font-bold text-white`}>
+            <span className={`rounded-full bg-gradient-to-r ${learnGradient} px-3 py-1 text-xs font-bold text-white`}>
               DAY {task.day}
             </span>
             <span className="rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-500">
@@ -119,7 +135,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
               ["适合人群", "完全不会 AI，也可以照着做"],
               ["完成方式", "复制提示词，按步骤追问修改"],
             ].map(([title, desc]) => (
-              <div key={title} className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <div key={title} className="rounded-2xl border border-rose-100 bg-white/90 p-4 shadow-sm">
                 <div className="text-sm font-bold text-slate-950">{title}</div>
                 <p className="mt-1 text-sm leading-6 text-slate-500">{desc}</p>
               </div>
@@ -135,7 +151,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
             <div className="mt-5 space-y-3">
               {task.prepare.map((item, index) => (
                 <div key={item} className="flex gap-3 rounded-2xl border border-slate-100 bg-slate-50 p-4">
-                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${task.color} text-xs font-bold text-white`}>
+                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${learnGradient} text-xs font-bold text-white`}>
                     {index + 1}
                   </span>
                   <p className="text-sm leading-7 text-slate-600">{item}</p>
@@ -144,7 +160,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
             </div>
           </div>
 
-          <div className="rounded-3xl border border-violet-100 bg-violet-50/70 p-6">
+          <div className="rounded-3xl border border-violet-100 bg-gradient-to-br from-rose-50 via-white to-violet-50 p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <h2 className="text-2xl font-bold tracking-tight text-slate-950">今天直接复制这段</h2>
               <CopyButton text={task.prompt} />
@@ -177,7 +193,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
               >
                 <div className="flex flex-col justify-center">
                   <div className="mb-4 flex items-center gap-3">
-                    <span className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${task.color} text-sm font-black text-white shadow-lg`}>
+                    <span className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br ${learnGradient} text-sm font-black text-white shadow-lg`}>
                       {index + 1}
                     </span>
                     <h3 className="text-2xl font-bold tracking-tight text-slate-950">{step.title}</h3>
@@ -189,7 +205,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
                     {step.tip}
                   </div>
                 </div>
-                <PhoneMockup step={step} index={index} color={task.color} />
+                <PhoneMockup step={step} index={index} color={learnGradient} />
               </section>
             ))}
           </div>
@@ -259,7 +275,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
           {nextTask ? (
             <Link
               href={`/learn/${nextTask.slug}`}
-              className={`inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r ${nextTask.color} px-5 text-sm font-bold text-white transition hover:-translate-y-0.5`}
+              className={`inline-flex h-11 items-center justify-center rounded-full bg-gradient-to-r ${learnGradient} px-5 text-sm font-bold text-white transition hover:-translate-y-0.5`}
             >
               第 {nextTask.day} 天：{nextTask.shortTitle} →
             </Link>

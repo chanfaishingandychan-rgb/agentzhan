@@ -25,13 +25,63 @@ const guideCards = [
   ["可以发作业", "完成后到 AI讨论区交流，让别人帮你改得更自然。"],
 ];
 
+function LearningVisual() {
+  return (
+    <div className="mt-4 overflow-hidden rounded-[1.6rem] border border-rose-100 bg-gradient-to-br from-rose-50 via-white to-violet-50 p-4">
+      <div className="grid gap-3 sm:grid-cols-[0.85fr_1.15fr]">
+        <div className="rounded-[1.4rem] border border-white bg-white/85 p-4 shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+              <span className="h-2.5 w-2.5 rounded-full bg-violet-400" />
+              <span className="h-2.5 w-2.5 rounded-full bg-cyan-400" />
+            </div>
+            <span className="rounded-full bg-violet-50 px-2.5 py-1 text-[11px] font-bold text-violet-700">
+              图文教学
+            </span>
+          </div>
+          <div className="space-y-2">
+            <div className="h-3 w-2/3 rounded-full bg-slate-200" />
+            <div className="h-3 w-full rounded-full bg-slate-100" />
+            <div className="h-3 w-5/6 rounded-full bg-slate-100" />
+          </div>
+          <div className="mt-5 rounded-2xl bg-gradient-to-r from-rose-500 to-violet-600 p-3 text-xs font-bold text-white shadow-[0_12px_30px_rgba(225,29,72,0.22)]">
+            复制提示词 → 填资料 → 追问修改
+          </div>
+        </div>
+
+        <div className="rounded-[1.4rem] border border-white bg-slate-950 p-4 text-white shadow-sm">
+          <div className="flex items-center gap-3">
+            <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-rose-500 to-violet-600 text-xs font-black">
+              AI
+            </span>
+            <div>
+              <div className="text-sm font-bold">学习助手</div>
+              <div className="text-xs text-slate-400">按步骤帮你改到能用</div>
+            </div>
+          </div>
+          <div className="mt-4 space-y-2 text-xs leading-5">
+            <div className="mr-8 rounded-2xl bg-white/10 px-3 py-2 text-slate-200">
+              我是新手，今天要学什么？
+            </div>
+            <div className="ml-8 rounded-2xl bg-white px-3 py-2 text-slate-800">
+              先做一个 10 分钟任务，完成后再学下一步。
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function LearnPage() {
   return (
-    <main className="bg-[#fafafa]">
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white">
+    <main className="bg-gradient-to-b from-white via-rose-50/30 to-white">
+      <section className="relative overflow-hidden border-b border-rose-100 bg-white">
         <div className="absolute inset-0 bg-grid opacity-[0.45]" />
-        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-rose-200/60 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-blue-200/60 blur-3xl" />
+        <div className="pointer-events-none absolute -right-32 -top-32 h-96 w-96 rounded-full bg-rose-200/70 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-36 -left-32 h-96 w-96 rounded-full bg-violet-200/60 blur-3xl" />
+        <div className="pointer-events-none absolute bottom-16 right-1/4 h-72 w-72 rounded-full bg-cyan-100/70 blur-3xl" />
         <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 lg:grid-cols-[0.95fr_1.05fr] lg:px-8 lg:py-20">
           <div className="flex flex-col justify-center">
             <div className="mb-5 inline-flex w-fit rounded-full border border-violet-200 bg-violet-50 px-4 py-1.5 text-xs font-semibold text-violet-700">
@@ -89,9 +139,10 @@ export default function LearnPage() {
                   ))}
                 </div>
               </div>
+              <LearningVisual />
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 {guideCards.map(([title, desc]) => (
-                  <div key={title} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div key={title} className="rounded-2xl border border-rose-100 bg-white p-4 shadow-sm">
                     <div className="text-sm font-bold text-slate-950">{title}</div>
                     <p className="mt-1 text-xs leading-5 text-slate-500">{desc}</p>
                   </div>
@@ -123,7 +174,8 @@ export default function LearnPage() {
               className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
             >
               <div className={`h-2 bg-gradient-to-r ${task.color}`} />
-              <div className="p-5">
+              <div className="relative p-5">
+                <div className="pointer-events-none absolute right-4 top-4 h-20 w-20 rounded-full bg-gradient-to-br from-rose-100 to-violet-100 opacity-70 blur-xl" />
                 <div className="flex items-start justify-between gap-4">
                   <div className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br ${task.color} text-sm font-black text-white shadow-lg`}>
                     DAY {task.day}
