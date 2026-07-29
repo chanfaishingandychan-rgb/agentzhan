@@ -45,7 +45,7 @@ export default function CollectionsPage() {
         <div className="relative mx-auto max-w-7xl">
           <div className="max-w-3xl">
             <div className="mb-5 inline-flex rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-xs font-medium text-slate-300">
-              Curated Prompt Collections
+              精選提示詞合集
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
               AI Prompt 精品合集

@@ -51,8 +51,8 @@ export function HeroNewsPanel({ items }: HeroNewsPanelProps) {
                 </svg>
               </span>
               <div>
-                <div className="text-sm font-bold text-white">每日 AI 快讯</div>
-                <div className="mt-0.5 text-[11px] text-slate-400">看懂更新，更快找到可用机会</div>
+                <div className="text-sm font-bold text-white">每日 AI 快訊</div>
+                <div className="mt-0.5 text-[11px] text-slate-400">国内外动态，一起看懂</div>
               </div>
             </div>
             <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/15 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-semibold text-emerald-300">
@@ -95,13 +95,13 @@ export function HeroNewsPanel({ items }: HeroNewsPanelProps) {
           <div className="flex flex-col gap-3 border-t border-white/10 bg-white/[0.025] px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div>
               <div className="text-xs font-semibold text-slate-200">3 分钟掌握今天的 AI 变化</div>
-              <div className="mt-1 text-[11px] text-slate-500">模型、插件、Agent 与行业应用</div>
+              <div className="mt-1 text-[11px] text-slate-500">中国 AI、模型、插件与行业应用</div>
             </div>
             <Link
               href="/news"
               className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full border border-white/10 bg-white/[0.07] px-4 text-xs font-semibold text-white transition hover:border-violet-300/30 hover:bg-violet-500/15"
             >
-              查看全部资讯
+              查看全部資訊
               <span aria-hidden="true">→</span>
             </Link>
           </div>

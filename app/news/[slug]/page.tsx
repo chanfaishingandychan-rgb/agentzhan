@@ -68,7 +68,7 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "首页", item: siteConfig.url },
-      { "@type": "ListItem", position: 2, name: "AI资讯", item: `${siteConfig.url}/news` },
+      { "@type": "ListItem", position: 2, name: "AI資訊", item: `${siteConfig.url}/news` },
       { "@type": "ListItem", position: 3, name: article.item.title, item: `${siteConfig.url}/news/${article.item.slug}` },
     ],
   };
@@ -83,7 +83,7 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
           <div className="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
             <Link href="/" className="text-violet-600 transition hover:text-violet-700">首页</Link>
             <span>/</span>
-            <Link href="/news" className="text-violet-600 transition hover:text-violet-700">AI资讯</Link>
+            <Link href="/news" className="text-violet-600 transition hover:text-violet-700">AI資訊</Link>
             <span>/</span>
             <span className="max-w-[220px] truncate text-slate-400 sm:max-w-md">{article.item.title}</span>
           </div>
@@ -114,7 +114,7 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
               href="/news"
               className="inline-flex h-11 items-center justify-center rounded-full border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50"
             >
-              返回 AI资讯
+              返回 AI資訊
             </Link>
           </div>
         </div>

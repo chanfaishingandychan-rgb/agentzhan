@@ -73,6 +73,11 @@ const officialFeedSources: FeedSource[] = [
     feedUrl: "https://deepmind.google/blog/rss.xml",
     fallbackCategory: "模型更新",
   },
+  {
+    source: "通义千问",
+    feedUrl: "https://qwenlm.github.io/blog/index.xml",
+    fallbackCategory: "模型更新",
+  },
 ];
 
 const xmlParser = new XMLParser({
@@ -194,6 +199,28 @@ const localizedFeedCopy: Record<string, LocalizedFeedCopy> = {
 
 export const aiNewsItems: AiNewsItem[] = [
   {
+    slug: "baidu-ernie-5-1-release",
+    title: "百度文心 5.1 发布，强化 Agent、推理和创作能力",
+    source: "百度文心",
+    sourceUrl: "https://yiyan.baidu.com/blog/zh/posts/ernie-5.1-0508-release/",
+    publishedAt: "2026-05-08",
+    category: "模型更新",
+    summary: "百度文心 5.1 正式上线，官方重点强调通过强化学习和智能体后训练，提升 Agent、推理、创作等能力。",
+    takeaway: "国内模型正在强化中文创作、办公和智能体能力。普通用户可以重点观察它在中文资料整理、内容生成和国产办公场景中的表现。",
+    tags: ["百度文心", "中国AI", "Agent", "推理"],
+  },
+  {
+    slug: "deepseek-v4-preview-release",
+    title: "DeepSeek V4 Preview 发布，支持 1M 上下文和开源权重",
+    source: "DeepSeek",
+    sourceUrl: "https://api-docs.deepseek.com/news/news260424/",
+    publishedAt: "2026-04-24",
+    category: "模型更新",
+    summary: "DeepSeek 官方发布 V4 Preview，包括 V4-Pro 与 V4-Flash，强调 1M 上下文、Agent 编程能力、API 兼容 OpenAI Chat Completions 与 Anthropic API。",
+    takeaway: "这类国产模型更新会直接影响 API 成本、长文处理和 Codex/编程 Agent 接入方案，适合站长和小团队重点关注。",
+    tags: ["DeepSeek", "中国AI", "开源模型", "Agent"],
+  },
+  {
     slug: "claude-opus-5-launch",
     title: "Claude Opus 5 发布，强调长任务 Agent、编程和专业工作",
     source: "Anthropic",
@@ -289,8 +316,9 @@ export async function getLatestAiNewsForSite(limit = aiNewsItems.length): Promis
 
   const liveFeedItems = await getLatestOfficialAiNews(limit);
   items.push(...liveFeedItems);
+  items.push(...getLatestAiNews(Math.max(limit, aiNewsItems.length)));
 
-  const merged = mergeAiNewsItems(items).slice(0, limit);
+  const merged = ensureChinaAiNewsMix(mergeAiNewsItems(items)).slice(0, limit);
   if (merged.length > 0) return merged;
 
   return getLatestAiNews(limit);
@@ -339,17 +367,29 @@ async function getSupabaseAiNewsItemByAnySlug(slug: string): Promise<AiNewsItem 
 }
 
 function toAiNewsItem(item: SupabaseAiNewsRow): AiNewsItem {
-  return {
-    slug: item.slug,
-    rawTitle: item.raw_title ?? undefined,
-    title: item.title,
+  const fallbackCandidate: FeedCandidate = {
+    title: item.raw_title || item.title,
     source: item.source,
     sourceUrl: item.source_url,
     publishedAt: item.published_at,
     category: item.category,
-    summary: item.summary,
-    takeaway: item.takeaway,
-    tags: item.tags ?? [],
+    description: item.summary,
+  };
+  const localizedTitle = isLocalizedText(item.title) ? item.title : localizeTitle(fallbackCandidate);
+  const localizedSummary = isLocalizedText(item.summary) ? item.summary : localizeSummary(fallbackCandidate, localizedTitle);
+  const localizedTakeaway = isLocalizedText(item.takeaway) ? item.takeaway : getFallbackTakeaway(fallbackCandidate);
+
+  return {
+    slug: item.slug,
+    rawTitle: item.raw_title ?? undefined,
+    title: localizedTitle,
+    source: item.source,
+    sourceUrl: item.source_url,
+    publishedAt: item.published_at,
+    category: item.category,
+    summary: localizedSummary,
+    takeaway: localizedTakeaway,
+    tags: item.tags ?? buildTags(fallbackCandidate),
   };
 }
 
@@ -678,6 +718,22 @@ function mergeAiNewsItems(items: AiNewsItem[]) {
     result.push(item);
   }
   return result.sort((a, b) => +new Date(b.publishedAt) - +new Date(a.publishedAt));
+}
+
+function ensureChinaAiNewsMix(items: AiNewsItem[]) {
+  if (items.length === 0) return items;
+  if (items.slice(0, 4).some(isChinaAiNews)) return items;
+
+  const firstChinaItem = items.find(isChinaAiNews);
+  if (!firstChinaItem) return items;
+
+  return [items[0], firstChinaItem, ...items.slice(1).filter((item) => item.slug !== firstChinaItem.slug)];
+}
+
+function isChinaAiNews(item: AiNewsItem) {
+  return /DeepSeek|通义|通義|千问|千問|百度|文心|智谱|智譜|Kimi|月之暗面|豆包|字节|字節|MiniMax|中国AI|中國AI/i.test(
+    `${item.source} ${item.title} ${item.tags.join(" ")}`,
+  );
 }
 
 function newsSlugMatches(item: AiNewsItem, slug: string) {

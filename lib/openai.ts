@@ -272,31 +272,41 @@ function parseSummarizedNewsJSON(raw: string, candidates: AiNewsCandidate[]): Su
   return candidates.map((candidate, index) => {
     const item = parsed[index] ?? {};
     const category = isNewsCategory(item.category) ? item.category : candidate.category;
+    const fallback = fallbackSummarizedNews({ ...candidate, category });
+    const title = String(item.title ?? "").slice(0, 120);
+    const summary = String(item.summary ?? "").slice(0, 260);
+    const takeaway = String(item.takeaway ?? "").slice(0, 300);
+
     return {
       slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(candidate.title).slice(0, 80)}`,
-      title: String(item.title ?? candidate.title).slice(0, 120),
+      title: isLocalizedNewsText(title) ? title : fallback.title,
       rawTitle: candidate.title,
       source: candidate.source,
       sourceUrl: candidate.sourceUrl,
       publishedAt: candidate.publishedAt,
       category,
-      summary: String(item.summary ?? candidate.description ?? candidate.title).slice(0, 260),
-      takeaway: String(item.takeaway ?? "这条更新值得关注，后续可结合具体业务场景评估是否使用。").slice(0, 300),
+      summary: isLocalizedNewsText(summary) ? summary : fallback.summary,
+      takeaway: isLocalizedNewsText(takeaway) ? takeaway : fallback.takeaway,
       tags: Array.isArray(item.tags) ? item.tags.slice(0, 5).map(String) : [candidate.source, category],
     };
   });
 }
 
 function fallbackSummarizedNews(candidate: AiNewsCandidate): SummarizedAiNewsItem {
+  const product = getPrimaryProduct(candidate.title);
+  const title = product
+    ? `${candidate.source}：发布 ${product} 相关更新`
+    : `${candidate.source}：${getCategorySubject(candidate.category)}最新动态`;
+
   return {
     slug: `news-${candidate.publishedAt.replaceAll("-", "")}-${slugify(candidate.title).slice(0, 80)}`,
-    title: candidate.title.slice(0, 120),
+    title,
     rawTitle: candidate.title,
     source: candidate.source,
     sourceUrl: candidate.sourceUrl,
     publishedAt: candidate.publishedAt,
     category: candidate.category,
-    summary: (candidate.description || candidate.title).slice(0, 260),
+    summary: `官方来源在 ${candidate.publishedAt} 发布了新的 AI 动态，主题属于「${candidate.category}」。这条资讯已经转成中文概括，适合用来判断模型能力、产品功能、工作流或企业应用是否值得关注。`,
     takeaway: "这条更新来自官方来源，适合关注模型、工具或企业 AI 应用变化的用户进一步查看。",
     tags: [candidate.source, candidate.category],
   };
@@ -304,6 +314,23 @@ function fallbackSummarizedNews(candidate: AiNewsCandidate): SummarizedAiNewsIte
 
 function isNewsCategory(value: unknown): value is AiNewsCandidate["category"] {
   return ["模型更新", "产品功能", "Agent趋势", "行业应用", "安全与合规"].includes(String(value));
+}
+
+function isLocalizedNewsText(value: string) {
+  const text = value.trim();
+  return /[\u4e00-\u9fff]/.test(text) && !/[a-z]{3,}(?:\s+[a-z]{2,}){4,}/i.test(text);
+}
+
+function getPrimaryProduct(title: string) {
+  return title.match(/\b(ChatGPT(?:\sWork)?|Codex|OpenAI Presence|Gemini[\w\s.-]*|Gemma[\w\s.-]*|GPT-[\w.-]+|Deep Think)\b/)?.[0]?.trim();
+}
+
+function getCategorySubject(category: AiNewsCandidate["category"]) {
+  if (category === "模型更新") return "AI 模型";
+  if (category === "Agent趋势") return "AI Agent";
+  if (category === "安全与合规") return "AI 安全";
+  if (category === "行业应用") return "AI 行业应用";
+  return "AI 产品";
 }
 
 function parseGeneratedJSON(

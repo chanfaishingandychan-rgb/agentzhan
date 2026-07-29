@@ -7,7 +7,7 @@ import { categories, siteConfig } from "@/lib/site";
 
 const navItems = [
   { label: "AI插件", href: "/skills" },
-  { label: "AI资讯", href: "/news" },
+  { label: "AI資訊", href: "/news" },
   { label: "AI討論區", href: "/community" },
   { label: "AI咨询", href: "/consulting" },
   { label: "搜索", href: "/search" },
@@ -92,11 +92,11 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <div className="mt-3 space-y-2 text-sm text-slate-500">
               <Link href="/skills" className="transition hover:text-violet-600">AI 插件库</Link>
               <Link href="/#industries" className="block transition hover:text-violet-600">行业 Prompt</Link>
-              <Link href="/news" className="block transition hover:text-violet-600">AI 最新资讯</Link>
+              <Link href="/news" className="block transition hover:text-violet-600">AI 最新資訊</Link>
               <Link href="/community" className="block transition hover:text-violet-600">AI討論區</Link>
               <Link href="/consulting" className="block transition hover:text-violet-600">AI 咨询服务</Link>
               <div>工作包</div>
-              <div>Sitemap / Robots</div>
+              <div>網站索引</div>
             </div>
           </div>
           <div id="wechat" className="scroll-mt-24">

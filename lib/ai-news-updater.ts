@@ -41,6 +41,11 @@ const feedSources: FeedSource[] = [
     feedUrl: "https://deepmind.google/blog/rss.xml",
     fallbackCategory: "模型更新",
   },
+  {
+    source: "通义千问",
+    feedUrl: "https://qwenlm.github.io/blog/index.xml",
+    fallbackCategory: "模型更新",
+  },
 ];
 
 const parser = new XMLParser({
@@ -110,7 +115,7 @@ export async function updateAiNewsFromFeeds(): Promise<NewsUpdateResult> {
       generatedCount: deduped.length,
       publishedCount: 0,
       failedCount: errors.length,
-      summary: `AI资讯更新完成：抓取 ${candidates.length} 条，无新增可发布资讯。`,
+      summary: `AI資訊更新完成：抓取 ${candidates.length} 条，无新增可发布资讯。`,
       errorMessage: errors.length > 0 ? errors.join("\n") : null,
     });
 
@@ -162,7 +167,7 @@ export async function updateAiNewsFromFeeds(): Promise<NewsUpdateResult> {
     generatedCount: freshCandidates.length,
     publishedCount: insertedCount,
     failedCount,
-    summary: `AI资讯更新完成：抓取 ${candidates.length} 条，新增发布 ${insertedCount} 条。`,
+    summary: `AI資訊更新完成：抓取 ${candidates.length} 条，新增发布 ${insertedCount} 条。`,
     errorMessage: errors.length > 0 ? errors.join("\n") : null,
   });
 

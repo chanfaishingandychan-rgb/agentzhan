@@ -7,14 +7,14 @@ import { siteConfig } from "@/lib/site";
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: "AI最新资讯 - Agent站",
-  description: "每日整理 OpenAI、Claude、Gemini、DeepMind 等 AI 最新消息，并转化成普通用户、站长和企业可理解的使用建议。",
+  title: "AI最新資訊 - Agent站",
+  description: "每日整理 OpenAI、Claude、Gemini、DeepMind、DeepSeek、通义千问、百度文心等 AI 最新消息，并转化成普通用户、站长和企业可理解的使用建议。",
   alternates: {
     canonical: `${siteConfig.url}/news`,
   },
   openGraph: {
-    title: "AI最新资讯 - Agent站",
-    description: "查看 AI 模型、插件、Agent、自动化和行业应用的最新动态。",
+    title: "AI最新資訊 - Agent站",
+    description: "查看国内外 AI 模型、插件、Agent、自动化和行业应用的最新动态。",
     url: `${siteConfig.url}/news`,
     siteName: siteConfig.name,
     type: "website",
@@ -43,15 +43,16 @@ export default async function NewsPage() {
               每日 AI 最新消息
             </div>
             <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl">
-              AI最新资讯
+              AI最新資訊
             </h1>
             <p className="mt-5 text-base leading-8 text-slate-300 sm:text-lg">
-              不只是搬运新闻。Agent站会把模型更新、插件能力、Agent趋势和行业应用，整理成你看得懂、用得上的中文摘要。
+              不只是搬运新闻。Agent站会同时关注国外和中国 AI 动态，把模型更新、插件能力、Agent趋势和行业应用，整理成你看得懂、用得上的中文摘要。
             </p>
-            <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <div className="mt-8 grid gap-4 sm:grid-cols-4">
               {[
                 [String(news.length), "今日精选"],
-                ["5", "资讯分类"],
+                ["国内外", "AI 来源"],
+                ["5", "資訊分類"],
                 ["每日", "更新计划"],
               ].map(([value, label]) => (
                 <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 backdrop-blur">
@@ -73,7 +74,7 @@ export default async function NewsPage() {
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-slate-500">
-            每天 03:00 自动抓取官方来源并生成中文摘要；如果自动来源暂时不可用，会保留人工精选内容作为备份。
+            每天 03:00 自动抓取官方来源并生成中文摘要；已加入 DeepSeek、通义千问、百度文心等中国 AI 来源。
           </p>
         </div>
 
