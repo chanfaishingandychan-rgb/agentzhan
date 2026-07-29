@@ -2,6 +2,7 @@ import type { MetadataRoute } from "next";
 
 import { getAllCollections } from "@/lib/collections";
 import { industries } from "@/lib/industries";
+import { learnTasks } from "@/lib/learn";
 import { getLatestAiNewsForSite } from "@/lib/news";
 import { getAllPrompts } from "@/lib/prompts";
 import { allSkills } from "@/lib/skills";
@@ -44,6 +45,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const newsEntries = await getLatestAiNewsForSitemap();
+  const learnEntries = learnTasks.map((task) => ({
+    url: `${siteConfig.url}/learn/${task.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "weekly" as const,
+    priority: 0.82,
+  }));
 
   return [
     {
@@ -71,6 +78,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     },
     {
+      url: `${siteConfig.url}/learn`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.88,
+    },
+    {
       url: `${siteConfig.url}/collections`,
       lastModified: new Date().toISOString(),
       changeFrequency: "weekly",
@@ -95,6 +108,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.86,
     },
     ...skillEntries,
+    ...learnEntries,
     ...newsEntries,
     ...collectionEntries,
     ...industryEntries,

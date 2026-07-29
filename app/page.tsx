@@ -8,6 +8,7 @@ import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
 import { getAllCollections } from "@/lib/collections";
 import { industries } from "@/lib/industries";
+import { learnTasks } from "@/lib/learn";
 import { getLatestAiNewsForSite } from "@/lib/news";
 import { getHotTags, getIndustryPromptCount } from "@/lib/prompts";
 import { getLatestPromptsForSite } from "@/lib/prompts-server";
@@ -215,6 +216,12 @@ export default async function HomePage() {
 
             <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
               <Link
+                href="/learn"
+                className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-violet-600 px-8 text-base font-bold text-white shadow-[0_12px_36px_rgba(225,29,72,0.32)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(225,29,72,0.42)] sm:col-span-2"
+              >
+                AI新手每日任务：从第 1 天开始
+              </Link>
+              <Link
                 href="/skills"
                 className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white px-7 text-sm font-semibold text-slate-950 transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-100"
               >
@@ -231,7 +238,7 @@ export default async function HomePage() {
               </Link>
               <Link
                 href="/community"
-                className="inline-flex h-14 items-center justify-center rounded-full bg-violet-600 px-8 text-base font-bold text-white shadow-[0_12px_36px_rgba(124,58,237,0.38)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500 hover:shadow-[0_16px_44px_rgba(124,58,237,0.48)] sm:col-span-2"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-violet-300/30 bg-violet-500/15 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500/25 sm:col-span-2"
               >
                 进入 AI討論區
               </Link>
@@ -240,6 +247,93 @@ export default async function HomePage() {
           </div>
 
           <HeroNewsPanel items={latestNews} />
+        </div>
+      </section>
+
+      <section id="learn" className="border-b border-slate-200 bg-white py-16 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
+          <div className="flex flex-col justify-center">
+            <div className="mb-4 inline-flex w-fit rounded-full border border-rose-200 bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700">
+              AI 小白学习区
+            </div>
+            <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+              不知道第一步怎么开始？每天跟着做一个 AI 小任务
+            </h2>
+            <p className="mt-4 text-base leading-8 text-slate-600">
+              这个区域专门给零基础用户：每篇都是详细图文教学，告诉你打开哪里、复制什么、怎么填资料、AI 回答不好时怎样追问。先完成任务，再慢慢理解概念。
+            </p>
+            <div className="mt-6 grid gap-3 sm:grid-cols-3">
+              {[
+                ["10 分钟", "每天一个小任务"],
+                ["图文步骤", "每一步都有示意图"],
+                ["可交作业", "完成后去讨论区交流"],
+              ].map(([value, label]) => (
+                <div key={label} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                  <div className="text-2xl font-black text-slate-950">{value}</div>
+                  <div className="mt-1 text-sm text-slate-500">{label}</div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                href="/learn/day-1"
+                className="inline-flex h-12 items-center rounded-full bg-slate-950 px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+              >
+                由第 1 天开始
+              </Link>
+              <Link
+                href="/learn"
+                className="inline-flex h-12 items-center rounded-full border border-slate-200 bg-white px-7 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50"
+              >
+                查看 7 天路线
+              </Link>
+            </div>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {learnTasks.slice(0, 4).map((task) => (
+              <Link
+                key={task.slug}
+                href={`/learn/${task.slug}`}
+                className="group overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
+              >
+                <div className={`h-2 bg-gradient-to-r ${task.color}`} />
+                <div className="p-5">
+                  <div className="flex items-center justify-between">
+                    <span className={`flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br ${task.color} text-xs font-black text-white shadow-lg`}>
+                      D{task.day}
+                    </span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-500">
+                      {task.time}
+                    </span>
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold tracking-tight text-slate-950 group-hover:text-violet-700">
+                    {task.shortTitle}
+                  </h3>
+                  <p className="mt-2 line-clamp-2 text-sm leading-6 text-slate-500">{task.description}</p>
+                  <div className="mt-4 text-sm font-semibold text-violet-600 transition group-hover:translate-x-0.5">
+                    跟着做 →
+                  </div>
+                </div>
+              </Link>
+            ))}
+            <Link
+              href="/learn"
+              className="group flex min-h-[11rem] flex-col justify-between rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-blue-50 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_18px_56px_rgba(124,58,237,0.14)] sm:col-span-2"
+            >
+              <div>
+                <div className="text-sm font-bold text-violet-700">完整路线</div>
+                <h3 className="mt-2 text-xl font-extrabold tracking-tight text-slate-950">查看全部 7 天 AI 新手任务</h3>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {learnTasks.slice(4).map((task) => (
+                  <span key={task.slug} className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-slate-500 shadow-sm">
+                    Day {task.day} · {task.shortTitle}
+                  </span>
+                ))}
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 

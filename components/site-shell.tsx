@@ -8,6 +8,7 @@ import { categories, siteConfig } from "@/lib/site";
 const navItems = [
   { label: "AI插件", href: "/skills" },
   { label: "AI資訊", href: "/news" },
+  { label: "AI學習", href: "/learn" },
   { label: "AI討論區", href: "/community" },
   { label: "AI咨询", href: "/consulting" },
   { label: "搜索", href: "/search" },
@@ -93,6 +94,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
               <Link href="/skills" className="transition hover:text-violet-600">AI 插件库</Link>
               <Link href="/#industries" className="block transition hover:text-violet-600">行业 Prompt</Link>
               <Link href="/news" className="block transition hover:text-violet-600">AI 最新資訊</Link>
+              <Link href="/learn" className="block transition hover:text-violet-600">AI新手学习</Link>
               <Link href="/community" className="block transition hover:text-violet-600">AI討論區</Link>
               <Link href="/consulting" className="block transition hover:text-violet-600">AI 咨询服务</Link>
               <div>工作包</div>
