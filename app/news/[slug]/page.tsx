@@ -125,8 +125,10 @@ export default async function NewsArticlePage({ params }: NewsArticlePageProps) 
       <article className="mx-auto max-w-3xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <div className="rounded-[2rem] border border-slate-200 bg-white px-5 py-8 shadow-sm sm:px-8 lg:px-10">
           <div className="border-b border-slate-100 pb-8">
-            <div className="mb-4 text-sm font-semibold text-violet-600">中文原文翻译</div>
-            <p className="text-lg leading-9 text-slate-700">{article.item.summary}</p>
+            <div className="text-sm font-semibold text-violet-600">中文原文完整翻译</div>
+            <p className="mt-4 text-lg leading-9 text-slate-700">
+              下方按官方公开内容整理成完整中文阅读版，保留原文重点、背景和影响，方便直接阅读全文。
+            </p>
           </div>
 
           <div className="py-10">
