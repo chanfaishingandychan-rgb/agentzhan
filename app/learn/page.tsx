@@ -91,7 +91,7 @@ export default function LearnPage() {
               每天 10 分钟，跟着图文一步步学会用 AI
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-8 text-slate-600 sm:text-lg">
-              不需要懂模型、插件、API。第一版先做 7 天任务，每天完成一件很小的事：写自我介绍、改小红书文案、整理文章、做计划、回复消息、写脚本、制定学习路线。
+              不需要懂模型、插件、API。现在先做 14 天任务，每天完成一件很小的事：写文案、做配图、整理表格、建立话术库、比较工具和制定运营计划。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -115,7 +115,7 @@ export default function LearnPage() {
               <div className="rounded-[1.5rem] bg-slate-950 p-5 text-white">
                 <div className="flex items-center justify-between border-b border-white/10 pb-4">
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-200">7 Day Path</div>
+                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-rose-200">14 Day Path</div>
                     <div className="mt-1 text-xl font-bold">AI 新手学习路线</div>
                   </div>
                   <span className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-200">零基础</span>
@@ -156,13 +156,13 @@ export default function LearnPage() {
       <section className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8 lg:py-20">
         <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
           <div>
-            <div className="text-sm font-semibold text-violet-600">7 天入门任务</div>
+            <div className="text-sm font-semibold text-violet-600">14 天入门任务</div>
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950 sm:text-3xl">
               每天只做一件小事
             </h2>
           </div>
           <p className="max-w-xl text-sm leading-7 text-slate-500">
-            顺序不用跳。第 1 天先学会开口问 AI，第 7 天再让 AI 帮你制定自己的 30 天路线。
+            顺序不用跳。第 1 天先学会开口问 AI，第 14 天再把写作、配图、回复和运营串成一周计划。
           </p>
         </div>
 

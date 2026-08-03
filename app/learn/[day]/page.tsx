@@ -284,7 +284,7 @@ export default async function LearnTaskPage({ params }: LearnTaskPageProps) {
               href="/learn"
               className="inline-flex h-11 items-center justify-center rounded-full bg-slate-950 px-5 text-sm font-bold text-white transition hover:-translate-y-0.5"
             >
-              回到 7 天路线
+              回到 14 天路线
             </Link>
           )}
         </nav>

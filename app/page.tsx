@@ -287,7 +287,7 @@ export default async function HomePage() {
                 href="/learn"
                 className="inline-flex h-12 items-center rounded-full border border-slate-200 bg-white px-7 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50"
               >
-                查看 7 天路线
+                查看 14 天路线
               </Link>
             </div>
           </div>
@@ -326,7 +326,7 @@ export default async function HomePage() {
             >
               <div>
                 <div className="text-sm font-bold text-violet-700">完整路线</div>
-                <h3 className="mt-2 text-xl font-extrabold tracking-tight text-slate-950">查看全部 7 天 AI 新手任务</h3>
+                <h3 className="mt-2 text-xl font-extrabold tracking-tight text-slate-950">查看全部 14 天 AI 新手任务</h3>
               </div>
               <div className="mt-4 flex flex-wrap gap-2">
                 {learnTasks.slice(4).map((task) => (
