@@ -25,6 +25,15 @@ export default async function AdminLeadsPage() {
   const [leads, stats] = configured
     ? await Promise.all([getSupabaseLeads(100), getSupabaseLeadStats()])
     : [null, null];
+  const sourceRows = Array.from(
+    (leads ?? []).reduce((counter, lead) => {
+      counter.set(lead.source, (counter.get(lead.source) ?? 0) + 1);
+      return counter;
+    }, new Map<string, number>()),
+  )
+    .map(([source, count]) => ({ source, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 8);
 
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
@@ -37,7 +46,7 @@ export default async function AdminLeadsPage() {
           <Badge variant="violet">Leads</Badge>
           <h1 className="mt-3 text-3xl font-bold tracking-tight text-slate-950">潜在客户</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-500">
-            查看首页免费领取表单提交记录，用来判断哪个工作包最有变现机会。
+            查看免费领取表单提交记录，用来判断哪个内容入口和工作包最有变现机会。
           </p>
         </div>
       </div>
@@ -67,36 +76,51 @@ export default async function AdminLeadsPage() {
           <p className="mt-1 text-xs text-slate-400">等用户提交首页表单后会显示在这里。</p>
         </div>
       ) : (
-        <section className="mt-8 overflow-hidden rounded-2xl border border-slate-200 bg-white">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-100 text-sm">
-              <thead className="bg-slate-50 text-left text-xs uppercase text-slate-400">
-                <tr>
-                  <th className="px-5 py-3">邮箱</th>
-                  <th className="px-5 py-3">想要的工作包</th>
-                  <th className="px-5 py-3">来源</th>
-                  <th className="px-5 py-3">状态</th>
-                  <th className="px-5 py-3">提交时间</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                {leads.map((lead) => (
-                  <tr key={lead.id} className="hover:bg-slate-50/70">
-                    <td className="px-5 py-4 font-medium text-slate-950">{lead.email}</td>
-                    <td className="px-5 py-4 text-slate-600">{packLabels[lead.interestedPack] ?? lead.interestedPack}</td>
-                    <td className="px-5 py-4 text-slate-500">{lead.source}</td>
-                    <td className="px-5 py-4">
-                      <Badge variant={lead.status === "converted" ? "success" : "muted"}>{lead.status}</Badge>
-                    </td>
-                    <td className="px-5 py-4 text-slate-500">
-                      {lead.createdAt ? new Date(lead.createdAt).toLocaleString("zh-HK") : "-"}
-                    </td>
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_18rem]">
+          <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white">
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-slate-100 text-sm">
+                <thead className="bg-slate-50 text-left text-xs uppercase text-slate-400">
+                  <tr>
+                    <th className="px-5 py-3">邮箱</th>
+                    <th className="px-5 py-3">想要的工作包</th>
+                    <th className="px-5 py-3">来源</th>
+                    <th className="px-5 py-3">状态</th>
+                    <th className="px-5 py-3">提交时间</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {leads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-slate-50/70">
+                      <td className="px-5 py-4 font-medium text-slate-950">{lead.email}</td>
+                      <td className="px-5 py-4 text-slate-600">{packLabels[lead.interestedPack] ?? lead.interestedPack}</td>
+                      <td className="px-5 py-4 text-slate-500">{lead.source}</td>
+                      <td className="px-5 py-4">
+                        <Badge variant={lead.status === "converted" ? "success" : "muted"}>{lead.status}</Badge>
+                      </td>
+                      <td className="px-5 py-4 text-slate-500">
+                        {lead.createdAt ? new Date(lead.createdAt).toLocaleString("zh-HK") : "-"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <div className="h-fit rounded-2xl border border-slate-200 bg-white p-5">
+            <h2 className="text-lg font-semibold text-slate-950">线索来源</h2>
+            <p className="mt-1 text-sm leading-6 text-slate-500">用来判断哪篇教程、首页或产品页更值得继续加内容。</p>
+            <div className="mt-5 space-y-3">
+              {sourceRows.map((row) => (
+                <div key={row.source} className="rounded-2xl border border-slate-100 bg-slate-50 p-3">
+                  <div className="break-all text-sm font-semibold text-slate-800">{row.source}</div>
+                  <div className="mt-1 text-2xl font-bold text-slate-950">{row.count}</div>
+                </div>
+              ))}
+            </div>
           </div>
-        </section>
+        </div>
       )}
     </main>
   );

@@ -30,7 +30,7 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
         </div>
         <h2 className="mt-4 text-lg font-bold text-slate-950">压缩包已出现，可以下载</h2>
         <p className="mt-3 text-sm leading-7 text-slate-600">
-          下载链接由付款核对码解锁，请不要公开分享。后续如需要安装支持，请继续通过微信联系。
+          下载链接由付款核对码解锁，请不要公开分享。后续如需要使用支持，请继续通过微信联系。
         </p>
         <a href={downloadHref} className={buttonStyles({ size: "lg", className: "mt-6 w-full rounded-full" })}>
           下载 {product.downloadName}
@@ -56,7 +56,7 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
         {!qrFailed ? (
           <img
             src={product.paymentQrImage}
-            alt={`${product.title} 微信收款码`}
+            alt={product.paymentImageAlt || `${product.title} 微信二维码`}
             className="mx-auto aspect-square w-full max-w-64 rounded-xl bg-white object-contain"
             onError={() => setQrFailed(true)}
           />
@@ -68,6 +68,9 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
             </p>
           </div>
         )}
+        {product.paymentImageCaption ? (
+          <div className="mt-3 text-center text-xs font-semibold text-slate-500">{product.paymentImageCaption}</div>
+        ) : null}
       </div>
 
       <div className="mt-5 grid gap-3 rounded-2xl border border-violet-100 bg-violet-50 p-4">
@@ -75,19 +78,19 @@ export function ProductPurchaseBox({ product, unlocked, unlockEnabled, downloadH
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             1
           </span>
-          <span>先加客服微信，确认你的 Mac 和 Codex 情况</span>
+          <span>{product.purchaseStepOne || "先加客服微信，确认产品内容和交付方式"}</span>
         </div>
         <div className="flex gap-3 text-sm leading-6 text-slate-700">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             2
           </span>
-          <span>确认无误后，扫码付款 {product.priceLabel}</span>
+          <span>{product.purchaseStepTwo || `确认无误后，扫码付款 ${product.priceLabel}`}</span>
         </div>
         <div className="flex gap-3 text-sm leading-6 text-slate-700">
           <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-violet-600 text-xs font-bold text-white">
             3
           </span>
-          <span>客服确认收款后发送下载码，在本页输入即可下载 ZIP</span>
+          <span>{product.purchaseStepThree || "客服确认收款后发送下载码，在本页输入即可下载文件"}</span>
         </div>
       </div>
 

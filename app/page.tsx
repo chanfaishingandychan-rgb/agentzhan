@@ -6,7 +6,9 @@ import { HeroNewsPanel } from "@/components/hero-news-panel";
 import { PluginIcon } from "@/components/plugin-icon";
 import { PromptCard } from "@/components/prompt-card";
 import { SectionHeader } from "@/components/section-header";
+import { TrackedLink } from "@/components/tracked-link";
 import { getAllCollections } from "@/lib/collections";
+import { getFeaturedGuides } from "@/lib/guides";
 import { industries } from "@/lib/industries";
 import { learnTasks } from "@/lib/learn";
 import { getLatestAiNewsForSite } from "@/lib/news";
@@ -26,6 +28,7 @@ const premiumPacks = [
     accent: "from-rose-500 to-violet-600",
     cover: "小红书\n30天内容包",
     image: "/pack-xiaohongshu.svg",
+    href: "/free-ai-pack",
   },
   {
     title: "电商成交 Prompt 包",
@@ -35,15 +38,17 @@ const premiumPacks = [
     accent: "from-amber-500 to-orange-600",
     cover: "电商成交\n话术包",
     image: "/pack-ecommerce.svg",
+    href: "/free-ai-pack",
   },
   {
     title: "AI 办公提效 Prompt 包",
     desc: "会议纪要、周报、邮件、数据分析、SOP 文档，职场人每天都能复用。",
     price: "¥29.9",
-    tag: "即将推出",
+    tag: "已上线",
     accent: "from-blue-500 to-cyan-500",
     cover: "办公提效\n模板包",
     image: "/pack-office.svg",
+    href: "/products/ai-office-prompt-pack",
   },
 ];
 
@@ -180,6 +185,7 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   const latestPrompts = await getLatestPromptsForSite(4);
+  const featuredGuides = getFeaturedGuides(4);
   const hotTags = getHotTags(16);
   const topCollections = getAllCollections().slice(0, 5);
   const latestNews = await getLatestAiNewsForSite(4);
@@ -215,33 +221,27 @@ export default async function HomePage() {
             </p>
 
             <div className="mt-8 grid max-w-xl gap-3 sm:grid-cols-2">
-              <Link
-                href="/learn"
-                className="inline-flex h-14 items-center justify-center rounded-full bg-gradient-to-r from-rose-500 to-violet-600 px-8 text-base font-bold text-white shadow-[0_12px_36px_rgba(225,29,72,0.32)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_16px_44px_rgba(225,29,72,0.42)] sm:col-span-2"
+              <TrackedLink
+                href="/start-here"
+                eventName="hero-start-here"
+                className="inline-flex h-14 items-center justify-center rounded-full bg-white px-8 text-base font-bold text-slate-950 shadow-[0_12px_36px_rgba(255,255,255,0.12)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-100 sm:col-span-2"
               >
-                AI新手每日任务：从第 1 天开始
-              </Link>
-              <Link
-                href="/skills"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-white/20 bg-white px-7 text-sm font-semibold text-slate-950 transition-all duration-200 hover:-translate-y-0.5 hover:bg-slate-100"
+                AI 新手从这里开始
+              </TrackedLink>
+              <TrackedLink
+                href="/free-ai-pack"
+                eventName="hero-free-pack"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-rose-300/40 bg-rose-500/15 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-rose-300/60 hover:bg-rose-500/25"
               >
-                查看插件库
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-              </Link>
-              <Link
-                href="/consulting#wechat-consulting"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-white/30 hover:bg-white/10"
+                免费领 AI 工作包
+              </TrackedLink>
+              <TrackedLink
+                href="/products/agentzhan-original-skills"
+                eventName="hero-paid-skills"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-violet-300/40 bg-violet-500/15 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:border-violet-300/60 hover:bg-violet-500/25"
               >
-                微信咨询 AI 服务
-              </Link>
-              <Link
-                href="/community"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-violet-300/30 bg-violet-500/15 px-7 text-sm font-semibold text-white backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:bg-violet-500/25 sm:col-span-2"
-              >
-                进入 AI討論區
-              </Link>
+                查看付费 Skill
+              </TrackedLink>
             </div>
 
           </div>
@@ -336,6 +336,49 @@ export default async function HomePage() {
                 ))}
               </div>
             </Link>
+          </div>
+        </div>
+      </section>
+
+      <section id="guides" className="border-b border-slate-200 bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+            <SectionHeader
+              eyebrow="AI教程"
+              title="用教程内容长期吸引搜索流量"
+              description="围绕 ChatGPT、DeepSeek、AI办公、内容运营和工作流，整理可长期复用的实战教学。"
+            />
+            <Link
+              href="/guides"
+              className="inline-flex h-11 shrink-0 items-center justify-center rounded-full bg-slate-950 px-6 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+            >
+              查看全部教程
+            </Link>
+          </div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            {featuredGuides.map((guide) => (
+              <Link
+                key={guide.slug}
+                href={`/guides/${guide.slug}`}
+                className="group flex min-h-[18rem] flex-col rounded-3xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:bg-white hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
+              >
+                <div className="flex flex-wrap gap-2">
+                  <span className="rounded-full bg-violet-50 px-2.5 py-1 text-xs font-semibold text-violet-700">
+                    {guide.category}
+                  </span>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-slate-500">
+                    {guide.readingTime}
+                  </span>
+                </div>
+                <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-950 group-hover:text-violet-700">
+                  {guide.shortTitle}
+                </h3>
+                <p className="mt-3 line-clamp-4 text-sm leading-7 text-slate-600">{guide.description}</p>
+                <div className="mt-auto border-t border-slate-200 pt-4 text-sm font-semibold text-violet-600">
+                  阅读教程 →
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -624,6 +667,12 @@ export default async function HomePage() {
                 >
                   搜索 Prompt
                 </Link>
+                <Link
+                  href="/novels"
+                  className="inline-flex h-10 items-center rounded-full border border-violet-200 bg-white px-5 text-sm font-semibold text-violet-700 transition hover:bg-violet-50"
+                >
+                  AI小说入口
+                </Link>
               </div>
             </div>
           </div>
@@ -689,6 +738,59 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="border-y border-slate-200 bg-white py-16 lg:py-24">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+            <div className="flex flex-col justify-center">
+              <div className="mb-4 inline-flex w-fit rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-xs font-semibold text-violet-700">
+                示例中心
+              </div>
+              <h2 className="text-3xl font-extrabold tracking-tight text-slate-950 sm:text-4xl">
+                先看 AI 能把乱资料变成什么结果
+              </h2>
+              <p className="mt-4 text-base leading-8 text-slate-600">
+                我们把办公、内容和客服三个场景做成前后对比。你可以先看输入和输出，再决定要不要买 Skill 包。
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  href="/examples"
+                  className="inline-flex h-12 items-center rounded-full bg-slate-950 px-7 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+                >
+                  查看示例中心
+                </Link>
+                <Link
+                  href="/products/agentzhan-original-skills"
+                  className="inline-flex h-12 items-center rounded-full border border-slate-200 bg-white px-7 text-sm font-semibold text-violet-700 transition hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50"
+                >
+                  查看 Skill 包
+                </Link>
+              </div>
+            </div>
+            <div className="grid gap-4">
+              {[
+                ["AI办公", "乱会议记录 → 正式会议纪要"],
+                ["内容引流", "普通选题 → 小红书标题和正文"],
+                ["客服成交", "客户投诉 → 稳妥客服回复"],
+              ].map(([label, title]) => (
+                <Link
+                  key={label}
+                  href="/examples"
+                  className="group rounded-3xl border border-slate-200 bg-slate-50 p-5 transition hover:-translate-y-1 hover:border-violet-200 hover:bg-white hover:shadow-[0_18px_56px_rgba(15,23,42,0.10)]"
+                >
+                  <div className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-semibold text-violet-700 shadow-sm">
+                    {label}
+                  </div>
+                  <h3 className="mt-4 text-xl font-bold tracking-tight text-slate-950 group-hover:text-violet-700">
+                    {title}
+                  </h3>
+                  <div className="mt-4 text-sm font-semibold text-violet-600">看前后对比 →</div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-white py-16 lg:py-24">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <SectionHeader
@@ -699,8 +801,9 @@ export default async function HomePage() {
           />
           <div className="mx-auto grid max-w-5xl gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {premiumPacks.map((pack) => (
-              <div
+              <Link
                 key={pack.title}
+                href={pack.href}
                 className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:border-violet-200 hover:shadow-lg"
               >
                 <Image
@@ -717,8 +820,11 @@ export default async function HomePage() {
                   <span className="text-xl font-bold text-slate-900">{pack.price}</span>
                   <span className="text-xs text-slate-400">/ 一次性购买</span>
                 </div>
+                <div className="mt-4 text-sm font-semibold text-violet-600">
+                  {pack.tag === "已上线" ? "查看并购买 →" : "先领取免费版 →"}
+                </div>
                 <div className="absolute bottom-0 left-0 h-0.5 w-0 bg-gradient-to-r from-violet-500 to-blue-500 transition-all duration-300 group-hover:w-full" />
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -807,6 +913,12 @@ export default async function HomePage() {
             ))}
           </div>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/services/chatgpt-setup"
+              className="inline-flex h-12 items-center rounded-full bg-white px-8 text-sm font-semibold text-slate-950 transition hover:-translate-y-0.5 hover:bg-violet-50"
+            >
+              ChatGPT 安装与设置
+            </Link>
             <Link
               href="/consulting#wechat-consulting"
               className="inline-flex h-12 items-center gap-2 rounded-full bg-gradient-to-r from-violet-600 to-blue-600 px-8 text-sm font-semibold text-white shadow-[0_8px_32px_rgba(124,58,237,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_40px_rgba(124,58,237,0.45)]"

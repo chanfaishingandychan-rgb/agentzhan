@@ -2,20 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 
+import { MobileNav } from "@/components/mobile-nav";
 import { buttonStyles } from "@/components/ui/button";
+import { primaryNavItems } from "@/lib/navigation";
 import { categories, siteConfig } from "@/lib/site";
-
-const navItems = [
-  { label: "AI插件", href: "/skills" },
-  { label: "AI資訊", href: "/news" },
-  { label: "AI學習", href: "/learn" },
-  { label: "AI討論區", href: "/community" },
-  { label: "AI咨询", href: "/consulting" },
-  { label: "搜索", href: "/search" },
-  { label: "合集", href: "/collections" },
-  { label: "最新", href: "/#latest" },
-  { label: "行业", href: "/#industries" },
-];
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
@@ -37,7 +27,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
           {/* Desktop nav */}
           <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-slate-50/80 p-1 text-sm text-slate-600 lg:flex">
-            {navItems.map((item) => (
+            {primaryNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -46,18 +36,13 @@ export function SiteShell({ children }: { children: ReactNode }) {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href={`/category/${categories[0].slug}`}
-              className="rounded-full px-3 py-2 transition hover:bg-white hover:text-slate-950 hover:shadow-sm"
-            >
-              {categories[0].name}
-            </Link>
           </nav>
 
           <div className="flex items-center gap-2">
             <Link href="/consulting" className={buttonStyles({ variant: "outline", size: "sm" })}>
               咨询
             </Link>
+            <MobileNav />
           </div>
         </div>
       </header>
@@ -92,12 +77,14 @@ export function SiteShell({ children }: { children: ReactNode }) {
             <div className="text-sm font-semibold text-slate-950">平台能力</div>
             <div className="mt-3 space-y-2 text-sm text-slate-500">
               <Link href="/skills" className="transition hover:text-violet-600">AI 插件库</Link>
+              <Link href="/guides" className="block transition hover:text-violet-600">AI教程</Link>
+              <Link href="/novels" className="block transition hover:text-violet-600">AI小说</Link>
               <Link href="/#industries" className="block transition hover:text-violet-600">行业 Prompt</Link>
               <Link href="/news" className="block transition hover:text-violet-600">AI 最新資訊</Link>
               <Link href="/learn" className="block transition hover:text-violet-600">AI新手学习</Link>
               <Link href="/community" className="block transition hover:text-violet-600">AI討論區</Link>
               <Link href="/consulting" className="block transition hover:text-violet-600">AI 咨询服务</Link>
-              <div>工作包</div>
+              <Link href="/free-ai-pack" className="block transition hover:text-violet-600">免费工作包</Link>
               <div>網站索引</div>
             </div>
           </div>

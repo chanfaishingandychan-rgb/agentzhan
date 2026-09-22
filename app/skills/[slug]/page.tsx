@@ -347,6 +347,20 @@ export default async function SkillDetailPage({ params }: SkillPageProps) {
               ))}
             </div>
           </div>
+
+          <Link
+            href="/products/ai-skill-install-service"
+            className="mt-5 block rounded-3xl border border-violet-200 bg-gradient-to-br from-violet-50 via-white to-blue-50 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-violet-300"
+          >
+            <div className="text-sm font-semibold text-violet-700">不会安装？</div>
+            <div className="mt-2 text-lg font-bold text-slate-950">AI Skill 插件代安装</div>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              先确认你的工具和需求，再协助连接插件、测试流程，并交付使用说明。
+            </p>
+            <div className="mt-4 inline-flex rounded-full bg-slate-950 px-4 py-2 text-sm font-semibold text-white">
+              ¥68 起咨询 →
+            </div>
+          </Link>
         </aside>
       </section>
     </main>

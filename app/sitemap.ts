@@ -1,9 +1,13 @@
 import type { MetadataRoute } from "next";
 
 import { getAllCollections } from "@/lib/collections";
+import { exampleCases } from "@/lib/examples";
+import { getAllGuides } from "@/lib/guides";
 import { industries } from "@/lib/industries";
 import { learnTasks } from "@/lib/learn";
 import { getLatestAiNewsForSite } from "@/lib/news";
+import { getAllNovels } from "@/lib/novels";
+import { originalSkillProducts } from "@/lib/original-skill-products";
 import { getAllPrompts } from "@/lib/prompts";
 import { allSkills } from "@/lib/skills";
 import { categories, siteConfig } from "@/lib/site";
@@ -37,6 +41,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.75,
   }));
 
+  const guideEntries = getAllGuides().map((guide) => ({
+    url: `${siteConfig.url}/guides/${guide.slug}`,
+    lastModified: guide.updatedAt,
+    changeFrequency: "monthly" as const,
+    priority: 0.83,
+  }));
+
   const skillEntries = allSkills.map((skill) => ({
     url: `${siteConfig.url}/skills/${skill.slug}`,
     lastModified: new Date().toISOString(),
@@ -49,6 +60,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${siteConfig.url}/learn/${task.slug}`,
     lastModified: new Date().toISOString(),
     changeFrequency: "weekly" as const,
+    priority: 0.82,
+  }));
+  const novelEntries = getAllNovels().flatMap((novel) => [
+    {
+      url: `${siteConfig.url}/novels/${novel.slug}`,
+      lastModified: novel.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.78,
+    },
+  ]);
+  const originalSkillProductEntries = originalSkillProducts.map((product) => ({
+    url: `${siteConfig.url}${product.path}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly" as const,
+    priority: 0.86,
+  }));
+  const exampleEntries = exampleCases.map((example) => ({
+    url: `${siteConfig.url}/examples/${example.slug}`,
+    lastModified: new Date().toISOString(),
+    changeFrequency: "monthly" as const,
     priority: 0.82,
   }));
 
@@ -65,6 +96,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.6,
     },
+    {
+      url: `${siteConfig.url}/start-here`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.92,
+    },
+    {
+      url: `${siteConfig.url}/examples`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    ...exampleEntries,
     {
       url: `${siteConfig.url}/skills`,
       lastModified: new Date().toISOString(),
@@ -84,6 +128,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.88,
     },
     {
+      url: `${siteConfig.url}/guides`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${siteConfig.url}/free-ai-pack`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
       url: `${siteConfig.url}/collections`,
       lastModified: new Date().toISOString(),
       changeFrequency: "weekly",
@@ -96,10 +152,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.82,
     },
     {
+      url: `${siteConfig.url}/services/chatgpt-setup`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
+    {
       url: `${siteConfig.url}/community`,
       lastModified: new Date().toISOString(),
       changeFrequency: "daily",
       priority: 0.82,
+    },
+    {
+      url: `${siteConfig.url}/novels`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "weekly",
+      priority: 0.84,
     },
     {
       url: `${siteConfig.url}/products/codex-deepseek-mac-installer`,
@@ -107,8 +175,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.86,
     },
+    {
+      url: `${siteConfig.url}/products/ai-office-prompt-pack`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
+    {
+      url: `${siteConfig.url}/products/ai-skill-install-service`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
+    {
+      url: `${siteConfig.url}/products/agentzhan-original-skills`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
+    {
+      url: `${siteConfig.url}/products/agentzhan-website-operator-skill`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "monthly",
+      priority: 0.86,
+    },
+    ...originalSkillProductEntries,
     ...skillEntries,
+    ...guideEntries,
     ...learnEntries,
+    ...novelEntries,
     ...newsEntries,
     ...collectionEntries,
     ...industryEntries,

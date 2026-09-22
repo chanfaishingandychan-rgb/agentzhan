@@ -79,32 +79,87 @@ export default function SkillsPage() {
 
       <section className="border-b border-slate-200 bg-white py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <Link
-            href="/products/codex-deepseek-mac-installer"
-            className="group grid gap-6 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-blue-50 p-6 shadow-[0_18px_56px_rgba(124,58,237,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_24px_72px_rgba(79,70,229,0.16)] lg:grid-cols-[1fr_220px]"
-          >
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="premium">付费工具包</Badge>
-                <Badge variant="violet">Mac 专用</Badge>
-                <Badge variant="blue">Codex × DeepSeek</Badge>
+          <div className="grid gap-5 lg:grid-cols-3">
+            <Link
+              href="/products/agentzhan-original-skills"
+              className="group grid gap-6 overflow-hidden rounded-3xl border border-rose-200 bg-gradient-to-br from-white via-rose-50 to-violet-50 p-6 shadow-[0_18px_56px_rgba(225,29,72,0.10)] transition-all duration-300 hover:-translate-y-1 hover:border-rose-300 hover:shadow-[0_24px_72px_rgba(225,29,72,0.14)]"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="premium">Agent站原创</Badge>
+                  <Badge variant="violet">可复制 Skill</Badge>
+                </div>
+                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
+                  自制 AI Skill 包
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+                  网站经营、小说连载、小红书内容、客服知识库、Prompt 产品化和线索跟进，按场景购买。
+                </p>
               </div>
-              <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
-                Mac Codex 接入 DeepSeek 自助安装包
-              </h2>
-              <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
-                为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。想接入 Kimi、GLM、Claude、Gemini 或其他模型，也可以联系我们评估。
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm">
-              <div className="text-xs font-semibold text-slate-500">首批试用价</div>
-              <div className="mt-2 text-4xl font-black text-slate-950">¥98</div>
-              <div className="mt-1 text-xs text-slate-500">一次性工具包</div>
-              <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
-                查看详情 →
+              <div className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm">
+                <div className="text-xs font-semibold text-slate-500">首批价格</div>
+                <div className="mt-2 text-4xl font-black text-slate-950">¥69 起</div>
+                <div className="mt-1 text-xs text-slate-500">单个 Skill 包</div>
+                <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
+                  查看原创 Skill →
+                </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+
+            <Link
+              href="/products/ai-skill-install-service"
+              className="group grid gap-6 overflow-hidden rounded-3xl border border-violet-200 bg-gradient-to-br from-white via-violet-50 to-blue-50 p-6 shadow-[0_18px_56px_rgba(124,58,237,0.12)] transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_24px_72px_rgba(79,70,229,0.16)]"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="premium">Skill 售卖</Badge>
+                  <Badge variant="violet">插件代安装</Badge>
+                  <Badge variant="blue">工作流配置</Badge>
+                </div>
+                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
+                  AI Skill 插件代安装服务
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+                  帮用户确认需求、连接插件、测试流程并交付使用说明。适合 Notion、Gmail、Drive、GitHub、Vercel、Supabase 等工具。
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/80 bg-white/90 p-5 shadow-sm">
+                <div className="text-xs font-semibold text-slate-500">服务价</div>
+                <div className="mt-2 text-4xl font-black text-slate-950">¥68 起</div>
+                <div className="mt-1 text-xs text-slate-500">先微信确认需求</div>
+                <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
+                  查看服务 →
+                </div>
+              </div>
+            </Link>
+
+            <Link
+              href="/products/codex-deepseek-mac-installer"
+              className="group grid gap-6 overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-violet-300 hover:shadow-[0_24px_72px_rgba(79,70,229,0.12)]"
+            >
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="premium">付费工具包</Badge>
+                  <Badge variant="violet">Mac 专用</Badge>
+                  <Badge variant="blue">Codex × DeepSeek</Badge>
+                </div>
+                <h2 className="mt-4 text-2xl font-extrabold tracking-tight text-slate-950">
+                  Mac Codex 接入 DeepSeek 自助安装包
+                </h2>
+                <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">
+                  为 Mac Codex 增加 DeepSeek Flash / Pro 两个独立入口，保留原本 GPT 设置。也可微信评估其他模型接入。
+                </p>
+              </div>
+              <div className="rounded-2xl border border-slate-100 bg-slate-50 p-5">
+                <div className="text-xs font-semibold text-slate-500">首批试用价</div>
+                <div className="mt-2 text-4xl font-black text-slate-950">¥98</div>
+                <div className="mt-1 text-xs text-slate-500">一次性工具包</div>
+                <div className="mt-4 text-sm font-semibold text-violet-700 transition group-hover:translate-x-0.5">
+                  查看详情 →
+                </div>
+              </div>
+            </Link>
+          </div>
         </div>
       </section>
 

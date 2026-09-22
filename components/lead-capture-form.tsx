@@ -10,7 +10,7 @@ const packOptions = [
   { value: "enterprise-ai-workflow", label: "企业 AI 工作流方案" },
 ];
 
-export function LeadCaptureForm() {
+export function LeadCaptureForm({ source = "homepage-free-pack" }: { source?: string }) {
   const [email, setEmail] = useState("");
   const [interestedPack, setInterestedPack] = useState("free-prompt-pack");
   const [submitted, setSubmitted] = useState(false);
@@ -33,7 +33,7 @@ export function LeadCaptureForm() {
         body: JSON.stringify({
           email: email.trim(),
           interestedPack,
-          source: "homepage-free-pack",
+          source,
         }),
       });
 

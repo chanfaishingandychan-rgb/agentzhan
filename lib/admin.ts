@@ -99,12 +99,28 @@ export type TrafficDashboardStats = {
   last24hViews: number;
   last7dViews: number;
   uniqueVisitors7d: number;
+  humanTodayViews: number;
+  humanLast24hViews: number;
+  humanLast7dViews: number;
+  humanUniqueVisitors7d: number;
+  botLast7dViews: number;
   topPages: TrafficPageRow[];
+  humanTopPages: TrafficPageRow[];
   referrers: TrafficMetricRow[];
+  humanReferrers: TrafficMetricRow[];
   devices: TrafficMetricRow[];
   countries: TrafficMetricRow[];
+  humanCountries: TrafficMetricRow[];
   recentViews: TrafficRecentView[];
+  humanRecentViews: TrafficRecentView[];
   sampleLimited: boolean;
+};
+
+export type ConversionMetricRow = {
+  eventName: string;
+  clicks: number;
+  visitors: number;
+  lastClickedAt: string;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -421,11 +437,20 @@ function emptyTrafficStats(status: TrafficDashboardStats["status"]): TrafficDash
     last24hViews: 0,
     last7dViews: 0,
     uniqueVisitors7d: 0,
+    humanTodayViews: 0,
+    humanLast24hViews: 0,
+    humanLast7dViews: 0,
+    humanUniqueVisitors7d: 0,
+    botLast7dViews: 0,
     topPages: [],
+    humanTopPages: [],
     referrers: [],
+    humanReferrers: [],
     devices: [],
     countries: [],
+    humanCountries: [],
     recentViews: [],
+    humanRecentViews: [],
     sampleLimited: false,
   };
 }
@@ -488,6 +513,18 @@ function topMetricRows(counter: Map<string, number>, limit: number): TrafficMetr
     .slice(0, limit);
 }
 
+function isHumanTrafficRow(row: SupabaseRow) {
+  return row.device_type !== "bot" && row.is_bot !== true;
+}
+
+function uniqueVisitorCount(rows: SupabaseRow[]) {
+  return new Set(
+    rows.map((row) =>
+      typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`,
+    ),
+  ).size;
+}
+
 function buildTrafficStatsFromRows(
   rows: SupabaseRow[],
   options: {
@@ -498,52 +535,67 @@ function buildTrafficStatsFromRows(
     storageMode: TrafficDashboardStats["storageMode"];
   },
 ): TrafficDashboardStats {
-  const pageMap = new Map<string, { title: string; views: number; visitors: Set<string> }>();
-  const referrerMap = new Map<string, number>();
-  const deviceMap = new Map<string, number>();
-  const countryMap = new Map<string, number>();
-  const visitors = new Set<string>();
+  function buildBreakdown(sourceRows: SupabaseRow[], recentLimit: number) {
+    const pageMap = new Map<string, { title: string; views: number; visitors: Set<string> }>();
+    const referrerMap = new Map<string, number>();
+    const deviceMap = new Map<string, number>();
+    const countryMap = new Map<string, number>();
+    const visitors = new Set<string>();
 
-  rows.forEach((row) => {
-    const path = typeof row.path === "string" && row.path ? row.path : "/";
-    const title = typeof row.title === "string" && row.title ? row.title : path;
-    const visitor = typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`;
-    const page = pageMap.get(path) ?? { title, views: 0, visitors: new Set<string>() };
+    sourceRows.forEach((row) => {
+      const path = typeof row.path === "string" && row.path ? row.path : "/";
+      const title = typeof row.title === "string" && row.title ? row.title : path;
+      const visitor = typeof row.visitor_id === "string" && row.visitor_id ? row.visitor_id : `view:${row.id}`;
+      const page = pageMap.get(path) ?? { title, views: 0, visitors: new Set<string>() };
 
-    page.views += 1;
-    page.visitors.add(visitor);
-    pageMap.set(path, page);
-    visitors.add(visitor);
+      page.views += 1;
+      page.visitors.add(visitor);
+      pageMap.set(path, page);
+      visitors.add(visitor);
 
-    const referrer = normalizeReferrer(row.referrer);
-    referrerMap.set(referrer, (referrerMap.get(referrer) ?? 0) + 1);
+      const referrer = normalizeReferrer(row.referrer);
+      referrerMap.set(referrer, (referrerMap.get(referrer) ?? 0) + 1);
 
-    const device = normalizeDevice(row.device_type);
-    deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
+      const device = normalizeDevice(row.device_type);
+      deviceMap.set(device, (deviceMap.get(device) ?? 0) + 1);
 
-    const country = normalizeCountry(row.country);
-    countryMap.set(country, (countryMap.get(country) ?? 0) + 1);
-  });
+      const country = normalizeCountry(row.country);
+      countryMap.set(country, (countryMap.get(country) ?? 0) + 1);
+    });
 
-  const topPages = Array.from(pageMap.entries())
-    .map(([path, row]) => ({
-      path,
-      title: row.title,
-      views: row.views,
-      visitors: row.visitors.size,
-    }))
-    .sort((a, b) => b.views - a.views)
-    .slice(0, 10);
+    const topPages = Array.from(pageMap.entries())
+      .map(([path, row]) => ({
+        path,
+        title: row.title,
+        views: row.views,
+        visitors: row.visitors.size,
+      }))
+      .sort((a, b) => b.views - a.views)
+      .slice(0, 10);
 
-  const recentViews = rows.slice(0, 50).map((row) => ({
-    id: String(row.id),
-    path: typeof row.path === "string" && row.path ? row.path : "/",
-    title: typeof row.title === "string" && row.title ? row.title : row.path ?? "/",
-    referrer: normalizeReferrer(row.referrer),
-    deviceType: normalizeDevice(row.device_type),
-    country: normalizeCountry(row.country),
-    createdAt: row.created_at ?? "",
-  }));
+    const recentViews = sourceRows.slice(0, recentLimit).map((row) => ({
+      id: String(row.id),
+      path: typeof row.path === "string" && row.path ? row.path : "/",
+      title: typeof row.title === "string" && row.title ? row.title : row.path ?? "/",
+      referrer: normalizeReferrer(row.referrer),
+      deviceType: normalizeDevice(row.device_type),
+      country: normalizeCountry(row.country),
+      createdAt: row.created_at ?? "",
+    }));
+
+    return {
+      topPages,
+      referrers: topMetricRows(referrerMap, 8),
+      devices: topMetricRows(deviceMap, 5),
+      countries: topMetricRows(countryMap, 8),
+      recentViews,
+      uniqueVisitors: visitors.size,
+    };
+  }
+
+  const humanRows = rows.filter(isHumanTrafficRow);
+  const allBreakdown = buildBreakdown(rows, 50);
+  const humanBreakdown = buildBreakdown(humanRows, 50);
 
   return {
     status: "ready",
@@ -551,12 +603,21 @@ function buildTrafficStatsFromRows(
     todayViews: rows.filter((row) => row.created_at >= options.todayStart).length,
     last24hViews: rows.filter((row) => row.created_at >= options.last24hStart).length,
     last7dViews: options.count ?? rows.length,
-    uniqueVisitors7d: visitors.size,
-    topPages,
-    referrers: topMetricRows(referrerMap, 8),
-    devices: topMetricRows(deviceMap, 5),
-    countries: topMetricRows(countryMap, 8),
-    recentViews,
+    uniqueVisitors7d: allBreakdown.uniqueVisitors,
+    humanTodayViews: humanRows.filter((row) => row.created_at >= options.todayStart).length,
+    humanLast24hViews: humanRows.filter((row) => row.created_at >= options.last24hStart).length,
+    humanLast7dViews: humanRows.length,
+    humanUniqueVisitors7d: uniqueVisitorCount(humanRows),
+    botLast7dViews: rows.filter((row) => !isHumanTrafficRow(row)).length,
+    topPages: allBreakdown.topPages,
+    humanTopPages: humanBreakdown.topPages,
+    referrers: allBreakdown.referrers,
+    humanReferrers: humanBreakdown.referrers,
+    devices: allBreakdown.devices,
+    countries: allBreakdown.countries,
+    humanCountries: humanBreakdown.countries,
+    recentViews: allBreakdown.recentViews,
+    humanRecentViews: humanBreakdown.recentViews,
     sampleLimited: Boolean(options.count && options.count > options.limit),
   };
 }
@@ -601,6 +662,7 @@ async function getTrafficStatsFromGenerationLogs(
       visitor_id: details.visitor_id,
       device_type: details.device_type,
       country: details.country,
+      is_bot: details.is_bot,
       created_at: row.run_time,
     };
   });
@@ -626,7 +688,7 @@ export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDash
   try {
     const { data, error, count } = await client
       .from("page_views")
-      .select("id,path,title,referrer,visitor_id,device_type,country,created_at", { count: "exact" })
+      .select("id,path,title,referrer,visitor_id,device_type,is_bot,country,created_at", { count: "exact" })
       .gte("created_at", last7dStart)
       .order("created_at", { ascending: false })
       .limit(limit);
@@ -661,6 +723,57 @@ export async function getSupabaseTrafficStats(limit = 5000): Promise<TrafficDash
     if (fallback) return fallback;
     return emptyTrafficStats("error");
   }
+}
+
+export async function getSupabaseConversionStats(limit = 1000): Promise<ConversionMetricRow[]> {
+  const client = createServiceClient();
+  if (!client) return [];
+
+  const last7dStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await client
+    .from("ai_generation_logs")
+    .select("id,run_time,error_message")
+    .eq("summary", "conversion_event")
+    .gte("run_time", last7dStart)
+    .order("run_time", { ascending: false })
+    .limit(limit);
+
+  if (error || !data) return [];
+
+  const counters = new Map<string, { clicks: number; visitors: Set<string>; lastClickedAt: string }>();
+  data.forEach((row: SupabaseRow) => {
+    if (typeof row.error_message !== "string") return;
+
+    try {
+      const details = JSON.parse(row.error_message) as SupabaseRow;
+      const eventName = typeof details.event_name === "string" ? details.event_name : "";
+      if (!eventName) return;
+
+      const current = counters.get(eventName) ?? {
+        clicks: 0,
+        visitors: new Set<string>(),
+        lastClickedAt: row.run_time ?? "",
+      };
+      current.clicks += 1;
+      current.visitors.add(
+        typeof details.visitor_id === "string" && details.visitor_id
+          ? details.visitor_id
+          : `click:${row.id}`,
+      );
+      counters.set(eventName, current);
+    } catch {
+      return;
+    }
+  });
+
+  return Array.from(counters.entries())
+    .map(([eventName, value]) => ({
+      eventName,
+      clicks: value.clicks,
+      visitors: value.visitors.size,
+      lastClickedAt: value.lastClickedAt,
+    }))
+    .sort((a, b) => b.clicks - a.clicks);
 }
 
 /** Check if we have all env vars needed for Supabase write operations */

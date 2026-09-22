@@ -99,9 +99,15 @@ export default function ConsultingPage() {
               Agent站可以帮你选择模型、安装插件、整理 Prompt 和搭建工作流。适合 AI 新手、个人站长、小团队和中小企业。
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                href="/services/chatgpt-setup"
+                className="inline-flex h-12 items-center rounded-full bg-violet-600 px-7 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+              >
+                ChatGPT 安装协助
+              </Link>
               <a
                 href="#wechat-consulting"
-                className="inline-flex h-12 items-center rounded-full bg-slate-950 px-7 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-700"
+                className="inline-flex h-12 items-center rounded-full bg-slate-950 px-7 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-slate-800"
               >
                 扫码咨询
               </a>
