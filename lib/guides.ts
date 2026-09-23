@@ -224,6 +224,7 @@ export const guides: Guide[] = [
     ],
     related: [
       { title: "查看 Google Drive 工作流示例", href: "/examples/google-drive-project-files-to-weekly-update" },
+      { title: "ChatGPT 连接 Google Drive 教程", href: "/guides/chatgpt-connect-google-drive" },
       { title: "查看 Agent站 AI 插件库", href: "/skills" },
       { title: "AI 插件安装服务", href: "/products/ai-skill-install-service" },
       { title: "Google Drive 插件介绍", href: "/skills/google-drive-agent-plugin" },
@@ -329,6 +330,7 @@ export const guides: Guide[] = [
     ],
     related: [
       { title: "ChatGPT 插件安装与使用教程", href: "/guides/chatgpt-plugins-install-and-use" },
+      { title: "ChatGPT 连接 Google Drive 教程", href: "/guides/chatgpt-connect-google-drive" },
       { title: "浏览 AI 插件目录", href: "/skills" },
       { title: "AI 插件代安装服务", href: "/products/ai-skill-install-service" },
       { title: "Google Drive 项目文件周报案例", href: "/examples/google-drive-project-files-to-weekly-update" },
@@ -337,6 +339,117 @@ export const guides: Guide[] = [
       eyebrow: "仍然无法连接？",
       title: "AI 插件安装服务",
       description: "按你的账号环境检查插件选择、连接、权限和基础测试流程。",
+      href: "/products/ai-skill-install-service",
+      priceLabel: "查看安装服务 →",
+    },
+  },
+  {
+    slug: "chatgpt-connect-google-drive",
+    title: "ChatGPT 连接 Google Drive 怎么用：找文件、总结文档与生成周报",
+    shortTitle: "ChatGPT 连接 Google Drive",
+    description:
+      "从连接正确账号开始，学习用 ChatGPT 查找 Google Drive 文件、总结 Docs、分析 Sheets，并把项目资料整理成可检查的周报。",
+    category: "AI插件",
+    audience: "上班族、项目负责人、行政人员与小团队",
+    readingTime: "10 分钟",
+    updatedAt: "2026-09-23T00:00:00.000Z",
+    keywords: ["ChatGPT连接Google Drive", "ChatGPT读取Google Drive", "Google Drive AI", "ChatGPT总结文档", "AI自动生成周报"],
+    outcome: "完成一次范围清楚的 Google Drive 只读工作流，并知道什么时候需要额外权限或管理员协助。",
+    intro: [
+      "Google Drive 最实用的地方，不是让 ChatGPT 浏览整个云端硬盘，而是从指定文件和时间范围中找资料、做摘要、比较版本或整理周报。任务范围越清楚，结果越容易核对。",
+      "根据 OpenAI 当前官方说明，Google Docs、Sheets 和 Slides 的相关能力由 Google Drive App 提供。实际可用功能仍会受 ChatGPT 方案、地区、工作区设置、Google Workspace 政策和原始文件权限影响。",
+    ],
+    steps: [
+      {
+        title: "第一步：先选一个具体任务",
+        body: [
+          "不要一开始要求 ChatGPT 整理整个 Drive。先选择一个可以人工核对的小任务，例如找出最新项目计划、总结三份会议记录，或从指定进度表生成本周摘要。",
+          "写下文件夹、文件名称、日期范围和输出格式。涉及客户或公司资料时，先确认组织是否允许连接外部 AI 服务。",
+        ],
+      },
+      {
+        title: "第二步：连接真正拥有文件权限的账号",
+        body: [
+          "在 ChatGPT 显示的 Apps 或 Plugins 入口中找到 Google Drive，再按画面连接账号。不同界面的名称和位置可能不同，以账号内实际显示为准。",
+          "如果你同时使用个人和公司 Google 账号，必须选择本来就能打开目标文件的账号。连接不会替你取得原本没有的文件权限。",
+        ],
+      },
+      {
+        title: "第三步：先测试查找与读取",
+        body: [
+          "连接后先找一份非敏感文件，并要求 ChatGPT 回报文件名称、日期和主要内容。确认它找到正确来源后，再增加更多文件。",
+          "找不到文件时，依次检查 Google 账号、工作区、文件共享权限和管理员设置。不要靠不断重复授权碰运气。",
+        ],
+      },
+      {
+        title: "第四步：给出明确的资料范围",
+        body: [
+          "指令要说明资料来源、时间范围、筛选条件和不能猜测的项目。例如只查看「网站改版」文件夹内本周更新的会议记录和进度表。",
+          "要求每项结论标明来自哪份文件，并把缺少负责人、日期或数字的地方标成「待确认」。这样比只要一段流畅摘要更可靠。",
+        ],
+      },
+      {
+        title: "第五步：把资料整理成固定输出",
+        body: [
+          "项目周报可以固定为：本周完成、进行中、阻塞问题、负责人、截止日期和下周行动。文档比较则可固定为共同内容、差异、冲突和待确认问题。",
+          "第一次先让 ChatGPT 输出表格或项目符号，核对无误后才改写成对外邮件或正式报告。",
+        ],
+      },
+      {
+        title: "第六步：分清读取和修改权限",
+        body: [
+          "能打开文件不等于可以建立、更新、移动、分享或删除文件。写入动作需要相应 Google 权限，也可能被 ChatGPT 工作区管理员关闭。",
+          "先保留只读流程。确实需要修改时，要求 ChatGPT 先显示拟修改内容、目标文件和影响范围，得到人工确认后才执行。",
+        ],
+      },
+      {
+        title: "第七步：定期检查连接与资料范围",
+        body: [
+          "完成测试后，记录这套流程使用的账号、文件夹和输出格式。团队成员使用时，应各自确认自己拥有相同的原始权限。",
+          "项目结束或不再需要时，可在 ChatGPT 设置中检查并断开连接。普通个人连接与由管理员配置的工作区索引属于不同设置，应分别检查。",
+        ],
+      },
+    ],
+    prompt:
+      "请使用 Google Drive 协助整理项目资料。执行前先复述范围，不要自行扩大搜索位置。\n\n目标文件夹：\n指定文件名称或关键词：\n时间范围：\n任务：查找 / 总结 / 比较 / 生成周报\n输出格式：\n必须保留的数字或名称：\n\n请按以下顺序处理：\n1. 列出实际找到并准备读取的文件名称\n2. 标明每份文件的日期或版本\n3. 只根据这些文件整理事实\n4. 输出本周完成、进行中、阻塞问题、负责人、截止日期和下周行动\n5. 每项结论标明来源文件\n6. 缺少资料时写「待确认」，不要猜测\n7. 如果需要建立、修改、移动、分享或删除文件，先停止并等我确认",
+    checklist: [
+      "已选择一个具体而可核对的任务",
+      "已连接真正拥有文件权限的 Google 账号",
+      "已先用非敏感文件测试读取",
+      "指令已写明文件夹、日期和文件范围",
+      "输出已标明来源和待确认项目",
+      "写入动作执行前会再次人工确认",
+      "项目结束后会检查是否仍需保留连接",
+    ],
+    faqs: [
+      {
+        question: "连接 Google Drive 后，ChatGPT 会看到所有文件吗？",
+        answer: "它只能使用所连接 Google 账号原本有权访问、并且当前 App 与工作区设置允许访问的内容。不要把连接理解为绕过 Google 文件权限。",
+      },
+      {
+        question: "为什么可以读取文件，却不能修改？",
+        answer: "读取与写入需要不同权限。相关修改动作可能未获 Google 授权、未被工作区管理员开启，或暂时不受当前界面支持。",
+      },
+      {
+        question: "普通连接会自动同步整个 Drive 吗？",
+        answer: "按照 OpenAI 当前说明，普通个人账号连接提供即时访问，不等同建立个人同步索引。由管理员配置的 Google Drive 索引是另一套工作区功能。",
+      },
+      {
+        question: "公司 Google Drive 无法连接怎么办？",
+        answer: "先确认 ChatGPT 工作区已开启对应 App 与动作，再由 Google Workspace 管理员检查 OpenAI App 是否获信任及所需权限范围是否获批准。",
+      },
+    ],
+    related: [
+      { title: "Google Drive 项目资料生成周报案例", href: "/examples/google-drive-project-files-to-weekly-update" },
+      { title: "Google Drive Agent 插件介绍", href: "/skills/google-drive-agent-plugin" },
+      { title: "ChatGPT 插件安装与使用教程", href: "/guides/chatgpt-plugins-install-and-use" },
+      { title: "插件连接失败排查", href: "/guides/chatgpt-plugin-install-failed" },
+      { title: "OpenAI 官方 Google Drive 设置说明", href: "https://help.openai.com/en/articles/10929079-google-drive-app-and-setup-in-chatgpt" },
+    ],
+    productCta: {
+      eyebrow: "连接失败或权限太复杂？",
+      title: "AI 插件安装服务",
+      description: "协助检查账号、工作区和权限，并完成一次可核对的 Google Drive 工作流测试。",
       href: "/products/ai-skill-install-service",
       priceLabel: "查看安装服务 →",
     },
