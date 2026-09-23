@@ -179,7 +179,17 @@ export async function AgentMarketplacePage({ locale, searchParams }: { locale: A
                 <div className="hidden text-right text-xs text-neutral-500 sm:block">{number(product.clicks)}<br />{messages.clicks}</div>
                 <Link href={productHref(product, locale)} aria-label={`${messages.viewProduct}: ${product.name}`} className="flex h-9 w-9 items-center justify-center rounded-md text-neutral-500 hover:bg-neutral-100 hover:text-neutral-950 sm:hidden"><ArrowRight className="h-4 w-4" /></Link>
               </article>
-            )) : <p className="bg-white px-5 py-14 text-center text-sm text-neutral-500">{messages.noResults}</p>}
+            )) : (
+              <div className="bg-white px-5 py-12 text-center sm:py-14">
+                <h3 className="text-lg font-semibold text-neutral-950">{search || category ? messages.noResults : messages.emptyBoardTitle}</h3>
+                {!search && !category ? <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-neutral-600">{messages.emptyBoardDescription}</p> : null}
+                {!search && !category ? (
+                  <Link href={submitPath} className="mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-neutral-950 px-4 text-sm font-semibold text-white hover:bg-neutral-800">
+                    {messages.submit}<ArrowRight aria-hidden="true" className="h-4 w-4" />
+                  </Link>
+                ) : null}
+              </div>
+            )}
           </div>
           <p className="mt-4 text-xs leading-5 text-neutral-500">{messages.disclosure}</p>
         </div>
@@ -192,7 +202,7 @@ export async function AgentMarketplacePage({ locale, searchParams }: { locale: A
             <h2 className="mt-2 text-2xl font-semibold text-neutral-950">{messages.latest}</h2>
             <p className="mt-2 text-sm text-neutral-600">{messages.latestDescription}</p>
             <div className="mt-6 grid gap-px overflow-hidden rounded-lg border border-neutral-300 bg-neutral-300 sm:grid-cols-2">
-              {latest.map((product) => (
+              {latest.length ? latest.map((product) => (
                 <Link key={product.id} href={productHref(product, locale)} className="group min-h-52 bg-white p-5 hover:bg-neutral-50">
                   <div className="flex items-start justify-between gap-4">
                     <AgentLogo name={product.name} logoUrl={product.logoUrl} className="h-11 w-11" />
@@ -202,22 +212,41 @@ export async function AgentMarketplacePage({ locale, searchParams }: { locale: A
                   <p className="mt-2 line-clamp-2 text-sm leading-6 text-neutral-600">{product.tagline}</p>
                   <div className="mt-4 text-xs text-neutral-400">{categoryName(product.category, locale)}</div>
                 </Link>
-              ))}
+              )) : <p className="bg-white px-5 py-12 text-center text-sm text-neutral-500 sm:col-span-2">{messages.emptyLatest}</p>}
             </div>
           </div>
 
           <aside>
             <h2 className="border-b border-neutral-950 pb-3 text-sm font-semibold text-neutral-950">{messages.activity}</h2>
             <div className="divide-y divide-neutral-300">
-              {snapshot.activities.map((activity) => (
+              {snapshot.activities.length ? snapshot.activities.map((activity) => (
                 <div key={activity.id} className="py-4">
                   <div className="flex items-center justify-between gap-3 text-sm"><span className="font-semibold text-neutral-950">{activity.productName}</span><span className="font-mono text-emerald-700">+{money(activity.amountCents)}</span></div>
                   <div className="mt-1 flex items-center gap-1 text-xs text-neutral-400"><Clock3 aria-hidden="true" className="h-3 w-3" />{relativeTime(activity.createdAt, locale)}</div>
                 </div>
-              ))}
+              )) : <p className="py-5 text-sm leading-6 text-neutral-500">{messages.emptyActivity}</p>}
             </div>
             <Link href={submitPath} className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-neutral-950 underline decoration-neutral-400 underline-offset-4 hover:text-emerald-700">{messages.submit}<ArrowRight aria-hidden="true" className="h-4 w-4" /></Link>
           </aside>
+        </div>
+      </section>
+
+      <section className="border-b border-neutral-300 bg-white py-12 lg:py-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <h2 className="max-w-2xl text-2xl font-semibold text-neutral-950 sm:text-3xl">{messages.rankingGuideTitle}</h2>
+          <div className="mt-8 grid border-y border-neutral-300 sm:grid-cols-3">
+            {[
+              ["01", messages.freeListingTitle, messages.freeListingDescription],
+              ["02", messages.reviewTitle, messages.reviewDescription],
+              ["03", messages.rankingTitle, messages.rankingDescription],
+            ].map(([number, title, description], index) => (
+              <article key={number} className={`py-6 sm:px-6 sm:py-8 ${index > 0 ? "border-t border-neutral-300 sm:border-l sm:border-t-0" : "sm:pl-0"}`}>
+                <div className="font-mono text-xs text-emerald-700">{number}</div>
+                <h3 className="mt-4 text-lg font-semibold text-neutral-950">{title}</h3>
+                <p className="mt-2 text-sm leading-6 text-neutral-600">{description}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
     </main>
