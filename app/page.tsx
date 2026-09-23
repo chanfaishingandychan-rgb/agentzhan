@@ -12,7 +12,6 @@ import {
   Puzzle,
 } from "lucide-react";
 
-import { HeroWorkflowScene } from "@/components/hero-workflow-scene";
 import { SectionHeader } from "@/components/section-header";
 import { TrackedLink } from "@/components/tracked-link";
 import { getAllCollections } from "@/lib/collections";
@@ -107,45 +106,40 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="relative isolate overflow-hidden border-b border-neutral-300 bg-[#f6f6f3]">
-        <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[52%] border-l border-neutral-200/80 bg-[#efefeb] lg:block" />
-        <div className="relative mx-auto min-h-[calc(100svh-8rem)] max-w-7xl px-4 pb-8 pt-10 sm:px-6 sm:pb-16 sm:pt-20 lg:min-h-[640px] lg:px-8 lg:py-16">
-          <div className="relative z-10 max-w-2xl lg:pt-10">
-            <div className="flex items-center gap-2 text-xs font-semibold text-emerald-700">
-              <span className="h-px w-6 bg-emerald-600" aria-hidden="true" />
-              中文 AI 工作指南
-            </div>
-            <h1 className="mt-4 text-5xl font-semibold leading-none text-neutral-950 sm:mt-5 sm:text-6xl lg:text-7xl">Agent站</h1>
-            <p className="mt-4 max-w-xl text-2xl font-medium leading-tight text-neutral-900 sm:mt-6 sm:text-3xl">
-              把复杂的 AI 工具，整理成可以直接工作的中文方案。
-            </p>
-            <p className="mt-4 max-w-xl text-base leading-8 text-neutral-600 sm:mt-5">
-              从模型选择、插件安装到工作流搭建，先看真实结果，再决定从哪里开始。
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-5 sm:mt-8">
+      <section className="relative isolate min-h-[720px] overflow-hidden border-b border-neutral-300 bg-[#f5f4ef] sm:min-h-[760px] lg:min-h-[680px]">
+        <Image
+          src="/hero-workspace-v2.jpg"
+          alt="明亮工作空间中的电脑、笔记本与手机"
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 pt-12 text-center sm:px-8 sm:pt-16 lg:pt-14">
+          <div className="text-xs font-semibold text-emerald-800">中文 AI 工作指南</div>
+          <h1 className="mt-3 text-2xl font-semibold text-neutral-950 sm:text-3xl">Agent站</h1>
+          <p className="mt-3 max-w-4xl text-4xl font-semibold leading-[1.08] text-neutral-950 sm:text-6xl lg:text-7xl">
+            把 AI 用进真正的工作里。
+          </p>
+          <p className="mt-5 max-w-2xl text-base leading-7 text-neutral-700 sm:text-lg">
+            清楚的中文教程、真实案例与可直接使用的工作方案。
+          </p>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-x-7 gap-y-3 sm:mt-7">
               <TrackedLink
                 href="/start-here"
                 eventName="hero-start-here"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-neutral-950 px-6 text-sm font-semibold text-white transition-colors hover:bg-neutral-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+                className="inline-flex items-center gap-1.5 text-base font-semibold text-emerald-800 transition-colors hover:text-emerald-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-700 focus-visible:ring-offset-4"
               >
                 从这里开始 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </TrackedLink>
               <TrackedLink
                 href="/examples"
                 eventName="hero-examples"
-                className="inline-flex h-12 items-center text-sm font-semibold text-neutral-900 underline decoration-neutral-400 underline-offset-4 transition-colors hover:text-emerald-700"
+                className="inline-flex items-center gap-1.5 text-base font-semibold text-neutral-800 transition-colors hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-700 focus-visible:ring-offset-4"
               >
-                查看真实案例
+                查看真实案例 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </TrackedLink>
-            </div>
-            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 border-t border-neutral-300 pt-5 text-xs text-neutral-600 sm:mt-9">
-              <span><strong className="font-semibold text-neutral-950">430+</strong> 中文 Prompt</span>
-              <span><strong className="font-semibold text-neutral-950">23</strong> 插件指南</span>
-              <span><strong className="font-semibold text-neutral-950">14 天</strong> 新手路线</span>
-            </div>
-          </div>
-          <div className="relative mt-5 sm:mt-10 lg:absolute lg:bottom-8 lg:right-8 lg:top-0 lg:mt-0 lg:w-[49%]">
-            <HeroWorkflowScene />
           </div>
         </div>
       </section>
