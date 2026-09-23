@@ -27,6 +27,8 @@
     "@supabase/supabase-js": "^2.110.8",
     "@vercel/analytics": "^2.0.1",
     "fast-xml-parser": "^5.10.1",
+    "geist": "^1.7.2",
+    "lucide-react": "^1.47.0",
     "next": "^16.2.9",
     "openai": "^6.49.0",
     "react": "^19.2.7",

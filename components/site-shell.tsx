@@ -1,37 +1,44 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ArrowUpRight, Search } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { MobileNav } from "@/components/mobile-nav";
 import { buttonStyles } from "@/components/ui/button";
-import { primaryNavItems } from "@/lib/navigation";
+import { primaryNavItems, secondaryNavItems } from "@/lib/navigation";
 import { categories, siteConfig } from "@/lib/site";
+
+function BrandMark({ compact = false }: { compact?: boolean }) {
+  return (
+    <span
+      className={`${compact ? "h-8 w-8" : "h-9 w-9"} relative flex shrink-0 items-center justify-center rounded-lg bg-neutral-950 text-sm font-semibold text-white`}
+      aria-hidden="true"
+    >
+      A
+      <span className="absolute bottom-1 right-1 h-1.5 w-1.5 rounded-sm bg-emerald-400" />
+    </span>
+  );
+}
 
 export function SiteShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[#fafafa] text-slate-950">
-      {/* ── Header ── */}
-      <header className="sticky top-0 z-40 border-b border-slate-200/60 bg-white/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
-          <Link href="/" className="flex items-center gap-3 shrink-0">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-[0_8px_24px_rgba(124,58,237,0.25)]">
-              A
-            </span>
+    <div className="min-h-screen bg-[#f6f6f3] text-neutral-950">
+      <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/95 backdrop-blur-xl">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-5 px-4 sm:px-6 lg:px-8">
+          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="Agent站首页">
+            <BrandMark compact />
             <span>
-              <span className="block text-sm font-semibold tracking-tight text-slate-950 sm:text-base">
-                {siteConfig.name}
-              </span>
-              <span className="hidden text-xs text-slate-500 sm:block">中文 AI 生产力工作站</span>
+              <span className="block text-sm font-semibold text-neutral-950 sm:text-base">{siteConfig.name}</span>
+              <span className="hidden text-xs text-neutral-500 sm:block">中文 AI 工作指南</span>
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 rounded-full border border-slate-200 bg-slate-50/80 p-1 text-sm text-slate-600 lg:flex">
+          <nav className="hidden items-center gap-7 text-sm text-neutral-600 lg:flex" aria-label="主要导航">
             {primaryNavItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-3 py-2 transition hover:bg-white hover:text-slate-950 hover:shadow-sm"
+                className="py-2 font-medium transition-colors hover:text-neutral-950 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-4"
               >
                 {item.label}
               </Link>
@@ -39,8 +46,17 @@ export function SiteShell({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="flex items-center gap-2">
-            <Link href="/consulting" className={buttonStyles({ variant: "outline", size: "sm" })}>
+            <Link
+              href="/search"
+              aria-label="搜索网站内容"
+              title="搜索"
+              className="hidden h-9 w-9 items-center justify-center rounded-lg text-neutral-600 transition-colors hover:bg-neutral-100 hover:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 sm:inline-flex"
+            >
+              <Search aria-hidden="true" className="h-[18px] w-[18px]" />
+            </Link>
+            <Link href="/consulting" className={buttonStyles({ variant: "outline", size: "sm", className: "hidden sm:inline-flex" })}>
               咨询
+              <ArrowUpRight aria-hidden="true" className="h-3.5 w-3.5" />
             </Link>
             <MobileNav />
           </div>
@@ -49,78 +65,83 @@ export function SiteShell({ children }: { children: ReactNode }) {
 
       {children}
 
-      {/* ── Footer ── */}
-      <footer className="border-t border-slate-200 bg-white">
-        <div className="mx-auto grid max-w-7xl gap-8 px-4 py-12 sm:px-6 lg:grid-cols-[1.4fr,1fr,1fr,1.7fr] lg:px-8">
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-600 to-blue-600 text-sm font-bold text-white shadow-sm">
-                A
-              </span>
-              <div className="text-base font-semibold text-slate-950">{siteConfig.name}</div>
+      <footer className="border-t border-neutral-300 bg-[#ecece7]">
+        <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
+          <div className="grid gap-10 lg:grid-cols-[1.25fr_0.8fr_0.8fr_1.5fr]">
+            <div>
+              <div className="flex items-center gap-3">
+                <BrandMark />
+                <div className="text-base font-semibold text-neutral-950">{siteConfig.name}</div>
+              </div>
+              <p className="mt-4 max-w-sm text-sm leading-7 text-neutral-600">
+                把 AI 模型、插件和工作流整理成可直接使用的中文指南，帮助个人和小团队更快完成工作。
+              </p>
+              <Link
+                href="/start-here"
+                className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold text-neutral-950 underline decoration-neutral-400 underline-offset-4 transition-colors hover:text-emerald-700"
+              >
+                从这里开始
+                <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+              </Link>
             </div>
-            <p className="mt-4 max-w-xl text-sm leading-7 text-slate-500">
-              中文 AI 生产力工作站，整理 Agent 插件、AI 工具和自动化工作流，帮助普通人和小团队更快完成工作。
-            </p>
+
+            <div className="grid grid-cols-2 gap-8 lg:contents">
+              <div>
+                <div className="text-xs font-semibold uppercase text-neutral-500">主要入口</div>
+                <div className="mt-4 space-y-3 text-sm text-neutral-700">
+                  {primaryNavItems.map((item) => (
+                    <Link key={item.href} href={item.href} className="block transition-colors hover:text-emerald-700">
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="text-xs font-semibold uppercase text-neutral-500">探索内容</div>
+                <div className="mt-4 space-y-3 text-sm text-neutral-700">
+                  {secondaryNavItems.map((item) => (
+                    <Link key={item.href} href={item.href} className="block transition-colors hover:text-emerald-700">
+                      {item.label}
+                    </Link>
+                  ))}
+                  <Link href="/search" className="block transition-colors hover:text-emerald-700">搜索 Prompt</Link>
+                </div>
+              </div>
+            </div>
+
+            <div id="wechat" className="scroll-mt-24">
+              <div className="text-xs font-semibold uppercase text-neutral-500">微信联系</div>
+              <p className="mt-4 text-sm leading-6 text-neutral-600">交流群和一对一咨询分开使用，请按需要扫码。</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+                <div className="flex items-center gap-3 rounded-lg border border-neutral-300 bg-[#f6f6f3] p-3">
+                  <Image src="/wechat-group-qr.jpg" alt="AI小白微信交流群二维码" width={80} height={80} className="h-20 w-20 shrink-0" />
+                  <div>
+                    <div className="text-sm font-semibold text-neutral-950">AI小白交流群</div>
+                    <p className="mt-1 text-xs leading-5 text-neutral-600">模型、Prompt 与工具交流</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 rounded-lg border border-neutral-300 bg-[#f6f6f3] p-3">
+                  <Image src="/wechat-qr.jpg" alt="微信咨询二维码" width={80} height={80} className="h-20 w-20 shrink-0" />
+                  <div>
+                    <div className="text-sm font-semibold text-neutral-950">一对一咨询</div>
+                    <p className="mt-1 text-xs leading-5 text-neutral-600">安装、网站与工作流</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div>
-            <div className="text-sm font-semibold text-slate-950">核心分类</div>
-            <div className="mt-3 grid grid-cols-2 gap-x-4 gap-y-2 text-sm text-slate-500">
-              {categories.slice(0, 8).map((category) => (
-                <Link key={category.slug} href={`/category/${category.slug}`} className="transition hover:text-violet-600">
+
+          <div className="mt-12 flex flex-col gap-3 border-t border-neutral-300 pt-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between">
+            <div>&copy; {new Date().getFullYear()} {siteConfig.name}</div>
+            <div className="flex flex-wrap gap-x-4 gap-y-2">
+              {categories.slice(0, 4).map((category) => (
+                <Link key={category.slug} href={`/category/${category.slug}`} className="transition-colors hover:text-neutral-950">
                   {category.name}
                 </Link>
               ))}
             </div>
           </div>
-          <div>
-            <div className="text-sm font-semibold text-slate-950">平台能力</div>
-            <div className="mt-3 space-y-2 text-sm text-slate-500">
-              <Link href="/skills" className="transition hover:text-violet-600">AI 插件库</Link>
-              <Link href="/guides" className="block transition hover:text-violet-600">AI教程</Link>
-              <Link href="/novels" className="block transition hover:text-violet-600">AI小说</Link>
-              <Link href="/#industries" className="block transition hover:text-violet-600">行业 Prompt</Link>
-              <Link href="/news" className="block transition hover:text-violet-600">AI 最新資訊</Link>
-              <Link href="/learn" className="block transition hover:text-violet-600">AI新手学习</Link>
-              <Link href="/community" className="block transition hover:text-violet-600">AI討論區</Link>
-              <Link href="/consulting" className="block transition hover:text-violet-600">AI 咨询服务</Link>
-              <Link href="/free-ai-pack" className="block transition hover:text-violet-600">免费工作包</Link>
-              <div>網站索引</div>
-            </div>
-          </div>
-          <div id="wechat" className="scroll-mt-24">
-            <div className="text-sm font-semibold text-slate-950">微信</div>
-            <p className="mt-3 text-sm leading-6 text-slate-500">按需要选择扫码，群组交流和一对一咨询分开使用。</p>
-            <div className="mt-4 space-y-4">
-              <div className="flex gap-4 rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
-                <div className="shrink-0 rounded-xl border border-white bg-white p-2 shadow-sm">
-                  <Image src="/wechat-group-qr.jpg" alt="AI小白微信交流群二维码" width={112} height={112} className="h-28 w-28" />
-                </div>
-                <div className="min-w-0 py-1">
-                  <div className="inline-flex rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-violet-700 shadow-sm">
-                    AI小白交流群
-                  </div>
-                  <div className="mt-3 text-sm font-semibold text-slate-950">想和大家交流，扫这个群码</div>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">适合讨论模型使用、提示词、工具选择和 AI 入门问题。</p>
-                </div>
-              </div>
-              <div className="flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-                <div className="shrink-0 rounded-xl border border-slate-100 bg-white p-2">
-                  <Image src="/wechat-qr.jpg" alt="微信咨询二维码" width={112} height={112} className="h-28 w-28" />
-                </div>
-                <div className="min-w-0 py-1">
-                  <div className="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">
-                    微信咨询
-                  </div>
-                  <div className="mt-3 text-sm font-semibold text-slate-950">需要私聊咨询，扫这个个人微信</div>
-                  <p className="mt-1 text-xs leading-5 text-slate-500">适合模型选择、插件安装、网站和工作流落地咨询。</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="border-t border-slate-100 px-4 py-6 text-center text-xs text-slate-400 sm:px-6 lg:px-8">
-          &copy; {new Date().getFullYear()} {siteConfig.name} · {siteConfig.url}
         </div>
       </footer>
     </div>

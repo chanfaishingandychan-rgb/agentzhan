@@ -7,12 +7,12 @@ type ButtonSize = "sm" | "md" | "lg";
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "bg-gradient-to-r from-violet-600 to-blue-600 text-white shadow-[0_8px_24px_rgba(124,58,237,0.25)] hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(124,58,237,0.35)]",
+    "border border-neutral-950 bg-neutral-950 text-white hover:bg-neutral-800",
   secondary:
-    "bg-violet-600 text-white shadow-[0_8px_24px_rgba(124,58,237,0.25)] hover:-translate-y-0.5 hover:bg-violet-700",
+    "border border-emerald-700 bg-emerald-700 text-white hover:bg-emerald-800",
   outline:
-    "border border-slate-200 bg-white text-slate-900 hover:-translate-y-0.5 hover:border-violet-200 hover:bg-violet-50/60",
-  ghost: "bg-transparent text-slate-500 hover:bg-slate-100 hover:text-slate-950",
+    "border border-neutral-300 bg-white text-neutral-900 hover:border-neutral-400 hover:bg-neutral-50",
+  ghost: "border border-transparent bg-transparent text-neutral-600 hover:bg-neutral-200/70 hover:text-neutral-950",
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -34,9 +34,9 @@ export function buttonStyles({
   variant?: ButtonVariant;
   size?: ButtonSize;
   className?: string;
-} = {}) {
+  } = {}) {
   return cn(
-    "inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+    "inline-flex items-center justify-center gap-2 rounded-lg font-semibold transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
     variantStyles[variant],
     sizeStyles[size],
     className,

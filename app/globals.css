@@ -4,24 +4,35 @@
 
 :root {
   color-scheme: light;
-  --color-bg: #fafafa;
+  --color-bg: #f6f6f3;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #efefeb;
+  --color-ink: #121212;
+  --color-muted: #686864;
+  --color-border: #dcdcd6;
+  --color-brand: #16855b;
+  --color-brand-strong: #0f6947;
+  --color-info: #2f6fed;
+  --radius-control: 0.5rem;
+  --radius-card: 0.5rem;
+  --shadow-subtle: 0 1px 2px rgba(18, 18, 18, 0.04);
 }
 
 body {
   margin: 0;
   min-width: 320px;
   background: var(--color-bg);
-  color: #0f172a;
+  color: var(--color-ink);
   font-family:
-    "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
+    var(--font-geist-sans), "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans SC",
     system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 ::selection {
-  background: #c4b5fd;
-  color: #312e81;
+  background: #bfe8d4;
+  color: #0b3d2b;
 }
 
 a {
