@@ -103,6 +103,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.92,
     },
     {
+      url: `${siteConfig.url}/agents`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "daily",
+      priority: 0.94,
+    },
+    {
+      url: `${siteConfig.url}/zh-hk/agents`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "daily",
+      priority: 0.86,
+    },
+    {
+      url: `${siteConfig.url}/zh-cn/agents`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: "daily",
+      priority: 0.86,
+    },
+    {
       url: `${siteConfig.url}/examples`,
       lastModified: new Date().toISOString(),
       changeFrequency: "weekly",

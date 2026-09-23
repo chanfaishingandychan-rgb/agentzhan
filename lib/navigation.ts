@@ -1,5 +1,6 @@
 export const primaryNavItems = [
   { label: "开始", href: "/start-here" },
+  { label: "Agents", href: "/agents" },
   { label: "教程", href: "/guides" },
   { label: "插件", href: "/skills" },
   { label: "案例", href: "/examples" },

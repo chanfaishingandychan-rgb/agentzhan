@@ -97,6 +97,7 @@ export default async function AdminPage() {
   ];
 
   const adminNavigation = [
+    { href: "/admin/agents", label: "Agent 产品", description: "提交审核与上架" },
     { href: "/admin/traffic", label: "流量分析", description: "浏览与转化" },
     { href: "/admin/leads", label: "潜在客户", description: "表单线索" },
     { href: "/admin/logs", label: "任务日志", description: "执行记录" },
@@ -125,13 +126,17 @@ export default async function AdminPage() {
           </div>
         </header>
 
-        <nav aria-label="后台分区" className="mt-5 grid grid-cols-3 overflow-hidden rounded-lg border border-slate-200 bg-white">
+        <nav aria-label="后台分区" className="mt-5 grid grid-cols-2 overflow-hidden rounded-lg border border-slate-200 bg-white sm:grid-cols-4">
           {adminNavigation.map((item, index) => (
             <Link
               key={item.href}
               href={item.href}
               className={`flex min-h-14 flex-col justify-center px-3 py-2 transition hover:bg-slate-50 focus-visible:z-10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 sm:px-5 ${
-                index > 0 ? "border-l border-slate-200" : ""
+                index === 0
+                  ? ""
+                  : index % 2 > 0
+                    ? "border-l border-slate-200"
+                    : "border-t border-slate-200 sm:border-l sm:border-t-0"
               }`}
             >
               <span className="text-sm font-semibold text-slate-900">{item.label}</span>
